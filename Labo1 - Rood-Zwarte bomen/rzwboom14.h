@@ -316,7 +316,7 @@ void RZWboom<Sleutel>::voegtoe(const Sleutel &sl)
     RZWboom<Sleutel> * locatie;  
     RZWknoop<Sleutel> * parent;        //snap niet waarom dit niet this is. Opgelet, dit is knoop en niet boom
     zoek(sl, parent, locatie);
-    //Enkel toevoegen als het nog niet bestaad.
+    //Enkel toevoegen als het nog niet bestaat.
    if (locatie->get() == 0)             //alternatief: if (!*locatie) {
     {
         RZWboom<Sleutel> nieuw = RZWboom<Sleutel>(new RZWknoop<Sleutel>(sl));
