@@ -15,7 +15,7 @@ int main(){
     }
     zkbm.tekenAlsBinaireBoom("smallTree.dot");
 
-    cout << (zkbm.repOK()? "Voldoet aan voorwaarden binaire zoekboom\n" : "Voldoet niet aan voorwaarden binaire zoekboom\n"); // kan getest worden door in zoek(...) de laatste > te vervangen door <. Dan wordt er een ongeldige boom aangemaakt.
-    cout << "oef 1: file generated\n";
+    cout << (zkbm.repOK()? "Voldoet aan aan opgelegde voorwaarden\n" : "Voldoet niet aan opgelegd voorwaarden  (inorder + ptr naar ouder)\n"); // kan getest worden door in zoek(...) de laatste > te vervangen door <. Dan wordt er een ongeldige boom aangemaakt.
+    cout << "\noef 1: file generated\n";
     cout << "Please copy content of the created file here: http://webgraphviz.com\n";
 }

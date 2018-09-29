@@ -1,3 +1,4 @@
+#define DEBUG 1
 #ifndef __RZWboom_H
 #define __RZWboom_H
 #include <assert.h>
@@ -7,7 +8,9 @@
 #include <functional>
 #include <fstream>
 #include <sstream>
-
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 using namespace std;
 
@@ -205,6 +208,9 @@ string RZWboom<Sleutel>::tekenrecBinair(ostream &uit, int &nullteller) const
     return wortelstring.str();
 }
 
+//
+// Deze functie heb ik zelf geïmplementeerd in repOK()
+//
 template <class Sleutel>
 bool RZWboom<Sleutel>::repOKZoekboom() const
 {
@@ -334,9 +340,25 @@ bool RZWboom<Sleutel>::repOK() const{
     return (isInOrder() && isBinaryTree());
 };
 
-// to do: voorwaarden 
+//  Onze binaire boom heeft ook ouderpointers. 
+// Dit zijn gewone pointers en het behoort natuurlijk tot de rep-invariant dat deze pointers naar de juiste knopen wijzen.
 template <class Sleutel>
 bool RZWboom<Sleutel>::isBinaryTree() const{
+    if(*this != nullptr){
+        if(&(*this->get()) != (*this->get()->links).ouder){
+            #if DEBUG
+            std::cout << "adress parent "<< this->get()->sleutel << ":\t" << &(*this->get()) << "\n";
+            std::cout << "adress parent according to child "<< this->get()->links->sleutel << ":\t"<< this->get()->links->ouder << "\n";
+            #endif
+            //this->get()                               => indien jij
+            // !=                                       => niet gelijk bent aan
+            // this->get()->links->get()->parent        => de ouder van je eigen linkse kind
+            return false;          
+        };
+       /* if(this->get() != this->get()->rechts->get()->parent){
+            return false;          
+        }; */
+    } 
     return true;
 };
 
@@ -346,8 +368,7 @@ bool RZWboom<Sleutel>::isInOrder() const{
    if(*this != nullptr){
         if(this->get()->links->sleutel > this->get()->sleutel || this->get()->rechts->sleutel < this->get()->sleutel){
             return false;           //hier return is geen mooie code
-        };
-        
+        }; 
     } 
     return true;
 };
