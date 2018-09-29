@@ -59,16 +59,21 @@ class RZWboom : public unique_ptr<RZWknoop<Sleutel>>
     bool repOKZoekboom() const;
     int geefDiepte() const;
 
-    //eigen aanvulling
-    RZWboom();
-    RZWboom(const RZWknoop<Sleutel> &);
-
-
     RZWkleur geefKleur() const;
     void zetKleur(RZWkleur kl);
     //noot: volgende functie mag alleen opgeroepen worden bij hoofdboom, niet bij deelboom!
-
     void voegtoe(const Sleutel &sleutel);
+    
+    //eigen aanvulling
+    RZWboom();
+    RZWboom(const RZWknoop<Sleutel> &);
+    bool repOK() const;
+    
+  private: 
+    bool isInOrder() const;
+    bool isBinaryTree() const;
+
+    //einde eigen aanvulling
 
   protected:
     //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
@@ -319,6 +324,34 @@ RZWkleur RZWboom<Sleutel>::geefKleur() const
 {
     return rood;
 }
+
+// Voor testgebruik
+// Controleerd:
+//  -   Het moet een geldige binaire boom zijn.
+//  -   De sleutels moeten in volgorde staan.
+template <class Sleutel>
+bool RZWboom<Sleutel>::repOK() const{
+    return (isInOrder() && isBinaryTree());
+};
+
+// to do: voorwaarden 
+template <class Sleutel>
+bool RZWboom<Sleutel>::isBinaryTree() const{
+    return true;
+};
+
+//Diepte eerst zoeken, in order overlopen van de boom.
+template <class Sleutel>
+bool RZWboom<Sleutel>::isInOrder() const{
+   if(*this != nullptr){
+        if(this->get()->links->sleutel > this->get()->sleutel || this->get()->rechts->sleutel < this->get()->sleutel){
+            return false;           //hier return is geen mooie code
+        };
+        
+    } 
+    return true;
+};
+
 
 
 #endif
