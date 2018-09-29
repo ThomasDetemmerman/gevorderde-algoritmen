@@ -66,15 +66,15 @@ class RZWboom : public unique_ptr<RZWknoop<Sleutel>>
     void zetKleur(RZWkleur kl);
     //noot: volgende functie mag alleen opgeroepen worden bij hoofdboom, niet bij deelboom!
     void voegtoe(const Sleutel &sleutel);
-    
+
     //eigen aanvulling
     RZWboom();
     RZWboom(const RZWknoop<Sleutel> &);
     bool repOK() const;
-    
-  private: 
+
+  private:
     bool isInOrder() const;
-    bool isBinaryTree() const;
+    bool parentPtrOK() const;
 
     //einde eigen aanvulling
 
@@ -313,15 +313,15 @@ RZWboom<Sleutel>::RZWboom(const RZWknoop<Sleutel> &sl) : unique_ptr<RZWknoop<Sle
 template <class Sleutel>
 void RZWboom<Sleutel>::voegtoe(const Sleutel &sl)
 {
-    RZWboom<Sleutel> * locatie;  
-    RZWknoop<Sleutel> * parent;        //snap niet waarom dit niet this is. Opgelet, dit is knoop en niet boom
+    RZWboom<Sleutel> *locatie;
+    RZWknoop<Sleutel> *parent; //snap niet waarom dit niet this is. Opgelet, dit is knoop en niet boom
     zoek(sl, parent, locatie);
     //Enkel toevoegen als het nog niet bestaat.
-   if (locatie->get() == 0)             //alternatief: if (!*locatie) {
+    if (locatie->get() == 0) //alternatief: if (!*locatie) {
     {
-        RZWboom<Sleutel> nieuw = RZWboom<Sleutel>(new RZWknoop<Sleutel>(sl));
-       // RZWboom<Sleutel> nieuw(sl);
-        *locatie = move(nieuw);
+        RZWboom<Sleutel> nieuweSubBoom = RZWboom<Sleutel>(new RZWknoop<Sleutel>(sl));
+        *locatie = move(nieuweSubBoom);
+        locatie->get()->ouder = parent; //pointer naar parent (gecontroleerd door parentPtrOK())
     }
 }
 
@@ -336,43 +336,51 @@ RZWkleur RZWboom<Sleutel>::geefKleur() const
 //  -   Het moet een geldige binaire boom zijn.
 //  -   De sleutels moeten in volgorde staan.
 template <class Sleutel>
-bool RZWboom<Sleutel>::repOK() const{
-    return (isInOrder() && isBinaryTree());
+bool RZWboom<Sleutel>::repOK() const
+{
+    return (isInOrder() && parentPtrOK());
 };
 
-//  Onze binaire boom heeft ook ouderpointers. 
-// Dit zijn gewone pointers en het behoort natuurlijk tot de rep-invariant dat deze pointers naar de juiste knopen wijzen.
+// Dit zijn gewone pointers en het behoort tot de rep-invariant dat deze pointers naar de juiste knopen wijzen.
+// kan getest worden door in voegtoe(...) het laatste lijntje locatie->get()->ouder = parent weg te laten.
 template <class Sleutel>
-bool RZWboom<Sleutel>::isBinaryTree() const{
-    if(*this != nullptr){
-        if(&(*this->get()) != (*this->get()->links).ouder){
-            #if DEBUG
-            std::cout << "adress parent "<< this->get()->sleutel << ":\t" << &(*this->get()) << "\n";
-            std::cout << "adress parent according to child "<< this->get()->links->sleutel << ":\t"<< this->get()->links->ouder << "\n";
-            #endif
+bool RZWboom<Sleutel>::parentPtrOK() const
+{
+    if (*this != nullptr)
+    {
+        if (&(*this->get()) != (*this->get()->links).ouder)
+        {
+#if DEBUG
+            std::cout << "adress parent " << this->get()->sleutel << ":\t" << &(*this->get()) << "\n";
+            std::cout << "adress parent " << this->get()->sleutel << ":\t" << this << "\n";
+            std::cout << "adress parent according to child " << this->get()->links->sleutel << ":\t" << this->get()->links->ouder << "\n";
+#endif
             //this->get()                               => indien jij
             // !=                                       => niet gelijk bent aan
             // this->get()->links->get()->parent        => de ouder van je eigen linkse kind
-            return false;          
+            return false;
         };
-       /* if(this->get() != this->get()->rechts->get()->parent){
-            return false;          
-        }; */
-    } 
+        if (&(*this->get()) != (*this->get()->rechts).ouder)
+        {
+            return false;
+        };
+    }
     return true;
 };
 
 //Diepte eerst zoeken, in order overlopen van de boom.
+// kan getest worden door in zoek(...) de laatste > te vervangen door <. Dan wordt er een ongeldige boom aangemaakt.
 template <class Sleutel>
-bool RZWboom<Sleutel>::isInOrder() const{
-   if(*this != nullptr){
-        if(this->get()->links->sleutel > this->get()->sleutel || this->get()->rechts->sleutel < this->get()->sleutel){
-            return false;           //hier return is geen mooie code
-        }; 
-    } 
+bool RZWboom<Sleutel>::isInOrder() const
+{
+    if (*this != nullptr)
+    {
+        if (this->get()->links->sleutel > this->get()->sleutel || this->get()->rechts->sleutel < this->get()->sleutel)
+        {
+            return false; //hier return is geen mooie code
+        };
+    }
     return true;
 };
-
-
 
 #endif
