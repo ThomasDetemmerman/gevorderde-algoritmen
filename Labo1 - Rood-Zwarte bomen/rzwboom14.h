@@ -8,6 +8,7 @@
 #include <functional>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -75,6 +76,7 @@ class RZWboom : public unique_ptr<RZWknoop<Sleutel>>
   private:
     bool isInOrder() const;
     bool parentPtrOK() const;
+    RZWkleur getColorUncle() const;
 
     //einde eigen aanvulling
 
@@ -319,17 +321,55 @@ void RZWboom<Sleutel>::voegtoe(const Sleutel &sl)
     //Enkel toevoegen als het nog niet bestaat.
     if (locatie->get() == 0) //alternatief: if (!*locatie) {
     {
+#if DEBUG
+       cout << "parent addres for node " << sl << " is:\t" << parent << "\n";
+#endif
         RZWboom<Sleutel> nieuweSubBoom = RZWboom<Sleutel>(new RZWknoop<Sleutel>(sl));
         *locatie = move(nieuweSubBoom);
         locatie->get()->ouder = parent; //pointer naar parent (gecontroleerd door parentPtrOK())
+
     }
 }
 
 template <class Sleutel>
 RZWkleur RZWboom<Sleutel>::geefKleur() const
-{
-    return rood;
+{   
+    RZWkleur kleur= rood; //default
+    // case 0: root is altijd zwart
+    if(this->get()->ouder == NULL){
+        kleur = zwart;
+    }
+    // case 1: uncle is red
+    try{
+        kleur = getColorUncle();
+    }catch(const char* msg){
+        // nothing to do, default value for kleur is suficient
+        // cout << "Warning: " << msg << endl;
+    }
+    
+#if DEBUG
+    cout << "color of " << this->get()->sleutel << " is:\t" << kleur << endl;
+#endif
+    return kleur; 
 }
+
+template <class Sleutel>
+RZWkleur RZWboom<Sleutel>::getColorUncle() const{
+    if(this->get()->ouder == NULL || this->get()->ouder->ouder == NULL){
+        throw "Could not locate uncle. No parent or grandparent found for this node";
+    }
+    RZWknoop<Sleutel> * parent = this->get()->ouder;
+    RZWknoop<Sleutel> * grandparent = this->get()->ouder->ouder;
+    RZWkleur colorUncle;
+    //check if uncle is left or right child of grandparent
+    if( parent == &(*grandparent->links) ){
+       colorUncle = grandparent->rechts->kleur;
+    } else {
+       colorUncle = grandparent->links->kleur;
+    }
+         return colorUncle;    
+
+};
 
 // Voor testgebruik
 // Controleerd:
