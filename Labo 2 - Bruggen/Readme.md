@@ -20,6 +20,9 @@
     - n kruist niet met n-1
         - gewoon toevoegen.
 
+*Belangrijke eigenschap*: 
+Indien brug n niet kruist met n-1 zal deze ook niet kruisen met alle andere bruggen waarmee n-1 ook niet kruist!
+
 
 # Implementatie
 
