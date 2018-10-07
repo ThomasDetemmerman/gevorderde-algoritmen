@@ -21,3 +21,14 @@
         - gewoon toevoegen.
 
 
+# Implementatie
+
+Ik maak gebruik van twee datastructuren. 
+-  Een boom zoals deze wel vaker wordt gebruikt bij dynamisch programmeren. De oplossingsverzameling is dan het pad naar de leave met de grootste hoeveelheid smeergeld. 
+    -  elke knoop wijst naar zijn parent.
+    -  Theoretisch gezien kan er gebruik gemaakt worden van een viruele root. In deze oplossing wordt er gebruik gemaakt van een bos.
+-  Een vector die alle leaves van de boom bijhoud om gemakkelijk toegang te krijgen tot deze knopen.
+    -  Indien een leaf een nieuw kind krijgt wordt deze vector geupdate
+    -  Indien een knoop een tweede kind krijgt krijgen we een extra leaf en voegen we deze toe aan de vector
+
+

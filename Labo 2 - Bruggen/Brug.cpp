@@ -55,20 +55,20 @@ int main()
     */
 
     //init een eerste knoop
-    vector<Node_t *> graafheaders(fileSiz);
+    vector<Node_t *> leaves;
     Node_t nieuw = {0, smeergeld[0], NULL};
-    graafheaders.push_back(&nieuw);
- 
+    leaves.push_back(&nieuw);
+
     for (int i = 1; i < bruggen.size(); i++)
     {
 
-        //De inhoud van deze lus kan knopen aan de graafheaders toevoegen. Deze wensen we echter niet te controleren. Daarom
+        //De inhoud van deze lus kan knopen aan de leaves toevoegen. Deze wensen we echter niet te controleren. Daarom
         //heb ik ervoor gekozen om van x naar 0 te gaan zodat x+1 niet gecontroleerd zou worden indien we zouden optellen.
-        for (int currentGraafheader = graafheaders.size(); i >= 0; currentGraafheader--)
+        for (int currentGraafheader = leaves.size(); i >= 0; currentGraafheader--)
         {
             {
-                Node_t *graafheader = graafheaders[currentGraafheader];
-                Node_t *voorhanger = graafheader;
+                Node_t *leave = leaves[currentGraafheader];
+                Node_t *voorhanger = leave;
                 while (kruisen(voorhanger->arenaID, i, &bruggen))
                 {
                     voorhanger = voorhanger->prev;
@@ -79,45 +79,44 @@ int main()
 
                 //plaatsen van nieuwe node in onze graaf.
                 //Indien deze geen problemen gaf met de voorhanger voegen we hem gewoon toe. Het adres van de vorige Node_t wordt vervangen
-                // door deze van 'nieuw'. Dit wordt de graafheader van deze tak.
-                if (graafheader == voorhanger)
+                // door deze van 'nieuw'. Dit wordt de leave van deze tak.
+                if (leave == voorhanger)
                 {
-                    graafheaders[currentGraafheader] = &nieuw;
+                    leaves[currentGraafheader] = &nieuw;
                 }
                 else
                 { //indien we kruisende bruggen hebben gehad hebben we extra moeten terugkeren. Indien dit het geval was
                     // hebben we een aftakking gemaakt en hebben we een nieuwe header.
-                    graafheaders.push_back(&nieuw);
+                    leaves.push_back(&nieuw);
                 }
             }
         }
     }
 
     /*
-        *   zoek oplossing uit de gegenereerde datastructuur
-        */
+    *   zoek oplossing uit de gegenereerde datastructuur
+    */
 
-    /* Node_t *graafheaderMetMaxSmeergeld = graafheaders[0];
-    for (int i = 1; i < graafheaders.size(); i--)
+    Node_t *leaveMetMaxSmeergeld = leaves[0];
+    for (int i = 1; i < leaves.size(); i--)
     {
 
-        if (graafheaderMetMaxSmeergeld->subtotaal < graafheaders[i]->subtotaal)
+        if (leaveMetMaxSmeergeld->subtotaal < leaves[i]->subtotaal)
         {
-            graafheaderMetMaxSmeergeld = graafheaders[i];
+            leaveMetMaxSmeergeld = leaves[i];
         }
     }
 
     /*
-        *   print resultaat
-        */
+    *   print resultaat
+    */
 
-    /*
-    Node_t *current = graafheaderMetMaxSmeergeld;
+    Node_t *current = leaveMetMaxSmeergeld;
     while (current)
     {
         cout << current->arenaID << " - " << bruggen[current->arenaID] << "\t(" << smeergeld[current->arenaID] << ")" << endl;
         current = current->prev;
     }
-*/
+
     return 0;
 }
