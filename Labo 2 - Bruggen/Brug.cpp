@@ -36,7 +36,7 @@ int main()
 
 	int fileSiz, teller = 0;
 
-	inFile.open("simpelBrug.dat");
+	inFile.open("versnick.dat");
 
 	inFile >> fileSiz;
 
