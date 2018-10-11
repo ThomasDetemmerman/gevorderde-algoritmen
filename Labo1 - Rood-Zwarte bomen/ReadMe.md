@@ -9,4 +9,4 @@
 - [thdtemme/Gegevensstructuren-en-Algoritmen](https://github.ugent.be/thdtemme/Gegevensstructuren-en-Algoritmen/blob/master/labo7/oef1.cpp)
 
 # Known Issues
-- Segmentation fault when entering an orderd list.
+- Segmentation fault als root geen twee kinderen heeft. Oorzaak is `RepOK()`

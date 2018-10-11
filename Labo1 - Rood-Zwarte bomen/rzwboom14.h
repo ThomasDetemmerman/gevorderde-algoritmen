@@ -335,16 +335,16 @@ template <class Sleutel>
 RZWkleur RZWboom<Sleutel>::geefKleur() const
 {   
     RZWkleur kleur= rood; //default
-    // case 0: root is altijd zwart
-    if(this->get()->ouder == NULL){
-        kleur = zwart;
-    }
-    // case 1: uncle is red
+
     try{
-        kleur = getColorUncle();
+        // case 1
+        if(getColorUncle() == zwart){
+            kleur=rood;
+        }
     }catch(const char* msg){
-        // nothing to do, default value for kleur is suficient
-        // cout << "Warning: " << msg << endl;
+        // getColorUncle throws an error, it means there are no parents nor grandparents. You're either
+        // root (case 0) or a leave. wich means the node must become black
+        kleur=zwart;
     }
     
 #if DEBUG
