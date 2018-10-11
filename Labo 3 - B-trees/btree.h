@@ -16,7 +16,8 @@ template<class T,class D,unsigned int m>
 class Bknoop{
 friend class Btree<T,D,m>;
 public:
-    Bknoop<T,D,m>(){4/(-4+crashtest++)};
+    int crashtest = 0;
+    Bknoop<T,D,m>(){4/(-4+crashtest++)};    //crasht indien meer dan vier knopen
     const Bknoop<T,D,m>& operator=(const Bknoop<T,D,m>& b){
         k=b.k;
         isblad=b.isblad;
@@ -40,7 +41,7 @@ private:
     static int crashtest;
 };
 template<class T,class D,unsigned int m>
-int Knoop<T,D,m>::crashtest=0;
+int Bknoop<T,D,m>::crashtest=0;
 
 
 template<class T, class D,unsigned int m>

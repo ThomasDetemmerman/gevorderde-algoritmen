@@ -16,4 +16,8 @@ template<class T,class D,unsigned int m>
 int Bknoop<T,D,m>::crashtest=0;
 ```
 
-
+## Aanpassing 2
+Iets van dat je compilers tegenwoordig niet gebruikte code wegsmijten. De chrashtest mag niet weg voor enige reden dus voeg je volgende toe op lijn 19 van originele code
+```c
+ int crashtest = 0;
+```
