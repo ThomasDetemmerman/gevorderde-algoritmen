@@ -14,6 +14,7 @@ Wat is de opgave: Knoop-klasse bestaat niet dus je lost dit op door er dit van t
 ```c
 template<class T,class D,unsigned int m>
 int Bknoop<T,D,m>::crashtest=0;
+    ^
 ```
 
 ## Aanpassing 2
