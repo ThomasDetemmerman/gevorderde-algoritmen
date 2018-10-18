@@ -22,3 +22,38 @@ Iets van dat je compilers tegenwoordig niet gebruikte code wegsmijten. De chrash
 ```c
  int crashtest = 0;
 ```
+
+## VoegToe()
+In mijn aanpak zal de Btree()::voegtoe() een een deelboom zoeken en desnoods toevoegen om vervolgens Bknoop::voegtoe() de effectieve waarde in de array toe te voegen.
+
+## Iterator
+We gaan een uitbreiding doen op de labo-oefening. Om de 20 meest gekozen woorden te vinden kunnen we best een iterator schrijven.
+Hoe we dat moeten doen hebben we niet gezien en gaan we niet zien. Hier beetje help.
+
+Gebruik van een iterator
+```c++
+for(Bree<>::iterator=bt.begin(); it != bt.end(); it++){
+    ...*it...
+    ...it->?...
+}
+```
+Geneste klassen. Zo kan bree iterator aan alles van btree classe. I.p.v. die `friends` te gebruiken zoals Cnops kunnen we dus geneste klassen gebruiken. Daarom dat de oplossing van de assistent er anders uitziet als deze van cnops. Hij heeft deze classes uit elkaar gehaald.
+
+operator++ zal moeilijkste zijn omdat je moet 'springen' in je boom van kind naar parent enzo. `Stack` is een mogelijk goede oplossing.
+```c++
+Template<...>
+class Btree::iterator{
+    iterator& operator++();
+    T* operator*();
+    bool operator==();
+    bool operator!();
+};
+```
+```c++
+Template<...>
+classBTree{
+    class iterator;
+    iterator begin();
+    iterator end();
+};
+```

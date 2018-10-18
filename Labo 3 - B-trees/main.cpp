@@ -3,10 +3,11 @@
 
 #include "btree.h"
 #include "schijf.h"
-
+#include <string>
 #define FILE "loremIpsum.txt"
 
-using namespace std;
+using std::string;
+using std::ifstream;
 
 int main(){
      
@@ -27,7 +28,7 @@ int main(){
     }
     bt.memoryDump();
 
-    knoop<string, int, 3> result = bt.zoek("lorem");
-    cout << "key is: " << result.key << " and val is " << result.s;
+    //Knoop<string, int, 3> result = bt.zoek("lorem");
+    //cout << "key is: " << result->key << " and val is " << result->s;
 
 }

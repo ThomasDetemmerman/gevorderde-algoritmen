@@ -2,9 +2,11 @@
 #define BTREE_H
 
 #include "schijf.h"
-
+#include <string>
 #include <iostream>
-
+#include <stack>
+using std::stack;
+using std::string;
 using std::endl;
 using std::cerr;
 using std::ostream;
@@ -69,7 +71,7 @@ private:
     static int crashtest;
      void schrijf(ostream & out) const; 
 
-friend ostream& operator<<(ostream & out, const Bknoop<T, D, m>; & b){
+friend ostream& operator<<(ostream & out, const Bknoop<T, D, m> & b){
     b.schrijf(out);
     return out;
     }       
@@ -93,12 +95,15 @@ public:
         wortel.k=0;
         wortel.isblad=true;
         wortelindex=schijf.schrijf(wortel);
+        
     }
     //eigen
     
     void voegToe(T, D);
     void memoryDump();
-    knoop zoek(T);
+    Knoop zoek2(T);
+    void splits(Knoop& , stack<blokindex>&);
+    
 
 private:
    Schijf<Knoop>& schijf;
@@ -110,7 +115,7 @@ private:
 ////////////////////////////////////////         BTREE : functies         ////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
 //eigen
 template<class T, class D,unsigned int m>
 void Btree<T, D, m>::voegToe(T sleutel, D data){
@@ -119,7 +124,7 @@ void Btree<T, D, m>::voegToe(T sleutel, D data){
     
     //voorlopig enkel root
     wortel.voegToe(sleutel,data);
-}
+}*/
 
 
 template<class T, class D,unsigned int m>
@@ -131,10 +136,10 @@ void Btree<T, D,m>::memoryDump(){
     cout << current_root;
     cout << endl << endl;
 }
-
+/*
 template<class T, class D,unsigned int m>
-Knoop Btree<T, D,m>::zoek(T sleutel){
-     Knoop current = wortel;    
+Btree<T, D, m>::Knoop Btree<T, D,m>::zoek2(T sleutel){
+     Bknoop<T, D, m> current = wortel;    
      bool done=false;
      while(!done){
          int i=0;
@@ -156,12 +161,109 @@ Knoop Btree<T, D,m>::zoek(T sleutel){
      return current;
 
 }
+*/
+
+template<class T, class D, unsigned int m>
+void Btree<T, D, m>::voegToe(T sleutel, D data) {
+	// Zoeken naar knoop waar de sleutel onder kan
+	Knoop huidig = wortel;
+	blokindex huidigeIndex = wortelindex;
+	stack<blokindex> parents; // top element is de huidige locatie op schijf
+	parents.push(huidigeIndex);
+	std::cout << "---ADDING " << sleutel << ", " << data << "!" << std::endl;
+	while (!huidig.isblad) {
+		int i = huidig.k-1;
+		std::cout << "i was " << i << ", with " << huidig.k << " keys in it ";
+		
+		while (i >= 0 && huidig.sleutel[i] > sleutel) {
+			i--;
+		}
+		i++;
+		
+		int tmp;
+		std::cout << "Conditon: " << sleutel << " > " << huidig.sleutel[i] << std::endl;
+		std::cout << " and is now " << i << std::endl;
+		std::cin >> tmp;
+		huidigeIndex = huidig.index[i];
+		parents.push(huidigeIndex);
+		schijf.lees(huidig, huidigeIndex);
+	}
+	
+	std::cout << "adding.1" << std::endl;
+	
+	huidig.voegToe(sleutel, data);
+	
+	std::cout << "adding.2" << std::endl;
+	// Commit changes
+	schijf.herschrijf(huidig, huidigeIndex);
+	std::cout << "adding.3" << std::endl;
+	
+	// Update root in mem
+	if (huidigeIndex == wortelindex) {
+		wortel = huidig;
+	}
+	
+	std::cout << "adding.4 - splits" << std::endl;
+
+	// Controle vol zitten
+	/*while (huidig.k == m) {
+		std::cout << "adding.4.1" << std::endl;
+		//std::cout << "TO DO: splits(huid,parents)";
+        splits(huidig, parents);
+	}*/
+	std::cout << "done adding!" << std::endl;
+}
+
+template<class T, class D, unsigned int m>
+void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
+    int midden = (m / 2) + (m % 2);
+	std::cout << "SPLITTSS!!!" << std::endl;
+	// Knoop splitsen
+	Knoop broer;
+	for (int start = midden + 1; start < m; start++) {
+		broer.sleutel[start - midden - 1] = huidig.sleutel[start];
+		broer.data[start - midden - 1] = huidig.data[start];
+	}
+	broer.k = midden - 1;
+	huidig.k = midden - 1;
+	broer.isBlad = huidig.isBlad;
+	std::cout << "Is blad: " << broer.isBlad << std::endl;
+	
+	T sleutel = huidig.sleutel[midden];
+	D data = huidig.data[midden];
+	
+	blokindex lChild = parents.top(); parents.pop();
+	blokindex rChild = schijf.schrijf(broer);
+	
+	// Updaten van de originele huidige node
+	schijf.herschrijf(huidig, lChild);
+	
+	if (parents.empty()) {
+		huidig = *(new Knoop()); // Hergebruik huidige als nieuwe root
+		huidig.isBlad = false;
+		huidig.voegToe(sleutel, data);
+		huidig.addChilds(sleutel, lChild, rChild);
+		wortelindex = schijf.schrijf(huidig);
+		wortel = huidig;
+	} else {
+		std::cout << "NOT Its a new root!" << std::endl;
+		blokindex huidigeIndex = parents.top(); parents.pop();
+		schijf.lees(huidig, huidigeIndex);
+		huidig.addKeyValue(sleutel, data);
+		huidig.addChilds(sleutel, lChild, rChild);
+		schijf.herschrijf(huidig, huidigeIndex);
+		if (huidigeIndex == wortelindex) {
+			wortel = huidig;
+		}
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////         BKnoop : functies         ////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//called by Btree which has his own voegtoe function. After finding the correct position in the btree,
+// this function adds the value at the right possition in de bknoop
 template<class T, class D,unsigned int m>
 void Bknoop<T, D, m>::voegToe(T sl, D data){
         int counter = 0;
@@ -194,13 +296,13 @@ void Bknoop<T, D, m>::voegToe(T sl, D data){
 }
 
  template<class T, class D,unsigned int m>
-void Bknoop<T, D, m>::void schrijf(ostream & out) const{
+void Bknoop<T, D, m>::schrijf(ostream & out) const{
     for(int i=0; i<k; i++){
-       cout << current_root.sleutel[i] << "\t";
+       cout << this->sleutel[i] << "\t";
     }
     cout << endl;
     for(int i=0; i<k; i++){
-       cout << current_root.data[i] << "\t";
+       cout << this->data[i] << "\t";
     }
 }
 
