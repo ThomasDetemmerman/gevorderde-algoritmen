@@ -128,8 +128,6 @@ void Btree<T, D, m>::voegToe(T sleutel, D data)
         i++;
 
         int tmp;
-        std::cout << "Conditon: " << sleutel << " > " << huidig.sleutel[i] << std::endl;
-        std::cout << " and is now " << i << std::endl;
         std::cin >> tmp;
         huidigeIndex = huidig.index[i];
         parents.push(huidigeIndex);
@@ -203,7 +201,6 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 		wortelindex = schijf.schrijf(huidig);
 		wortel = huidig;
 	} else {
-		std::cout << "NOT Its a new root!" << std::endl;
 		blokindex huidigeIndex = parents.top(); parents.pop();
 		schijf.lees(huidig, huidigeIndex);
 		huidig.addKeyAndValue(sleutel, data);
