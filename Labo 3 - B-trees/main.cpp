@@ -1,11 +1,13 @@
 #include <fstream>
 #include <iostream>
+#include <map>
 
 #include "btree.h"
 #include "schijf.h"
 #include <string>
 #define FILE "loremIpsum.txt"
 
+using std::map;
 using std::string;
 using std::ifstream;
 
@@ -27,6 +29,9 @@ int main(){
         key++;
     }
     bt.memoryDump();
+    bt.teken("test.dot");
+
+    
 
     //Knoop<string, int, 3> result = bt.zoek("lorem");
     //cout << "key is: " << result->key << " and val is " << result->s;
