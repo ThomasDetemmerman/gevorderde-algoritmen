@@ -25,7 +25,7 @@ int main(){
     string input;
 	while (infile >> input)
     {
-        bt.voegtoe(input,key);
+        bt.voegToe(input,key);
         key++;
     }
     
