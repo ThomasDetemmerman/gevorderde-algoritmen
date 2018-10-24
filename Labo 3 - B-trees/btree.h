@@ -102,7 +102,8 @@ void Btree<T, D, m>::voegtoe(T & sleutel, D & data)
 	else
 	{
 		cout << "Bestaat nog niet!" << endl;
-		if (knoop->k == 0){	//nog geen elementen in de tree
+        //nog geen elementen in de tree
+		if (knoop->k == 0){	
 			knoop->sleutel[knoop->k] = sleutel;
 			knoop->data[knoop->k] = data;
 			schijf.herschrijf(*knoop, wortelindex);
@@ -114,15 +115,20 @@ void Btree<T, D, m>::voegtoe(T & sleutel, D & data)
 			schijf.herschrijf(*knoop, index);
 			knoop->k++;
 		}
+        // zolang huidige Bknoop vol is.
 		while (knoop->k == m){
+            // dan maken we een nieuwe Bknoop aan
 			Bknoop<T, D, m> * nieuwe = new Bknoop<T, D, m>();
+            // tweede helft van data kopiëren naar nieuwe Bknoop
 			for (int i = m / 2 + 1; i < m; i++){
 				nieuwe->sleutel[(i - m / 2) - 1] = knoop->sleutel[i];
 				if (!knoop->isblad){
 					nieuwe->index[(i - m / 2) - 1] = knoop->index[i];
 				}
+                //sleutel counter aanpassen.
 				knoop->k = (m / 2);
 			}
+            //??????
 			Bknoop<T, D, m> * parent = 0;
 			while (index != 0){
 				this->schijf.lees(*parent, index);
@@ -152,8 +158,8 @@ void Btree<T, D, m>::voegtoe(T & sleutel, D & data)
 }
 
 /*
-* is eerder bool exists()
-* return true als het bestaat, anders false.
+*   is eerder bool exists()
+*   return true als het bestaat, anders false.
 */
 template <class T, class D, unsigned int m>
 bool Btree<T, D, m>::zoek(T & sleutel, Bknoop<T, D, m> * zoekKnoop, blokindex & parentIndex)
