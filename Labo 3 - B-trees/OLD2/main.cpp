@@ -1,21 +1,21 @@
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
-#include <queue>
-#include "schijf.h"
+#include <iostream>
+#include <map>
+
 #include "btree.h"
-
+#include "schijf.h"
+#include <string>
 #define FILE "loremIpsum.txt"
-#define M 4
 
-using namespace std;
+using std::map;
+using std::string;
+using std::ifstream;
 
 int main(){
      
     //Hoe weet je onderstaande? Dankzij de te kijken wat de constructor verwacht van Btree. Nl. Btree(Schijf<Knoop>& s):schijf(s)
-    Schijf<Bknoop<string, int, M>> C_disk =  Schijf<Bknoop<string, int, M>>();
-    Btree<string, int, M> bt(C_disk);
+    Schijf<Bknoop<string, int, 3>> C_disk;
+    Btree<string, int, 3> bt(C_disk);
 
 
 	ifstream infile;
@@ -25,10 +25,11 @@ int main(){
     string input;
 	while (infile >> input)
     {
-        bt.voegtoe(input,key);
+        bt.voegToe(input,key);
         key++;
     }
-    
+    bt.memoryDump();
+    bt.teken("test.dot");
 
     
 
@@ -36,5 +37,3 @@ int main(){
     //cout << "key is: " << result->key << " and val is " << result->s;
 
 }
-
-

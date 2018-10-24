@@ -29,7 +29,7 @@ public:
 //
 //  einde interface
 //
-    Schijf(): map<blokindex,T >(),indexteller(800){};
+    Schijf(): map<blokindex,T >(),indexteller(666){};
 private:
     blokindex indexteller;
     
