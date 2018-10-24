@@ -11,6 +11,7 @@ using std::cout;
 using std::endl;
 using std::move;
 using std::ostream;
+using std::flush;
 
 // Dit bestand bevat code en hoofdingen van ...
 template <class T, class D, unsigned int m>
@@ -175,6 +176,7 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 		broer.sleutel[start - midden - 1] = huidig.sleutel[start];
 		broer.data[start - midden - 1] = huidig.data[start];
 	}
+      
 	broer.k = midden - 1;
 	huidig.k = midden - 1;
 	broer.isblad = huidig.isblad;
@@ -189,18 +191,19 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 	blokindex lChild = parents.top(); 
     parents.pop();
 	blokindex rChild = schijf.schrijf(broer);
-	
+	  
 	// Updaten van de originele huidige node
 	schijf.herschrijf(huidig, lChild);
-	
+	 
 	if (parents.empty()) {
-		huidig = *(new Knoop()); // Hergebruik huidige als nieuwe root
-		huidig.isblad = false;
-		huidig.addKeyAndValue(sleutel, data);
-		huidig.addChildren(sleutel, lChild, rChild);
-		wortelindex = schijf.schrijf(huidig);
-		wortel = huidig;
+		Knoop nieuw;        // thows   floating point exception
+		nieuw.isblad = false;
+		nieuw.addKeyAndValue(sleutel, data);
+		nieuw.addChildren(sleutel, lChild, rChild);
+		wortelindex = schijf.schrijf(nieuw);
+		wortel = nieuw;
 	} else {
+        cout << "not parents.empty" << flush;
 		blokindex huidigeIndex = parents.top(); parents.pop();
 		schijf.lees(huidig, huidigeIndex);
 		huidig.addKeyAndValue(sleutel, data);
@@ -210,6 +213,7 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 			wortel = huidig;
 		}
 	}
+   
 }
 
 template<class T, class D, unsigned int m>

@@ -57,6 +57,8 @@ classBTree{
     iterator end();
 };
 ```
+
+## usefull links
 https://www.cs.usfca.edu/~galles/visualization/BTree.html
 https://github.ugent.be/mvdpol/algo2/blob/master/BBoom/main.cpp
 
@@ -78,3 +80,6 @@ D data[m];
 
 
 ```
+
+## Known issues
+line 199 throws floating point exception
