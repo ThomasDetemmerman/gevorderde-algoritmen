@@ -43,7 +43,7 @@ bool Boom::zoekInCollectie(punt2 p, Boom plaats){
         if(plaats->punt.x < p.x){
             //plaats.get()->linkerkind enkel als je de pointer zelf nodig hebt
             plaats.togglePlaats();
-            if(plaats->linkerkind) : zoekInCollectie(p,plaats->linkerkind) ;
+            zoekInCollectie(p,plaats->linkerkind);
         }else{
              plaats.togglePlaats();
              zoekInCollectie(p,plaats->rechterkind);
@@ -60,7 +60,7 @@ bool Boom::zoekInCollectie(punt2 p, Boom plaats){
     }
 };
 
-bool Boom::togglePlaats(){
+void Boom::togglePlaats(){
     this->isX = !this->isX;
 }
  

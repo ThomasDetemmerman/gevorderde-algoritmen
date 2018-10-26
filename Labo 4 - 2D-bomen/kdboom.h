@@ -10,14 +10,15 @@
 #include <sstream>
 #include "punt2.h"
 
+using std::endl;
 using std::cerr;
+using std::move;
 using std::ofstream;
 using std::ostream;
 using std::ostringstream;
 using std::pair;
 using std::string;
 using std::unique_ptr;
-using std::move;
 /**********************************************************************
 
    Class: Boom2D en Knoop2D
@@ -44,7 +45,7 @@ class Boom2D : public unique_ptr<Knoop2D>
     Boom2D();
 
   protected:
-    Boom2D *zoek(const punt2 &punt);
+    Boom2D *zoek(const punt2 &punt, Boom2D *plaats);
     //preconditie: boom is niet leeg;
     void zoekdichtsteRec(const punt2 &zoekpunt, punt2 &beste, int &bezochteknopen, int niveau);
 
@@ -144,63 +145,82 @@ Boom2D &Knoop2D::geefKind(bool linkerkind)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Boom2D::Boom2D(){};
 
-
 void Boom2D::togglePlaats()
 {
     this->isX = !this->isX;
 }
 
-Boom2D *Boom2D::zoek(const punt2 &punt)
-{
-    Boom2D *plaats = this;
-    while (plaats)
-    {   
+Boom2D *Boom2D::zoek(const punt2 &punt, Boom2D *plaats)
+{   std::cout << "checking for " << punt << endl;
+    std::cout << "check x? " << isX << endl;
+    while (*plaats)
+    {
         //indien huidige knoop de gezochte knoop is kunnen we vroegtijdig onderbreken.
         if ((*plaats)->punt == punt)
         {
             return plaats;
         }
         else if (plaats->isX)
-        {
-            if ((*plaats)->punt.x < punt.x)
+        {std::cout << "checking x" << endl;
+            if ((*plaats)->punt.x > punt.x)
             {
-                //plaats.get()->linkerkind enkel als je de pointer zelf nodig hebt
-                plaats->togglePlaats();
+            std::cout << "moet naar links" << endl;
                 plaats = &(*plaats)->links;
             }
             else
             {
-                plaats->togglePlaats();
+                std::cout << "moet naar rechts" << endl;
+                // als (*plaats)->punt.x  == punt.x) dan gaan we ook naar rechts (zie opgave) en dus niet enkel bij <
                 plaats = &(*plaats)->rechts;
             }
         }
         else
         {
-            if ((*plaats)->punt.y < punt.y)
+            std::cout << "checking y" << endl;
+            if ((*plaats)->punt.y > punt.y)
             {
-                plaats->togglePlaats();
+                std::cout << "moet naar links" << endl;
                 plaats = &(*plaats)->links;
             }
             else
             {
-                plaats->togglePlaats();
+            std::cout << "moet naar rechts" << endl;
                 plaats = &(*plaats)->rechts;
             }
         }
-    }
+        //plaats.get()->linkerkind enkel als je de pointer zelf nodig hebt
+        this->togglePlaats();
+    } // end while
+    std::cout << "-----" << endl;
     return plaats;
 }
 
-void Boom2D::voegtoe(const punt2 &punt){
-    Boom2D * boomlocatie = zoek(punt);
-    if(boomlocatie->get() == 0){
-        std::cout << "adding new node\n";
+void Boom2D::voegtoe(const punt2 &punt)
+{
+    //reset isX. Telkens als je toevoegd moet je beginnen toggelen van isX=true;
+    this->isX = true;
+    std::cout << "adding: " << punt << std::endl;
+    Boom2D *boomlocatie = zoek(punt, this);
+
+    // zoeken stopt bij eerste match. Indien zoeken een volle knoop terugheeft nemen we zijn rechter kind (zie opgave) en zoeken we in
+    // de deelboom opnieuw naar een volgende plaats.
+    while(*boomlocatie && (*boomlocatie)->rechts && !((*boomlocatie)->punt == punt)){
+        boomlocatie = zoek(punt, boomlocatie );
+    }
+    if ( *boomlocatie  && (*boomlocatie)->punt == punt)
+    {
+        std::cerr << punt << " bestaat reeds, wordt niet opnieuw toegevoegd\n";
+    }
+    else
+    {
+
+        // als we een lege plaats gevonden hebben
+        //std::cout << "adding new node\n";
         // een default constructor volstaat. Aangezien in de declaratie staat "class Boom2D : public unique_ptr<Knoop2D>"
         // moeten we geen constructor maken met parameter.
         Boom2D nieuweboom(new Knoop2D(punt));
         *boomlocatie = move(nieuweboom);
     }
 }
-
 
 #endif

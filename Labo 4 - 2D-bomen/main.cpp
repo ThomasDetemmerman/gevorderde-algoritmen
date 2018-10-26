@@ -12,13 +12,13 @@ int main()
 
 	Boom2D boom;
 
-	inFile.open("puntenverz.txt");
+	inFile.open("nieuw");
 
 	
     int teller=0;
     int x, y;
 
-	while (!inFile.fail())
+	while (!inFile.fail() && ! inFile.eof())
 	{ 
 
 		inFile >> x;
