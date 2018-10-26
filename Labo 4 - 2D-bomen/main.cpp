@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <memory>
+#include "kdboom.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ int main()
 {
 	ifstream inFile;
 
-
+	Boom2D boom;
 
 	inFile.open("puntenverz.txt");
 
@@ -23,10 +24,12 @@ int main()
 		inFile >> x;
 		inFile >>y;
 		teller++; //regelnummer
-        cout << teller << " " << x << " " << y << endl;
+		boom.voegtoe(punt2(x,y));
+        //cout << teller << " " << x << " " << y << endl;
 	}
 	inFile.close();
 	
+	boom.teken("boom.dot");
 
 }
 

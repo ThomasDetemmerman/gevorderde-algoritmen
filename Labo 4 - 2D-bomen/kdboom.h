@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <queue>
-#include <assert>
+#include <assert.h>
 #include <memory>
 #include <functional>
 #include <fstream>
@@ -17,6 +17,7 @@ using std::ostringstream;
 using std::pair;
 using std::string;
 using std::unique_ptr;
+using std::move;
 /**********************************************************************
 
    Class: Boom2D en Knoop2D
@@ -40,6 +41,7 @@ class Boom2D : public unique_ptr<Knoop2D>
     //zoekdichtste geeft geen foutmelding bij een lege boom, maar geeft wel 0 bezochteknopen.
     punt2 zoekdichtste(const punt2 &, int &bezochteknopen);
     bool isX;
+    Boom2D();
 
   protected:
     Boom2D *zoek(const punt2 &punt);
@@ -140,8 +142,10 @@ Boom2D &Knoop2D::geefKind(bool linkerkind)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////         eigen           /////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Boom2D::Boom2D(){};
 
-bool Boom2D::togglePlaats()
+
+void Boom2D::togglePlaats()
 {
     this->isX = !this->isX;
 }
@@ -158,33 +162,45 @@ Boom2D *Boom2D::zoek(const punt2 &punt)
         }
         else if (plaats->isX)
         {
-            if ((*plaats)->punt.x < p.x)
+            if ((*plaats)->punt.x < punt.x)
             {
                 //plaats.get()->linkerkind enkel als je de pointer zelf nodig hebt
                 plaats->togglePlaats();
-                plaats = (*plaats)->linkerkind;
+                plaats = &(*plaats)->links;
             }
             else
             {
                 plaats->togglePlaats();
-                plaats = (*plaats)->rechterkind;
+                plaats = &(*plaats)->rechts;
             }
         }
         else
         {
-            if ((*plaats)->punt.y < p.y)
+            if ((*plaats)->punt.y < punt.y)
             {
                 plaats->togglePlaats();
-                plaats = (*plaats)->linkerkind;
+                plaats = &(*plaats)->links;
             }
             else
             {
                 plaats->togglePlaats();
-                plaats = (*plaats)->rechterkind;
+                plaats = &(*plaats)->rechts;
             }
         }
     }
-    return null;
+    return plaats;
 }
+
+void Boom2D::voegtoe(const punt2 &punt){
+    Boom2D * boomlocatie = zoek(punt);
+    if(boomlocatie->get() == 0){
+        std::cout << "adding new node\n";
+        // een default constructor volstaat. Aangezien in de declaratie staat "class Boom2D : public unique_ptr<Knoop2D>"
+        // moeten we geen constructor maken met parameter.
+        Boom2D nieuweboom(new Knoop2D(punt));
+        *boomlocatie = move(nieuweboom);
+    }
+}
+
 
 #endif
