@@ -5,6 +5,7 @@
 ## Zoek punt in de buurt van een gegeven punt X
 ### Deel 1: Snel inzoemen
 We moeten een zoekgebied vaststellen. Dit gebeurt door eenvoudig af te dalen in de boom en stoppen bij een blad. Dit blad is relatief dicht maar is niet per se het dichtste punt. Het is wel het dichtste punt langs het gevolgde pad.  
+  
 Bij het afdalen in de boom hebben we het pad van gele pijl gevolgd. We kwamen eerst bij A. En houden deze afstand bij in `int minDistance`. Toen kwamen we bij B. |BX| was groter dan |AX| dus moeten we `int minDistance` niet aanpassen. Idem voor C.
 ![zoek_inzoem](./img/zoek_inzoem.jpg)
 
