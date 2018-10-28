@@ -17,7 +17,7 @@ D data[m];
 blokindex index[m + 1];
 // bevat verwijzing (ref = blokindex) naar kind
 +-----------+-----------+-----------+-----------+
-|  A < ref  | A<ref<B   |   B<ref<C |    ref<C  | 
+|  0 < ref  | 0<ref<1   |   1<ref<2 |    ref<2  | 
 +-----------+-----------+-----------+-----------+
 ```
 
