@@ -1,3 +1,23 @@
+## BKnoop <class T, class D, unsigned int m>
+Uitleg over alle variabelen en tabellen zijn terug te vinden in sectie 3.1.1 van de cursus.  
+```
+m = 3
+k = 2
+
+T sleutel[m];
++-----------+-----------+-----------+-----------+
+|  0     |     1     |     2     |           |
++-----------+-----------+-----------+-----------+
+
+D data[m];
++-----------+-----------+-----------+-----------+
+|  A        |   B       |   C       |   D       |
++-----------+-----------+-----------+-----------+
+
+
+```
+
+
 ## strikvraag
 
 ```c
@@ -63,23 +83,6 @@ https://www.cs.usfca.edu/~galles/visualization/BTree.html
 https://github.ugent.be/mvdpol/algo2/blob/master/BBoom/main.cpp
 
 
-## BKnoop <class T, class D, unsigned int m>
-```
-m = 3
-k = 2
-
-T sleutel[m];
-+-----------+-----------+-----------+-----------+
-|  0     |     1     |     2     |           |
-+-----------+-----------+-----------+-----------+
-
-D data[m];
-+-----------+-----------+-----------+-----------+
-|  A        |   B       |   C       |   D       |
-+-----------+-----------+-----------+-----------+
-
-
-```
 
 ## Known issues
 line 199 throws floating point exception
