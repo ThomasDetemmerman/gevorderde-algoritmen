@@ -1,8 +1,8 @@
 ## BKnoop <class T, class D, unsigned int m>
 Uitleg over alle variabelen en tabellen zijn terug te vinden in sectie 3.1.1 van de cursus.  
 ```
-m = 3
-k = 2
+m = 3 // max grote
+k = 3 // aantal aanwezige sleutels in tabel
 
 T sleutel[m];
              +-----------+-----------+-----------+
