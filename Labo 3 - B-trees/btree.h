@@ -126,7 +126,7 @@ void Btree<T, D, m>::voegToe(T sleutel, D data)
         {
             i--;
         }
-        i++;
+        i++;    // zie readme, eerste sectie
 
         int tmp;
         std::cin >> tmp;
