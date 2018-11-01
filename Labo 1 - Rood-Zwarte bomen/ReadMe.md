@@ -1,3 +1,6 @@
+# Schematische voorstelling code
+![schematische voorstelling code](./img/43766932_542051509568443_6543445094215712768_n.jpg)
+
 # remarks
 
 - Om de boom op te bouwen, gebasseerd op een foto, `voegtoe()` in dezelfde volgorde als deze door *Breedte-eerst* zouden zijn gevonden. (Dus eerst wortel, dan al deze op eerste diepte....)
@@ -10,3 +13,12 @@
 
 # Known Issues
 - Segmentation fault als root geen twee kinderen heeft. Oorzaak is `RepOK()`
+
+# Oefening
+Voeg 6 toe op onderstaande afbeelding.
+![Rood zwart boom Intranet Ugent](http://amerigo.hogent.be/Algoritmen-II/labo01/rzwgroot.gif)
+
+
+![Rood zwart boom Intranet Ugent stap1](./img/43706032_967708333429740_8387541675584520192_n.jpg)
+![Rood zwart boom Intranet Ugent stap2](./img/43736310_944572255737294_8278071424590020608_n.jpg)
+
