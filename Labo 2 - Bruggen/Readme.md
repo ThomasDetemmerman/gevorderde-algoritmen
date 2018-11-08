@@ -35,3 +35,6 @@ Ik maak gebruik van twee datastructuren.
     -  Indien een knoop een tweede kind krijgt krijgen we een extra leaf en voegen we deze toe aan de vector
 
 
+# Feedback
+
+Maak van alles klassen. Zorg dat in je main bijna geen code staat. Idealiter zelfs maar 1 lijn code, namelijk aanmaken van de constructor.

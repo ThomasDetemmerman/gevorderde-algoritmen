@@ -90,3 +90,17 @@ https://github.ugent.be/mvdpol/algo2/blob/master/BBoom/main.cpp
 
 ## Known issues
 line 199 throws floating point exception
+
+
+# Feedback
+
+## zoek
+- geen bool returnen. Dit is onvoldoende. Je maakt geen zoek doe bool returnt en andere zoek die knoop returned. Je moet de tweede gebruiken en kijken of niet NULL bijvoorbeeld.
+- Geen error wanneer knoop niet gevonden is. Dit onderbreekt normale flow van het programma terwijl er niet echt een 'probleem' is. Zoekfunctie heeft correct zijn werk gedaan.
+
+## voegtoe
+- moet een stack hebben van blockindexen (en deze hoort niet in de zoekfunctie).
+
+
+## andere tips
+- functies duidelijke namen maar niet te lang
