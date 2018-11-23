@@ -16,3 +16,6 @@ het gezochte punt valt op een afstand `sqrt( (a.x - b.x)² + (a.y - b.y)² )`
  
 ![zoek_uitzoem](./img/zoek_uitzoem.jpg)
 Bij het afdalen in het pad zijn we D niet tegengekomen maar deze ligt wel nog dichter. We moeten nu terug stijgen in onze boom. We hebben de voorouders dus bijgehouden in een stack. Bij het stijgen in de boom moeten we knopen vergelijken waarbij x of y binnen het beruik liggen van `X.x + |AX|` en `X.y |AX|`
+
+# Feedback
+- Er is een update met code op minerva. Er zat namelijk een bug in de code van de prof.

@@ -7,6 +7,7 @@
 using std::vector;
 using std::function;
 using std::ostream;
+using std::cout;
 
 template< class T>
 class Stroomnetwerk;
@@ -144,14 +145,56 @@ Stroomnetwerk(Stroomnetwerk<T>&& gr):Stroomnetwerk(0,0,0){
     std::swap(this->naar,gr.naar);
 };
 
+//Eigen aanvulling
+//denk zonder &.
+
+//Stroomnetwerk<T> operator+=(const Pad<T> pad){};
+//Stroomnetwerk<T> operator-=(const Pad<T> pad){}
+Stroomnetwerk<T> addVergrotendpad(Stroomnetwerk<T>* restnetwork, const Pad<T> pad){
+ if (pad.empty())
+    {
+        return *this;
+    }
+    for(int i=1; i < pad.size();i++){
+        int from = pad[i-1];
+        int to = pad[i];
+        int connectionID = this->verbindingsnummer(from,to); //methode van graaf.h
+        //de connectie is nog niet toegevoegd geweest.
+        if(connectionID == -1){
+            this->voegVerbindingToe(from,to, pad.geefCapaciteit());
+        }
+         // als toe te voegen stromm > terugstroom -> toe te voegen stroom aftrekken van terugstroom 
+         // als terustroom kleiner is dan toe te voegen strom: terustroom aftekken van toe te voegen stroom. Terugstroom op nul zetten en toevoegen aan graaf
+        else {
+            T terugstroom = restnetwork->geefTakdata(to,from);
+            //als toe te voegen stromm > terugstroom
+            if(this->geefCapaciteit() < pad.capaciteit){
+                // toe te voegen stroom aftrekken van terugstroom 
+                //to do: efficienter maken door effectieve update?
+                this->verwijderVerbindingUitDatastructuur(from,to);
+                this->voegVerbindingToe(from,to, pad.geefCapaciteit());
+            } else { //als terustroom kleiner is dan toe te voegen stroom
+               //Terugstroom op nul zetten en toevoegen aan graaf
+                pad.capaciteit = 0;
+                
+            }
+        }
+    }
+}
+
+  return *this;
+
+//Einde eigen aanvulling
+
 Stroomnetwerk<T> geefStroom(){
     Stroomnetwerk<T> oplossing(this->aantalKnopen(),van,naar);
     Stroomnetwerk<T> restnetwerk(*this);
     Vergrotendpadzoeker<T> vg(restnetwerk);
     Pad<T> vergrotendpad=vg.geefVergrotendPad();
     while(vergrotendpad.size() !=0 ){
-        restnetwerk-=vergrotendpad;
-        oplossing+=vergrotendpad;
+       // restnetwerk-=vergrotendpad;
+        //oplossing+=vergrotendpad;
+        oplossing.addVergrotendpad(restnetwerk, vergrotendpad);
         vergrotendpad=vg.geefVergrotendPad();
     }
     return oplossing;
