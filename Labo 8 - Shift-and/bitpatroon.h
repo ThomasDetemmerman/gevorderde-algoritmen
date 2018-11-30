@@ -51,6 +51,13 @@ public:
       }
         return os;
     }
+
+
+    // eigen
+     int getBit(int position) const {
+        return (bits >> position) & 1;
+     }
+
 };
 #endif
     
