@@ -3,7 +3,8 @@
 #include <iostream>
 using namespace std;
 int main(){
-    string input = "abacabacaab";
-    KnuthMorrisPratt kmp((const uchar*)input.c_str(),input.size());
+    string interesstantevoorPrefix = "abcbabababab";
+    string interesstantevoorPrefix2 = "abacabac";
+    KnuthMorrisPratt kmp((const uchar*)interesstantevoorPrefix.c_str(),interesstantevoorPrefix.size());
     kmp.printfailureTable();
 }

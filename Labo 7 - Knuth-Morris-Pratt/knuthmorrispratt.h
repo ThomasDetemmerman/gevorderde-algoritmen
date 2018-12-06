@@ -28,23 +28,28 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar* naald,uint _naaldlengte){
     this->failureTable = new int[_naaldlengte];
     this->naald = naald;
     this->_naaldlengte = _naaldlengte;
-    int c=0;
+    int cnd=0;
+    int pos = 1;
     failureTable[0]=0;
-    for(int gnd=1; gnd < _naaldlengte; gnd++){
-       if(naald[gnd] != naald[c]){
-#if DEBUG         
-           cout << naald[gnd] << " != " <<  naald[c] << "-> 0" << endl;
-#endif
-           failureTable[gnd]=0;
-           c=0;
-       }else{
-           c++;
-           failureTable[gnd] = c;
-#if DEBUG 
-           cout << naald[gnd] << " == " <<  naald[c] << "-> " << c << endl;
-#endif
-       }
+  while (pos < _naaldlengte){
+      if(naald[pos] < naald[cnd]){
+          failureTable[pos] = failureTable[cnd];
+          pos++;
+          cnd++;
+      }
+      else{
+          failureTable[pos] = cnd;
+          cnd = failureTable[cnd];
+
+          while (cnd >= 0 && failureTable[pos] != failureTable[cnd]){
+              cnd = failureTable[cnd];
+          }
+          pos++;
+          cnd++;
+      }
+      failureTable[pos] = cnd;
     }
+
 
 };
 
