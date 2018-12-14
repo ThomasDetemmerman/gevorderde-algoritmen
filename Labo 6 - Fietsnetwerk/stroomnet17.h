@@ -66,6 +66,9 @@ class Vergrotendpadzoeker
     vector<int> l;
     vector<bool> m;
     int v, v2;
+
+  private:
+    void voegStroomToe(int van, int naar, int stroom);
 };
 
 template <class T>
@@ -164,9 +167,16 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
         Vergrotendpadzoeker<T> vg(restnetwerk);
         Pad<T> vergrotendpad = vg.geefVergrotendPad();
         while (vergrotendpad.size() != 0)
-        {
-            restnetwerk -= vergrotendpad;
-            oplossing += vergrotendpad;
+        {   
+            //uitleg martijn (assistent)
+            // += en -= hebben niets met elkaar te maken. Het een is voor het stroomnetwerk (enkel aanpassen takdata), het
+             // ander voor het restnetwerk (aanpassen takdata en verbindingen). Je kan eventueel ook andere functienamen
+            // gebruiken zoals updateStroomnetwerk en updateRestnetwerk
+            //restnetwerk -= vergrotendpad;
+            //oplossing += vergrotendpad;
+            updateRestnetwerk(restnetwerk, vergrotendpad);
+            updateStroomnetwerk(*this, vergrotendpad);
+
             vergrotendpad = vg.geefVergrotendPad();
         }
         return oplossing;
@@ -204,8 +214,80 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
         return uit.str();
     };
 
-//////////// eigen
+///////////// eigen
 
+///////////// alternatief (mijn voorkeur)
+
+template <class T>
+void Stroomnetwerk<T>::updateStroomnetwerk(Stroomnetwerk<T>& stroomnetwerk, const Pad<T>& vergrotendpad)
+{
+    if (vergrotendpad.empty())
+    {
+        return;
+    }
+
+    for (int i = 1; i < vergrotendpad.size(); i++)
+    {
+        // vergrotend pad is een vector met alle knoop ID's in volgorde zoals deze in onze graaf doorlopen dient te worden.
+        // verbinding 0-1; daarna 1-2...
+        int van = vergrotendpad[i - 1];
+        int naar = vergrotendpad[i];
+
+        // elke pad heeft een capaciteit. Als deze bijvoorbeeld y is dan moet elke huidige capaciteit van elke verbinding op dat pad met y verhogen.
+        T toe_te_voegen_stroom = vergrotendpad.geef_capaciteit();
+
+        // Indien er een heen verbinden en een terugverbinding is gaat onze voorkeur (blijkbaar) altijd naar de terug verbinding
+        // maar als deze er niet is kunneen we de gewone heenverbinding gewoon updaten.
+        if (this->verbindingsnummer(naar, van) == -1)
+        {
+            stroomnetwerk.voegStroomToe(van, naar, toe_te_voegen_stroom);
+        }
+        else // er is dus wel een terugverbinding
+        {
+            // wat is de capaciteit van deze terugstroom.
+            T* terugstroom = stroomnetwerk.geefTakdata(naar, van);
+
+            // Uit de theorie weten we dat als we een pad in tegenstelde zin doorlopen we de nieuwe capaciteit moeten aftrekken van de oude. (Normaal tellen we deze erbij op)
+            // Dit kan uiteraard enkel als de terugstroom groot genoeg is. We willen geen negatieve capaciteit
+            if (*terugstroom >= toe_te_voegen_stroom)
+            {
+                *terugstroom -= toe_te_voegen_stroom;
+            }
+            // indien blijkt dat de terugstroom niet groot genoeg is om ervan afgetrokken te worden, dan:
+            // probeer zoveel mogelijk via de terugstroom te laten gaan.
+            // en het resterende via de heenstroom.
+            // vb. toe_te_voegen_stroom = 10
+            //     terugstroom = 4
+            //     nieuwe terugstroom zou -6 zijn. Dus wat doen we:
+            //     terugstroom = 0
+            //     heenstroom = 6
+            else
+            {
+                toe_te_voegen_stroom -= *terugstroom;
+                *terugstroom = 0;
+                stroomnetwerk.voegStroomToe(van, naar, toe_te_voegen_stroom);
+            }
+        }
+    }
+}
+
+
+template <class T>
+void Stroomnetwerk<T>::voegStroomToe(int van, int naar, int stroom)
+{
+    if (this->verbindingsnummer(van, naar) == -1)
+    {
+        this->voegVerbindingToe(van, naar, stroom);
+    }
+    else
+    {
+        *(this->geefTakdata(van, naar)) += stroom;
+    }
+}
+
+
+//////////// Oplossing conform Cnobs, niet nagekeken.
+/*
     Stroomnetwerk &operator-=(Pad<T> &p)
     {
         for (int i = 1; i < p.size(); i++)
@@ -250,6 +332,10 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
         }
         return *this;
     }
+*/
+
+
+
 };
 //////////// einde eigen
 
