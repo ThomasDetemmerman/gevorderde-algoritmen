@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<alletests>
+	<test>
+		<naald>mijnnaald</naald>
+		<hooiberg>mijnhooiberg</hooiberg>
+		<aantalgevonden>0</aantalgevonden>
+		<aantalvergelijkingenKMP>5</aantalvergelijkingenKMP>
+		<aantalvergelijkingenprefix>5</aantalvergelijkingenprefix>
+	</test>
+	<test>
+		<naald>anaxanax</naald>
+		<hooiberg>anaxananaxanax</hooiberg>
+		<aantalgevonden>1</aantalgevonden>
+		<aantalvergelijkingenKMP>16</aantalvergelijkingenKMP>
+		<aantalvergelijkingenprefix>17</aantalvergelijkingenprefix>
+	</test>
+	<test>
+		<naald>aaaaaaab</naald>
+		<hooiberg>aaaaaaxaaaaaay</hooiberg>
+		<aantalgevonden>0</aantalgevonden>
+		<aantalvergelijkingenKMP>8</aantalvergelijkingenKMP>
+		<aantalvergelijkingenprefix>13</aantalvergelijkingenprefix>
+	</test>
+	<test>
+		<naald>pxpypxpypxpx</naald>
+		<hooiberg>pxpypxpypxpxpypxpypxpx</hooiberg>
+		<aantalgevonden>2</aantalgevonden>
+		<aantalvergelijkingenKMP>24</aantalvergelijkingenKMP>
+		<aantalvergelijkingenprefix>24</aantalvergelijkingenprefix>
+	</test>
+</alletests>
