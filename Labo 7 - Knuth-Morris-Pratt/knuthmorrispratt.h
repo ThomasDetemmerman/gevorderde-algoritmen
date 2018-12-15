@@ -31,23 +31,24 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar *_naald, uint __naaldlengte) : _n
     int j = 0;
     int i = 1;
     failureTable[0] = 0;
-    
+
     while (i < _naaldlengte)
-    {   
-#if DEBUG         
-        cout << i << " and " << _naaldlengte<< endl << flush;
+    {
+#if DEBUG
+        cout << i << " and " << _naaldlengte << endl
+             << flush;
 #endif
         if (naald[i] == naald[j])
         {
-#if DEBUG  
-        cout << "\t" << naald[i] << "==" << naald[j] << endl << flush;
-#endif
             failureTable[i] = (j + 1);
-#if DEBUG  
-            cout << "\t pushback(" << j+1 << ")" << endl << flush;
-#endif
             i++;
             j++;
+#if DEBUG
+            cout << "\t" << naald[i] << "==" << naald[j] << endl
+                 << flush;
+            cout << "\t pushback(" << j + 1 << ")" << endl
+                 << flush;
+#endif
         }
         else
         {
@@ -57,22 +58,24 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar *_naald, uint __naaldlengte) : _n
 
             // terugspringen zolang 1) naald[i] != naald[j]
             //                      2)        j != 0
- 
+
             while (j > 0 && naald[i] != naald[j])
             {
-#if DEBUG  
+#if DEBUG
                 cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl << flush;
-#endif    
+#endif
                 j = failureTable[j - 1];
             }
-#if DEBUG  
-            cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl << flush;
+#if DEBUG
+            cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl  << flush;
 #endif
+            // verwerken van j als we klaar zijn met het terugspringen wat gebeurde in while loop.
             if (naald[i] == naald[j])
             {
 #if DEBUG
-                cout << "\t pushback(" << j+1 << ")" << endl << flush;
+                cout << "\t pushback(" << j + 1 << ")" << endl  << flush;
 #endif
+                // beide waarden zijn gelijk. We doen dus hetzelfde als anders.
                 failureTable[i] = (j + 1);
             }
             else
@@ -80,6 +83,7 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar *_naald, uint __naaldlengte) : _n
 #if DEBUG
                 cout << "\t pushback(" << 0 << ")" << endl << flush;
 #endif
+                // indien beiden niet hetzelfde zijn bevindt j zich op de start.
                 failureTable[i] = 0;
             }
             i++;
