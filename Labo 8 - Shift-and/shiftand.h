@@ -51,6 +51,34 @@ Shiftand::Shiftand(const uchar* naald, uint naald_lengte) : naald{naald}, naaldl
     }
 }
 
+void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg, uint hooiberg_lengte)
+{
+   
+    //http://alvaro-videla.com/2014/01/shift-and-visualization.html
+    Bitpatroon huidig;
+
+    for (int i = 0; i < hooiberg_lengte; i++)
+    {   
+        // 000001
+        huidig = huidig.shiftrechts(1);
+
+        // 00001
+        // 10000
+        // ------
+        // 10001
+        huidig |= Bitpatroon::eenbit(0);
+
+        huidig &= letterpatroon[hooiberg[i]];
+
+            // huidig == 00001
+        if (huidig.en(Bitpatroon::eenbit(naaldlengte - 1)))
+        {
+            resultaten.push(hooiberg + i);
+        }
+    }
+
+   
+}
 
 
 // code assistent
