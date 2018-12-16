@@ -212,7 +212,7 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
         else
             uit << i;
         return uit.str();
-    };
+    }
 
 ///////////// eigen
 
