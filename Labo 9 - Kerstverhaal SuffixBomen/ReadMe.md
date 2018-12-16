@@ -1,6 +1,12 @@
 # SuffixBoom - Kerstmis editie
-
 Requires C++17
+## Status
+
+- [x] Toevoegen van verhaal aan suffix boom.
+      Opgelet: we voegen alle teksten toe als 1 grote string. Het idee hierachter is als volgt: als je een woord toevoegd vind je de langst gemeenschappelijke suffix binnen dat woord. Maar nu is dit suffix een volledige zin.
+- [ ] LGD vinden.
+- [ ] Extra: gelijkenisgraaf
+
 
 ## Parameters recursieve functie
 
