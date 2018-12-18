@@ -4,6 +4,9 @@
 #include <iomanip>
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 typedef unsigned int uint;
 typedef unsigned char uchar;
 class Shiftand{
@@ -59,20 +62,23 @@ void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg,
 
     for (int i = 0; i < hooiberg_lengte; i++)
     {   
-        // 000001
-        huidig = huidig.shiftrechts(1);
+        cout << "current: \t\t\t\t\t" << huidig <<endl;
+        
+        huidig = huidig.shiftrechts(1); // opgelet: shiftrechts doet een shift naar rechts, links wordt er dus een nieuwe nulbit toegevoegd
+        cout << "current.shiftrechts(1): \t\t\t" << huidig <<endl;
 
-        // 00001    <- "00000".shiftrechts(1);
         // 10000    <- Bitpatroon::eenbit(0)
-        // ------
-        // 10001
         huidig |= Bitpatroon::eenbit(0);
-
+        cout << "huidig |= Bitpatroon::eenbit(0): \t\t" << huidig <<endl;
+        
         huidig &= letterpatroon[hooiberg[i]];
-
+        cout << "letterpatroon[hooiberg[i]]: \t\t\t" << letterpatroon[hooiberg[i]] << endl;
+        cout << "huidig &= letterpatroon[hooiberg[i]]: \t\t" << huidig <<endl << endl;;
+        
             // huidig == 00001
         if (huidig.en(Bitpatroon::eenbit(naaldlengte - 1)))
         {
+            cout << "huidig equals " << Bitpatroon::eenbit(naaldlengte - 1) << endl;
             resultaten.push(hooiberg + i);
         }
     }
