@@ -62,8 +62,8 @@ void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg,
         // 000001
         huidig = huidig.shiftrechts(1);
 
-        // 00001
-        // 10000
+        // 00001    <- "00000".shiftrechts(1);
+        // 10000    <- Bitpatroon::eenbit(0)
         // ------
         // 10001
         huidig |= Bitpatroon::eenbit(0);
