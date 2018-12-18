@@ -62,18 +62,21 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar *_naald, uint __naaldlengte) : _n
             while (j > 0 && naald[i] != naald[j])
             {
 #if DEBUG
-                cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl << flush;
+                cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl
+                     << flush;
 #endif
                 j = failureTable[j - 1];
             }
 #if DEBUG
-            cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl  << flush;
+            cout << "\t" << j << "   " << naald[i] << " <> " << naald[j] << endl
+                 << flush;
 #endif
             // verwerken van j als we klaar zijn met het terugspringen wat gebeurde in while loop.
             if (naald[i] == naald[j])
             {
 #if DEBUG
-                cout << "\t pushback(" << j + 1 << ")" << endl  << flush;
+                cout << "\t pushback(" << j + 1 << ")" << endl
+                     << flush;
 #endif
                 // beide waarden zijn gelijk. We doen dus hetzelfde als anders.
                 failureTable[i] = (j + 1);
@@ -81,7 +84,8 @@ KnuthMorrisPratt::KnuthMorrisPratt(const uchar *_naald, uint __naaldlengte) : _n
             else
             {
 #if DEBUG
-                cout << "\t pushback(" << 0 << ")" << endl << flush;
+                cout << "\t pushback(" << 0 << ")" << endl
+                     << flush;
 #endif
                 // indien beiden niet hetzelfde zijn bevindt j zich op de start.
                 failureTable[i] = 0;
@@ -108,6 +112,42 @@ void KnuthMorrisPratt::printfailureTable() const
 
 void KnuthMorrisPratt::zoek(std::queue<const uchar *> &plaats, const uchar *hooiberg, uint hooiberglengte)
 {
-    int s = 0;
-    int t = 0;
+    /* i = counter in text
+    *  j = counter in failuretable/naald
+    *  als match: i++ en j++
+    *  als mismatch: probeer j te decrementeren; indien -1, incrementeeer i.
+    * 
+    */
+
+    int indexHooiberg = 0;
+    int indexNaald = -1;
+    while (indexHooiberg <= hooiberglengte)
+    {
+        while (naald[indexNaald + 1] == hooiberg[indexHooiberg])
+        {
+            indexNaald++;
+            indexHooiberg++;
+        };
+
+        //indien de indexNaald de volledige failure tabel hebben doorlopen hebben we een match
+
+        if (indexNaald == _naaldlengte - 1)
+        {
+            //slaan dit op
+            plaats.push(&(hooiberg[indexHooiberg - _naaldlengte]));
+            //reset indexNaald counter
+            indexNaald = -1;
+        }
+        else
+        {
+            if (indexNaald == 0)
+            {
+                indexHooiberg++;
+            }
+            else
+            {
+                indexNaald = failureTable[indexNaald];
+            }
+        }
+    }
 }
