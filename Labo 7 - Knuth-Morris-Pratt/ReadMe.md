@@ -3,7 +3,7 @@
 ## Status
 
 - [x] Build KMP
-- [ ] Zoek functie
+- [x] Zoek functie
 - [ ] Zie intranet
 
 ## Opmerking
