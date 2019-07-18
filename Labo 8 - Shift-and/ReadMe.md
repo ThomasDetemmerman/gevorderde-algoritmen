@@ -48,47 +48,47 @@ void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg,
 ### log 
 Hoe de code werkt wordt uitgelegt a.d.h.v. de log. Deze spreekt voor zichzelf.
 ```
-current:                                        00000000000000000000000000000000
-current.shiftrechts(1):                         00000000000000000000000000000000
+huidig:                                        00000000000000000000000000000000
+huidig.shiftrechts(1):                         00000000000000000000000000000000
 huidig |= Bitpatroon::eenbit(0):                10000000000000000000000000000000
 letterpatroon[hooiberg[i]]:                     10010000000000000000000000000000
 huidig &= letterpatroon[hooiberg[i]]:           10000000000000000000000000000000
 
 checking result
-current:                                        10000000000000000000000000000000
+huidig:                                        10000000000000000000000000000000
 Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
 huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
 
-current:                                        10000000000000000000000000000000
-current.shiftrechts(1):                         01000000000000000000000000000000
+huidig:                                        10000000000000000000000000000000
+huidig.shiftrechts(1):                         01000000000000000000000000000000
 huidig |= Bitpatroon::eenbit(0):                11000000000000000000000000000000
 letterpatroon[hooiberg[i]]:                     01100000000000000000000000000000
 huidig &= letterpatroon[hooiberg[i]]:           01000000000000000000000000000000
 
 checking result
-current:                                        01000000000000000000000000000000
+huidig:                                        01000000000000000000000000000000
 Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
 huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
 
-current:                                        01000000000000000000000000000000
-current.shiftrechts(1):                         00100000000000000000000000000000
+huidig:                                        01000000000000000000000000000000
+huidig.shiftrechts(1):                         00100000000000000000000000000000
 huidig |= Bitpatroon::eenbit(0):                10100000000000000000000000000000
 letterpatroon[hooiberg[i]]:                     01100000000000000000000000000000
 huidig &= letterpatroon[hooiberg[i]]:           00100000000000000000000000000000
 
 checking result
-current:                                        00100000000000000000000000000000
+huidig:                                        00100000000000000000000000000000
 Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
 huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
 
-current:                                        00100000000000000000000000000000
-current.shiftrechts(1):                         00010000000000000000000000000000
+huidig:                                        00100000000000000000000000000000
+huidig.shiftrechts(1):                         00010000000000000000000000000000
 huidig |= Bitpatroon::eenbit(0):                10010000000000000000000000000000
 letterpatroon[hooiberg[i]]:                     10010000000000000000000000000000
 huidig &= letterpatroon[hooiberg[i]]:           10010000000000000000000000000000
 
 checking result
-current:                                        10010000000000000000000000000000
+huidig:                                        10010000000000000000000000000000
 Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
 huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  1       this equals
 

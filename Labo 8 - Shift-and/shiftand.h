@@ -60,10 +60,10 @@ void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg,
 
     for (int i = 0; i < hooiberg_lengte; i++)
     {   
-        cout << "current: \t\t\t\t\t" << huidig <<endl;
+        cout << "huidig: \t\t\t\t\t" << huidig <<endl;
         
         huidig = huidig.shiftrechts(1); // opgelet: shiftrechts doet een shift naar rechts, links wordt er dus een nieuwe nulbit toegevoegd
-        cout << "current.shiftrechts(1): \t\t\t" << huidig <<endl;
+        cout << "huidig.shiftrechts(1): \t\t\t" << huidig <<endl;
 
         // 10000    <- Bitpatroon::eenbit(0)
         huidig |= Bitpatroon::eenbit(0);
@@ -75,7 +75,7 @@ void Shiftand::zoek(std::queue<const uchar*>& resultaten, const uchar* hooiberg,
         
         //checking results
         cout << "checking result" << endl;
-        cout << "current: \t\t\t\t\t" << huidig <<endl;
+        cout << "huidig: \t\t\t\t\t" << huidig <<endl;
         cout <<  "Bitpatroon::eenbit(naaldlengte - 1) \t\t" << Bitpatroon::eenbit(naaldlengte - 1) << endl;
         cout <<  "huidig.en(Bitpatroon::eenbit(naaldlengte - 1)) \t" << huidig.en(Bitpatroon::eenbit(naaldlengte - 1)) << "\t";
             
