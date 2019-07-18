@@ -50,47 +50,47 @@ Hoe de code werkt wordt uitgelegt a.d.h.v. de log. Deze spreekt voor zichzelf.
 ```
 huidig:                                        00000000000000000000000000000000
 huidig.shiftrechts(1):                         00000000000000000000000000000000
-huidig |= Bitpatroon::eenbit(0):                10000000000000000000000000000000
-letterpatroon[hooiberg[i]]:                     10010000000000000000000000000000
-huidig &= letterpatroon[hooiberg[i]]:           10000000000000000000000000000000
+huidig |= Bitpatroon::eenbit(0):               10000000000000000000000000000000
+letterpatroon[hooiberg[i]]:                    10010000000000000000000000000000
+huidig &= letterpatroon[hooiberg[i]]:          10000000000000000000000000000000
 
 checking result
 huidig:                                        10000000000000000000000000000000
-Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
+Bitpatroon::eenbit(naaldlengte - 1)            00010000000000000000000000000000
 huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
 
 huidig:                                        10000000000000000000000000000000
 huidig.shiftrechts(1):                         01000000000000000000000000000000
-huidig |= Bitpatroon::eenbit(0):                11000000000000000000000000000000
-letterpatroon[hooiberg[i]]:                     01100000000000000000000000000000
-huidig &= letterpatroon[hooiberg[i]]:           01000000000000000000000000000000
+huidig |= Bitpatroon::eenbit(0):               11000000000000000000000000000000
+letterpatroon[hooiberg[i]]:                    01100000000000000000000000000000
+huidig &= letterpatroon[hooiberg[i]]:          01000000000000000000000000000000
 
 checking result
 huidig:                                        01000000000000000000000000000000
-Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
-huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
+Bitpatroon::eenbit(naaldlengte - 1)            00010000000000000000000000000000
+huidig.en(Bitpatroon::eenbit(naaldlengte - 1)) 0       this doesn't equal. No matches
 
 huidig:                                        01000000000000000000000000000000
 huidig.shiftrechts(1):                         00100000000000000000000000000000
-huidig |= Bitpatroon::eenbit(0):                10100000000000000000000000000000
-letterpatroon[hooiberg[i]]:                     01100000000000000000000000000000
-huidig &= letterpatroon[hooiberg[i]]:           00100000000000000000000000000000
+huidig |= Bitpatroon::eenbit(0):               10100000000000000000000000000000
+letterpatroon[hooiberg[i]]:                    01100000000000000000000000000000
+huidig &= letterpatroon[hooiberg[i]]:          00100000000000000000000000000000
 
 checking result
 huidig:                                        00100000000000000000000000000000
-Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
-huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  0       this doesn't equal. No matches
+Bitpatroon::eenbit(naaldlengte - 1)            00010000000000000000000000000000
+huidig.en(Bitpatroon::eenbit(naaldlengte - 1)) 0       this doesn't equal. No matches
 
 huidig:                                        00100000000000000000000000000000
 huidig.shiftrechts(1):                         00010000000000000000000000000000
-huidig |= Bitpatroon::eenbit(0):                10010000000000000000000000000000
-letterpatroon[hooiberg[i]]:                     10010000000000000000000000000000
-huidig &= letterpatroon[hooiberg[i]]:           10010000000000000000000000000000
+huidig |= Bitpatroon::eenbit(0):               10010000000000000000000000000000
+letterpatroon[hooiberg[i]]:                    10010000000000000000000000000000
+huidig &= letterpatroon[hooiberg[i]]:          10010000000000000000000000000000
 
 checking result
 huidig:                                        10010000000000000000000000000000
-Bitpatroon::eenbit(naaldlengte - 1)             00010000000000000000000000000000
-huidig.en(Bitpatroon::eenbit(naaldlengte - 1))  1       this equals
+Bitpatroon::eenbit(naaldlengte - 1)            00010000000000000000000000000000
+huidig.en(Bitpatroon::eenbit(naaldlengte - 1)) 1       this equals
 
 result found:abba
 ```
