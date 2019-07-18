@@ -19,3 +19,15 @@ __functies:__
 - [x] toevoegen
 - [x] zoeken
 - [ ] vindtInDeBuurt
+
+
+# To Do
+lijn 40 & 41: 
+waarom
+```
+KDTree<k>* currentTree = this;
+```
+en niet 
+```
+KDTree<k> currentTree = this;
+```

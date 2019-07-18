@@ -1,3 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
 template <unsigned int k>
 class KDTree;
 
@@ -24,4 +29,4 @@ class KDKnoop {
 template <unsigned int k>
 unsigned int KDKnoop<k>::getDimension(){
     return this->depth % k;
-}
+};
