@@ -26,7 +26,7 @@ int main()
     cout << "Diepte van deze boom is " << zkbm.geefDiepte() << endl;
     zkbm.roteer(true);
     zkbm.maakOnevenwichtig();
-    zkbm.teken("output_after.dot");
+    zkbm.teken("onevenwichtig.dot");
 
     // convert dot files to png.
     execl("./dot2png.sh", "./dot2png.sh", NULL);

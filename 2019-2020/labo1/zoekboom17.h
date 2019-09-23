@@ -34,7 +34,6 @@ class Zoekboom : public unique_ptr<zoekKnoop<Sleutel, Data>>
 {
 public:
     //....move en copy. Noot: als er geen copy nodig is, zet hem beste op delete.
-    // ik delete copy omdat we een (deel)boom niet wensen te kopieren, wel te verplaatsen.
 
     // constructoren met zoekboom als parameter
     Zoekboom(){};                                                                                         //default
