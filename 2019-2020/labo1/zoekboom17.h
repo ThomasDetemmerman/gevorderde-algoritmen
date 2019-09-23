@@ -250,7 +250,10 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts){
 
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::maakOnevenwichtig(){
-   
+   // op een lege boom kunnen we geen operaties uitvoeren.
+   if(!*this){
+       return;
+   }
    // als er een rechterkind is
     if((*this)->rechts){
         // zolang er links kinderen zijn gaan we naar rechts roteren
