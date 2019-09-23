@@ -39,12 +39,12 @@ public:
     // constructoren met zoekboom als parameter
     Zoekboom(){};                                                                                         //default
     Zoekboom(const Zoekboom &) = default;                                                                 // copy 1
-    Zoekboom &operator=(Zoekboom &&) = default; //move operator 
-    Zoekboom &operator=(const Zoekboom &) = default; //move operator 
-    Zoekboom(Zoekboom &&) = default;                                                                      // move 1
+    Zoekboom &operator=(Zoekboom &&) = default;                                                           //move operator 
+    Zoekboom &operator=(const Zoekboom &) = default;                                                      //move operator 
+    Zoekboom(Zoekboom &&) = default;                                                                      // move assignment
 
     // constructoren met zoekknoop als parameter
-    
+    // dit is de belangrijkste constructor van deze oefening. Het zet een pointer naar een zoekKnoop om naar een zoekboom.
     Zoekboom(unique_ptr<zoekKnoop<Sleutel, Data>> &&k) : unique_ptr<zoekKnoop<Sleutel, Data>>(move(k)){}; //move 2
     /*
     Unique pointers kun je niet kopieeren. 
