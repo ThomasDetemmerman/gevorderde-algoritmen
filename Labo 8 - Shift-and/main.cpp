@@ -10,11 +10,9 @@ using std::string;
 
 int main(){
 
-    //string naald = "tomtom";
-    //string hooiberg = "thomas was op weg naar het sportpaleis dus maakte hij gebruik van zijn tomtom om er te geraken. Gelaas was de tomtom plat dus moet gij alsnog de weg vragen. Volgende keer de tomtom beter opladen thomas.";
-    
+    // match
     string naald = "abba";
-    string hooiberg = "abba";
+    string hooiberg = "ccccccc abba cc abba";
     queue<const uchar*> resultaten;
 
     Shiftand shiftand((const uchar*)naald.c_str(),naald.size());
@@ -22,7 +20,9 @@ int main(){
     shiftand.zoek(resultaten, (const uchar*)hooiberg.c_str(),hooiberg.size());
 
     while(!resultaten.empty()){
-        cout << resultaten.front() << endl;
+        cout << "result found:" << resultaten.front() - naald.length() +1 << endl;
+        // Als er alleen resultaten.front() zou staan dan printen we af vannaf het woord gedaan is. 
         resultaten.pop();
     }
+
 }

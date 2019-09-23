@@ -110,44 +110,52 @@ void KnuthMorrisPratt::printfailureTable() const
     cout << endl;
 };
 
+
 void KnuthMorrisPratt::zoek(std::queue<const uchar *> &plaats, const uchar *hooiberg, uint hooiberglengte)
 {
-    /* i = counter in text
+    /* 
+    *  https://youtu.be/cH-5KcgUcOE?t=207 
+    * 
+    *  i = counter in text
     *  j = counter in failuretable/naald
     *  als match: i++ en j++
     *  als mismatch: probeer j te decrementeren; indien -1, incrementeeer i.
     * 
     */
 
+    if(hooiberglengte == 0){
+        return;
+    }
+
     int indexHooiberg = 0;
-    int indexNaald = -1;
-    while (indexHooiberg <= hooiberglengte)
+    int indexNaald = 0;
+    while (indexHooiberg < hooiberglengte)
     {
-        while (naald[indexNaald + 1] == hooiberg[indexHooiberg])
+        // we blijven naald en hooiberg vergelijken totdat er een mismatch is.
+        while (naald[indexNaald] == hooiberg[indexHooiberg])
         {
             indexNaald++;
             indexHooiberg++;
         };
 
         //indien de indexNaald de volledige failure tabel hebben doorlopen hebben we een match
-
-        if (indexNaald == _naaldlengte - 1)
+        if (indexNaald == _naaldlengte)
         {
             //slaan dit op
             plaats.push(&(hooiberg[indexHooiberg - _naaldlengte]));
-            //reset indexNaald counter
-            indexNaald = -1;
+            // stel dat naald ABAB is. ALs we een match gevonden hebben in de tekst staat indexNaald op 4. 
+            // We mogen de naald niet reseten maar op 2 zetten. De failuretable heeft deze info.
+            // https://youtu.be/cH-5KcgUcOE?t=256
+            indexNaald = failureTable[indexNaald-1 ];
         }
-        else
-        {
-            if (indexNaald == 0)
-            {
-                indexHooiberg++;
-            }
-            else
-            {
-                indexNaald = failureTable[indexNaald];
-            }
-        }
+        // mismatch after j matches 
+		else if (indexHooiberg < hooiberglengte && naald[indexNaald] != hooiberg[indexHooiberg]) { 
+			// Do not match lps[0..lps[j-1]] characters, 
+			// they will match anyway 
+			if (indexNaald != 0) 
+				indexNaald = failureTable[indexNaald - 1]; 
+			else
+				indexHooiberg++; 
+		} 
     }
 }

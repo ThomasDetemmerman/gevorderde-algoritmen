@@ -160,6 +160,10 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
         std::swap(this->naar, gr.naar);
     };
 
+    void updateStroomnetwerk(Stroomnetwerk<T>& stroomnetwerk, const Pad<T>& vergrotendpad);
+    void updateRestnetwerk(Stroomnetwerk<T>& restnetwerk, const Pad<T>& vergrotendpad);
+    void voegStroomToe(int van, int naar, int stroom);
+
     Stroomnetwerk<T> geefStroom()
     {
         Stroomnetwerk<T> oplossing(this->aantalKnopen(), van, naar);
@@ -201,6 +205,8 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
 
     int van, naar;
 
+
+
   protected:
     virtual std::string knooplabel(int i) const
     {
@@ -213,7 +219,7 @@ class Stroomnetwerk : public GraafMetTakdata<GERICHT, T>
             uit << i;
         return uit.str();
     }
-
+};
 /////////////////////////////////////////////////////////////////
 /////////////                   eigen               /////////////
 /////////////////////////////////////////////////////////////////
@@ -236,9 +242,9 @@ void Stroomnetwerk<T>::updateStroomnetwerk(Stroomnetwerk<T>& stroomnetwerk, cons
         int naar = vergrotendpad[i];
 
         // elke pad heeft een capaciteit. Als deze bijvoorbeeld y is dan moet elke huidige capaciteit van elke verbinding op dat pad met y verhogen.
-        T toe_te_voegen_stroom = vergrotendpad.geef_capaciteit();
+        T toe_te_voegen_stroom = vergrotendpad.geefCapaciteit();
 
-        // Indien er een heen verbinden en een terugverbinding is gaat onze voorkeur (blijkbaar) altijd naar de terug verbinding
+        // Indien er een heenverbinden en een terugverbinding is gaat onze voorkeur (blijkbaar) altijd naar de terug verbinding
         // maar als deze er niet is kunneen we de gewone heenverbinding gewoon updaten.
         if (this->verbindingsnummer(naar, van) == -1)
         {
@@ -262,7 +268,7 @@ void Stroomnetwerk<T>::updateStroomnetwerk(Stroomnetwerk<T>& stroomnetwerk, cons
             //     terugstroom = 4
             //     nieuwe terugstroom zou -6 zijn. Dus wat doen we:
             //     terugstroom = 0
-            //     heenstroom = 6
+            //     he enstroom = 6
             else
             {
                 toe_te_voegen_stroom -= *terugstroom;
@@ -271,7 +277,7 @@ void Stroomnetwerk<T>::updateStroomnetwerk(Stroomnetwerk<T>& stroomnetwerk, cons
             }
         }
     }
-}
+};
 
 
 template <class T>
@@ -284,6 +290,34 @@ void Stroomnetwerk<T>::voegStroomToe(int van, int naar, int stroom)
     else
     {
         *(this->geefTakdata(van, naar)) += stroom;
+    }
+}
+
+template <class T>
+void Stroomnetwerk<T>::updateRestnetwerk(Stroomnetwerk<T>& restnetwerk, const Pad<T>& vergrotendpad)
+{
+    if(vergrotendpad.empty()){
+        return;
+    }
+    for(int i=1; i < vergrotendpad.size(); i++){
+        int van = vergrotendpad[i-1];
+        int naar = vergrotendpad[i];
+        // assert: assure that conditions left equals the condition on the right. To program will crash when the result is False.
+        //dus als de verbinding niet gelijk is aan -1 bestaat hij. Conditie is true en alles is oke.
+        assert(restnetwerk.verbindingsnummer(van, naar) != -1);
+
+        T* heenstroom = restnetwerk.geefTakdata(van, naar);
+        //controle: de heenstroom moet groot genoeg zijn om het ervan af te kunnen trekken.
+        assert(*heenstroom >= vergrotendpad.geefCapaciteit());
+        *heenstroom -= vergrotendpad.geefCapaciteit();
+
+        if (*heenstroom == 0)
+        {
+            restnetwerk.verwijderVerbinding(van, naar);
+        }
+
+        // de verbinding wordt toegevoegd in de omgekeerde richting.
+        restnetwerk.voegStroomToe(naar, van, vergrotendpad.geefCapaciteit());
     }
 }
 
@@ -338,7 +372,7 @@ void Stroomnetwerk<T>::voegStroomToe(int van, int naar, int stroom)
 
 
 
-};
+
 //////////// einde eigen
 
 #endif

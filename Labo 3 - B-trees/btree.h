@@ -216,6 +216,9 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
    
 }
 
+/*
+preconditie: de sleutel moet reeds bestaan en mag geen kinderen bevatten
+ */
 template<class T, class D, unsigned int m>
 void Bknoop<T, D, m>::addChildren(T& sleutel, blokindex& lChild, blokindex& rChild) {
 	int i = 0;
