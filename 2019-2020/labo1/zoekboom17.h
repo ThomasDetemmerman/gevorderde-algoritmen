@@ -230,15 +230,17 @@ template <class Sleutel, class Data>
 *        α   ß
 */
 void Zoekboom<Sleutel, Data>::roteer(bool naarRechts){
+    //je kan niet roteren op een lege (deel)boom
+    assert(this); 
+
     // koppel I los van P
     Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
-    //assert(!pointerToI); //a rotate function requires a child.
-    if(!pointerToI){
-        std::cout << (*this)->sleutel  << " heeft niet het juiste kind" << std::endl;
-        (*this).teken("error");
-    }
+    
+    //a rotate function requires a child.
+    assert(pointerToI); 
+
     // rechter kind van I wordt linkerkind van P
-    (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven?
+    (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
 
     // P wordt nu linkerkind van I
     pointerToI->geefKind(!naarRechts) = move(*this);
