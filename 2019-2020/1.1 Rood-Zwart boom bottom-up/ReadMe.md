@@ -1,3 +1,3 @@
-# Rood zwart zoekbomen (top down)
+# Rood zwart zoekbomen (bottom up)
 
 - Code is uitbreiding op '1 labo'

@@ -71,7 +71,6 @@ public:
 
     //eigen
     void roteer(bool naarRechts);
-    void maakOnevenwichtig();
 
 protected:
     //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
