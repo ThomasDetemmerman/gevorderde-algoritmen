@@ -55,20 +55,20 @@ public:
     string tekenrec(ostream &uit, int &knoopteller);
 
     //te implementeren
-   
+
     int geefDiepte();
     // geefBoomBovenKnoop: gegeven een knooppointer, wele boom wijst naar de knoop
     // preconditie: knoop moet een naar een geldige knoop wijzen.
     Zoekboom<Sleutel, Data> *geefBoomBovenKnoop(zoekKnoop<Sleutel, Data> &knoopptr);
     void voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan = false);
-    
+
 private:
     void roteer(bool naarRechts);
     bool repOK() const;
     bool repOK_redParentWithBlackChilds() const;
     bool repOK_blackRoot() const;
-    void fixBoom(stack<Zoekboom<Sleutel, Data> *> voorouders);
-    bool isLeftChildOfParent( Zoekboom<Sleutel, Data> &p);
+    void fixBoom(Zoekboom<Sleutel, Data> &kind, stack<Zoekboom<Sleutel, Data> *> voorouders, Zoekboom<Sleutel, Data> &origineleWortel); //to do: Wrapperclasse rond deze recursieve functie. Is beetje raar anders dat deze een parameter originelewortel heeft die je aanroept op de orignele wortel.
+    bool isLeftChildOfParent(Zoekboom<Sleutel, Data> &p);
     Kleur getColorOfBrother(Zoekboom<Sleutel, Data> &p);
 
 protected:
@@ -163,7 +163,7 @@ Zoekboom<Sleutel, Data> *Zoekboom<Sleutel, Data>::geefBoomBovenKnoop(zoekKnoop<S
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan)
 {
-    
+
     zoekKnoop<Sleutel, Data> *ouder;
     Zoekboom<Sleutel, Data> *plaats;
     stack<Zoekboom<Sleutel, Data> *> voorouders = zoek(sleutel, ouder, plaats);
@@ -176,29 +176,32 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
             std::make_unique<zoekKnoop<Sleutel, Data>>(sleutel, data);
         nieuw->ouder = ouder;
         *plaats = move(nieuw);
+        std::cout << "wij voegen toe: " << sleutel << std::endl;
+        fixBoom(*plaats, voorouders, *this);
     }
-    std::cout << "wij voegen toe: " << sleutel << std::endl;
-    fixBoom(voorouders);
-}
+};
 
 /*
 *   Deze functie kan gezien worden als een verlengde van voegToe. Om de code van voegToe niet te onoverzichtelijk
 *   te maken is de code om de boom te repareren na toevoegen in een apparte functie gestoken.
 */
 template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::fixBoom(stack<Zoekboom<Sleutel, Data> *> voorouders)
+void Zoekboom<Sleutel, Data>::fixBoom(Zoekboom<Sleutel, Data> &kind, stack<Zoekboom<Sleutel, Data> *> voorouders, Zoekboom<Sleutel, Data> &origineleWortel)
 {
     // Situatie 0: de wortel mag altijd zwart gemaakt worden
     // empty slaat op een boom met maar 1 knoop.
-    if(voorouders.size() == 1 || voorouders.empty()){
+    if (voorouders.size() == 1 || voorouders.empty())
+    {
         (*this)->kleur = Kleur::Zwart;
-        if (voorouders.size() == 1) {
+        if (voorouders.size() == 1)
+        {
             voorouders.pop();
         }
         return;
     }
-    
-    if(voorouders.size()< 2){
+
+    if (voorouders.size() < 2)
+    {
         // we hebben minstens een ouder en grootouder nodig om verder te kunnen werken
         return;
     }
@@ -209,13 +212,14 @@ void Zoekboom<Sleutel, Data>::fixBoom(stack<Zoekboom<Sleutel, Data> *> voorouder
     // g van grandparent
     Zoekboom<Sleutel, Data> *g = voorouders.top();
 
-    if((*p)->kleur == Kleur::Zwart){
+    if ((*p)->kleur == Kleur::Zwart)
+    {
         //indien p zwart is moet er niets gebeuren. Want een nieuw toegevoegde rode knoop met zwarte ouder is ok.
-        std::cout << "p is zwart. Niets te doen"<< std::endl;
+        std::cout << "p is zwart. Niets te doen" << std::endl;
         return;
     }
     bool pIsLeft = p->isLeftChildOfParent(*g);
-    bool cIsLeft = this->isLeftChildOfParent(*p);
+    bool cIsLeft = kind.isLeftChildOfParent(*p);
 
     // volgens p9 en volgende van de cursus
 
@@ -224,48 +228,54 @@ void Zoekboom<Sleutel, Data>::fixBoom(stack<Zoekboom<Sleutel, Data> *> voorouder
     // TO DO: kan  (*(*g)->links)->kleur een segmentation fault werpen??
 
     // ik denk dat je niet moet controleren of G zwart is, volgens de cursus is dit altijd het geval
-    // ((*g)->kleur == Kleur::Zwart) 
-    if(getColorOfBrother(*g) == Kleur::Rood ){
-        std::cout << "situatie 1: b(" << (*(*g)->geefKind(!pIsLeft)).sleutel << ") is rood"<< std::endl;
+    // ((*g)->kleur == Kleur::Zwart)
 
-        (*(*g)->geefKind(!pIsLeft)).kleur = Kleur::Zwart;
+    if (getColorOfBrother(*g) == Kleur::Rood)
+    {
+        std::cout << "situatie 1: b is rood" << std::endl;
+
+        if ((*g)->geefKind(!pIsLeft))
+        {
+            (*(*g)->geefKind(!pIsLeft)).kleur = Kleur::Zwart;
+        }
+
         (*p)->kleur = Kleur::Zwart;
         (*g)->kleur = Kleur::Rood;
-        if(!pIsLeft){
+        /*if(!pIsLeft){
         std::cout << "b(" << (*(*g)->geefKind(!pIsLeft)).sleutel << ") is links kind and will be black" << std::endl;
         }
         else {
         std::cout << "b(" <<  (*(*g)->geefKind(!pIsLeft)).sleutel << ") is rechts kind and will be black" << std::endl;
         }
-        
+        */
         std::cout << "p(" << (*p)->sleutel << ") will be black" << std::endl;
         std::cout << "g(" << (*g)->sleutel << ") will be red" << std::endl;
-    } else {
+    }
+    else
+    {
+
         // situatie 3: De broer b van p is zwart
         // oplossing: roteer in de richting van de zwarte broer.
-        if((pIsLeft && !cIsLeft) || (!pIsLeft && cIsLeft)){ //indien p rechterkind is en c linkerkind (of spiegelbeeld)
-            std::cout << "situatie 3: b is zwart"<< std::endl;
+        std::cout << "pisleft " << pIsLeft << " and cisleft " << cIsLeft << std::endl;
+        if ((pIsLeft && !cIsLeft) || (!pIsLeft && cIsLeft))
+        { //indien p rechterkind is en c linkerkind (of spiegelbeeld)
+            std::cout << "situatie 3: b is zwart" << std::endl;
             // stel p is linkerkind. Dus geefLinkerkind en dit gaan we in de andere richting roteren als p is. Dus roteer naar rechts = false
-            (*g)->geefKind(pIsLeft).roteer(!pIsLeft); 
-            
-            
+            (*g)->geefKind(pIsLeft).roteer(!pIsLeft);
         }
-        std::cout << "situatie 2: b is zwart"<< std::endl;
-        g->roteer(cIsLeft);
-        (*p)->kleur = Kleur::Zwart;
-        (*g)->kleur = Kleur::Rood;
-       
+        std::cout << "situatie 2: b is zwart" << std::endl;
+
+        g->roteer(pIsLeft);
+
+        (*g)->kleur = Kleur::Zwart;
+        (*g)->links->kleur = Kleur::Rood;
+        (*g)->rechts->kleur = Kleur::Rood;
     }
 
-    if( !repOK()){
-        fixBoom(voorouders);
-    }else {
-        std::cout << "rep oke, next" << std::endl;
+    if (!origineleWortel.repOK())
+    {
+        fixBoom(kind, voorouders, origineleWortel);
     }
-  
-  
-
-
 }
 
 /*
@@ -293,57 +303,70 @@ stack<Zoekboom<Sleutel, Data> *> Zoekboom<Sleutel, Data>::zoek(const Sleutel &sl
     return voorouders;
 };
 template <class Sleutel, class Data>
-bool Zoekboom<Sleutel, Data>::isLeftChildOfParent( Zoekboom<Sleutel, Data> &p){
+bool Zoekboom<Sleutel, Data>::isLeftChildOfParent(Zoekboom<Sleutel, Data> &p)
+{
     return (p->links == *this);
 }
 
 template <class Sleutel, class Data>
-Kleur Zoekboom<Sleutel, Data>::getColorOfBrother(Zoekboom<Sleutel, Data> &p){
-   
-    if(p->geefKind(!this->isLeftChildOfParent(p))){ //indien het andere kind bestaat vragen we zijn kleur op
+Kleur Zoekboom<Sleutel, Data>::getColorOfBrother(Zoekboom<Sleutel, Data> &p)
+{
+
+    if (p->geefKind(!this->isLeftChildOfParent(p)))
+    { //indien het andere kind bestaat vragen we zijn kleur op
         return p->geefKind(!this->isLeftChildOfParent(p))->kleur;
-    } else {
-        // als het niet bestaat is het en virtuele knoop en is deze dus rood.
-        return Kleur::Rood;
     }
-    
-    
+    else
+    {
+        // als het niet bestaat is het en virtuele knoop en is deze dus zwart.
+        return Kleur::Zwart;
+    }
 };
 
 template <class Sleutel, class Data>
-bool Zoekboom<Sleutel, Data>::repOK() const{
- return repOK_blackRoot() && repOK_redParentWithBlackChilds();
+bool Zoekboom<Sleutel, Data>::repOK() const
+{
+    return repOK_blackRoot() && repOK_redParentWithBlackChilds();
 };
-   
-
-   
 
 template <class Sleutel, class Data>
-bool  Zoekboom<Sleutel, Data>::repOK_redParentWithBlackChilds() const{
-    bool statusOk = true;
-    if((*this)->kleur == Kleur::Rood){
-        if((*this)->links) {
-            if((*this)->links->kleur == Kleur::Rood){
-                statusOk = false;}
-            else {
-                statusOk = (*this)->links.repOK_redParentWithBlackChilds();
-            }
+bool Zoekboom<Sleutel, Data>::repOK_redParentWithBlackChilds() const
+{
+    bool statusOK = true;
+    if ((*this)->links)
+    {
+        if (((*this)->kleur == Kleur::Rood && (*this)->links->kleur == Kleur::Zwart) || ((*this)->kleur == Kleur::Zwart))
+        {
+            //std::cout << (*this)->sleutel << " is ok tov " << (*this)->links->sleutel << std::endl;
+            statusOK = (*this)->links.repOK_redParentWithBlackChilds();
         }
-         if((*this)->rechts) {
-            if((*this)->rechts->kleur == Kleur::Rood){
-                statusOk = false;}
-            else {
-                statusOk = (*this)->rechts.repOK_redParentWithBlackChilds();
-            }
+        else
+        {
+            //std::cout << (*this)->sleutel << " is NOK tov " << (*this)->links->sleutel << std::endl;
+            statusOK = false;
         }
     }
-    return statusOk;
+    if ((*this)->rechts && statusOK)
+    {
+        if (((*this)->kleur == Kleur::Rood && (*this)->rechts->kleur == Kleur::Zwart) || ((*this)->kleur == Kleur::Zwart))
+        {
+            statusOK = (*this)->rechts.repOK_redParentWithBlackChilds();
+            // std::cout << (*this)->sleutel << " is ok tov " << (*this)->rechts->sleutel << std::endl;
+        }
+        else
+        {
+            // std::cout << (*this)->sleutel << " is NOK tov " << (*this)->links->sleutel << std::endl;
+            statusOK = false;
+        }
+    }
 
+    return statusOK;
 };
 
 template <class Sleutel, class Data>
-bool  Zoekboom<Sleutel, Data>::repOK_blackRoot() const{
-  // root is altijd zwart
+bool Zoekboom<Sleutel, Data>::repOK_blackRoot() const
+{
+    // root is altijd zwart
     return ((*this)->kleur == Kleur::Zwart);
 };
 
@@ -385,6 +408,7 @@ template <class Sleutel, class Data>
 */
 void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
 {
+    std::cout << "hier" << std::endl;
     //je kan niet roteren op een lege (deel)boom
     assert(this);
 
@@ -392,10 +416,27 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
     Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
 
     //a rotate function requires a child.
+    if (!pointerToI)
+    {
+        if (naarRechts)
+        {
+            std::cout << "could not rotate to the right because left child was not found" << std::endl
+                      << std::flush;
+        }
+        else
+        {
+            std::cout << "could not rotate to the left because right child was not found" << std::endl
+                      << std::flush;
+        }
+    }
+
     assert(pointerToI);
 
     // rechter kind van I wordt linkerkind van P
-    (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
+    if (pointerToI->geefKind(!naarRechts))
+    {
+        (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
+    }
 
     // P wordt nu linkerkind van I
     pointerToI->geefKind(!naarRechts) = move(*this);
