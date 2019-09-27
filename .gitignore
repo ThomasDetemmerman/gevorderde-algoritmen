@@ -1,3 +1,8 @@
 *.dot
 *.out
 .vscode
+
+.idea
+cmake-build-debug
+CMakeLists.txt
+/workspace.xml
