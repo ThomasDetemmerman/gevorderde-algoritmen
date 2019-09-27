@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/main.cpp
+zoekboom17.h
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/zoekboom17.h
+vector
+-
+iostream
+-
+unistd.h
+-
+
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/zoekboom17.h
+cstdlib
+-
+iostream
+-
+queue
+-
+memory
+-
+functional
+-
+fstream
+-
+sstream
+-
+ctime
+-
+chrono
+-
+string
+-
+iostream
+-
+zoekknoop.h
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/zoekknoop.h
+
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/zoekknoop.h
+

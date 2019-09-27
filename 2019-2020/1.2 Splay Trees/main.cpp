@@ -20,10 +20,9 @@ int main()
     for (int i = 0; i < keys_small.size(); i++)
     {
         zkbm.voegtoe(keys_small[i], values_small[i]);
+        zkbm.teken(("output" + std::to_string(i)+ ".dot").c_str());
     }
-    zkbm.teken("output.dot");
-    zkbm.zigzig(true);
-     zkbm.teken("output_after.dot");
+    
    
     // convert dot files to png.
     execl("./dot2png.sh", "./dot2png.sh", NULL);

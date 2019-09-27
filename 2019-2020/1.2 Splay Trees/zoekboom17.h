@@ -69,21 +69,16 @@ public:
     // preconditie: knoop moet een naar een geldige knoop wijzen.
     Zoekboom<Sleutel, Data> *geefBoomBovenKnoop(zoekKnoop<Sleutel, Data> &knoopptr);
     void voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan = false);
-
-     void zig(bool naarRechts);
-    void zigzig(bool naarRechts);
-    void zigzag(bool naarRechts);
-
+    void splay(zoekKnoop<Sleutel, Data>*knoop);
+     
     //eigen
 private:
     void roteer(bool naarRechts);
-  
-
-protected:
-    //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
-    //ontbreekt) en de pointer naar de ouder (als die bestaat, anders nulpointer).
-    //noot: alhoewel de functie niets verandert aan de boom is ze geen const functie.
+    void zig(bool naarRechts);
+    void zigzig(bool naarRechts);
+    void zigzag(bool naarRechts);
     void zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats);
+   
 };
 
 /*****************************************************************************
@@ -111,6 +106,42 @@ void Zoekboom<Sleutel, Data>::zigzig(bool naarRechts)
     zig(naarRechts);
     zig(naarRechts);
 }
+
+/*
+*   Deze functie maakt de knoop tot een wortel. It recursively decides wheter to apply zig, zigzig or zigzag.
+*/
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::splay(zoekKnoop<Sleutel, Data>*knoop){
+    //std::cout << "splay on " << (*knoop)->sleutel;
+
+    if(knoop == &**this){
+        std::cout <<"nothing to do" << std::endl << std::flush;
+        return; //knoop is al een wortel of er is nog geen boom (wat kan als je nog bezig bent met eerste knoop toe te voegen)
+    }
+    if(knoop->ouder == &*(*this)){
+        zig(knoop->isLeftChild()); // indien de knoop linkerkind is zullen we naar rechts roteren.
+    }
+    else {
+        // c is child, p is parent, g is grandparent
+        // relation of c to p
+        bool cIsLeftChildOfP = knoop->isLeftChild();
+        bool pIsLeftChildOfG = knoop->ouder->isLeftChild();
+
+        if(cIsLeftChildOfP && pIsLeftChildOfG){
+            zigzig(cIsLeftChildOfP); //je kan ook pIsLeftChildOfG schrijven als parameter
+        } else {
+            zigzag(pIsLeftChildOfG);
+        }
+    }
+    if (knoop->ouder){
+        std::cout << "repeat recuirsivly " << knoop->sleutel << " with parent " << knoop->ouder->sleutel << std::endl;
+    }
+
+    splay(knoop);
+
+}
+
+
 
 /*****************************************************************************
 
@@ -146,6 +177,7 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
     zoekKnoop<Sleutel, Data> *ouder;
     Zoekboom<Sleutel, Data> *plaats;
     Zoekboom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
+   
     if (dubbelsToestaan)
         while (*plaats)
             (*plaats)->geefKind(random() % 2).zoek(sleutel, ouder, plaats);
@@ -155,17 +187,23 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
             std::make_unique<zoekKnoop<Sleutel, Data>>(sleutel, data);
         nieuw->ouder = ouder;
         *plaats = move(nieuw);
+        
+  
+        this->splay(&**plaats);
     }
+   
 }
 
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
 {
+    std::cout << "toe te voegen sleutel is: " << sleutel << std::endl;
     plaats = this;
     ouder = 0;
     while (*plaats && (*plaats)->sleutel != sleutel)
     {
         ouder = plaats->get();
+        //std::cout << "ouder is: " << std::flush << ouder->sleutel << std::endl;
         if ((*plaats)->sleutel < sleutel)
             plaats = &(*plaats)->rechts;
         else

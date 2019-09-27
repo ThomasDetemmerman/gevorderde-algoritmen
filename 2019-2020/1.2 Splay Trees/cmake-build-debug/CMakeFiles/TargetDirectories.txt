@@ -1,0 +1,3 @@
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/thomasdetemmerman/Documents/Gevorderde-Algoritmen/2019-2020/1.2 Splay Trees/cmake-build-debug/CMakeFiles/1_2_Splay_Trees.dir

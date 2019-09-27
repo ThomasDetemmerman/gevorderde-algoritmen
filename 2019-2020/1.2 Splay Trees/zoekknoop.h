@@ -15,6 +15,9 @@ public:
     Data data;
     zoekKnoop<Sleutel, Data> *ouder;
     Zoekboom<Sleutel, Data> links, rechts;
+
+    //eigen
+    bool isLeftChild(); 
 };
 
 template <class Sleutel, class Data>
@@ -25,3 +28,13 @@ Zoekboom<Sleutel, Data> &zoekKnoop<Sleutel, Data>::geefKind(bool linkerkind)
     else
         return rechts;
 };
+
+template <class Sleutel, class Data>
+bool zoekKnoop<Sleutel, Data>::isLeftChild(){
+
+    assert(ouder); // a parent should exist
+    // (ouder->links) is een zoekboom
+    // *(ouder->links) haalt de zoekknoop op
+    // &*(ouder->links) haalt het adress van die zoekknoop op
+    return (&*(ouder->links) == this);
+}
