@@ -75,7 +75,7 @@ public:
     void roteer(bool naarRechts);
     void maakOnevenwichtig();
     void maakEvenwichtig();
-    void maakEvenwichtigRec(int);
+    void maakEvenwichtigRec(int debugcounter);
 
 protected:
     //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
@@ -181,18 +181,16 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
     }
 }
 
-template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
-{
-    plaats = this;
-    ouder = 0;
-    while (*plaats && (*plaats)->sleutel != sleutel)
-    {
-        ouder = plaats->get();
+template <class Sleutel,class Data>
+void Zoekboom<Sleutel,Data>::zoek(const Sleutel& sleutel, zoekKnoop<Sleutel,Data>*& ouder, Zoekboom<Sleutel,Data>*& plaats){
+    plaats=this;
+    ouder=0;
+    while (*plaats && (*plaats)->sleutel !=sleutel){
+        ouder=plaats->get();
         if ((*plaats)->sleutel < sleutel)
-            plaats = &(*plaats)->rechts;
+            plaats=&(*plaats)->rechts;
         else
-            plaats = &(*plaats)->links;
+            plaats=&(*plaats)->links;
     };
 };
 
@@ -202,7 +200,7 @@ template <class Sleutel, class Data>
 int Zoekboom<Sleutel, Data>::geefDiepte()
 {
     // randgevallen, lege parameter.
-    if (!*this)
+    if (!(*this))
     {
         return 0;
     }
@@ -242,16 +240,31 @@ void Zoekboom<Sleutel, Data>::maakEvenwichtig()
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(int debugcounter)
 {
-    debugcounter++;
-    if (*this && (*this)->rechts)
-    {
-        for (int i = 0; i < geefDiepte() - 1; i++)
-        {
-            this->roteer(false);
-        }
-        teken((std::to_string(debugcounter) + ".dot").c_str());
-        (*this)->rechts.maakEvenwichtigRec(debugcounter);
+    
+     int L_diepte;
+     int R_diepte;
+     bool naarRechts;
+     Zoekboom<Sleutel, Data> * origineleWortel = this;
+     do{
+        
+        L_diepte = (*origineleWortel)->links.geefDiepte();
+        R_diepte =  (*origineleWortel)->rechts.geefDiepte();
+        std::cout << "sleutel " << (*origineleWortel)->sleutel << "\tdiepte L is " << L_diepte << " en diepte R is " << R_diepte << std::endl;
+        naarRechts = R_diepte < L_diepte;
+        roteer(naarRechts);
+         } while(abs(R_diepte - L_diepte) > 1); // herhaaal zolang hij onevenwicht is
+ teken(("tussenstap_"+std::to_string(debugcounter) +".dot").c_str());
+  debugcounter++;
+std::cout  << std::endl<< "herhaal recursief naar links " << std::endl;
+    if((*origineleWortel)->links){
+        
+        (*origineleWortel)->links.maakEvenwichtigRec(debugcounter);
     }
+    std::cout << std::endl << "herhaal recursief naar rechts " << std::endl;
+    if((*origineleWortel)->rechts){
+        (*origineleWortel)->rechts.maakEvenwichtigRec(debugcounter);
+    }
+    //
 };
 
 template <class Sleutel, class Data>
@@ -275,8 +288,10 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
     Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
 
     //a rotate function requires a child.
-    assert(pointerToI);
-
+   // assert(pointerToI);
+    if(!pointerToI){
+        return;
+    }
     // rechter kind van I wordt linkerkind van P
     (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
 
@@ -292,8 +307,11 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
     // p ouder wijst naar i (this)
     (*this)->geefKind(!naarRechts)->ouder = this->get();
     
-    //roteer: beta na rotatie moet naar beta naar p wijzen.
-    (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder =  (*this)->geefKind(!naarRechts).get();
+    //roteer: beta na rotatie moet naar beta naar p wijzen. Maar enkel als beta bestaat uiteraard.
+    if((*this)->geefKind(!naarRechts)->geefKind(naarRechts)){
+        (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder =  (*this)->geefKind(!naarRechts).get();
+    }
+    
 
 
    
