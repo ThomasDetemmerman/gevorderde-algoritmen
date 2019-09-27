@@ -5,3 +5,4 @@
 .idea
 cmake-build-debug
 CMakeLists.txt
+/workspace.xml
