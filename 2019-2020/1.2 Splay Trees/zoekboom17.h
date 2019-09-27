@@ -35,8 +35,7 @@ template <class Sleutel, class Data>
 class Zoekboom : public unique_ptr<zoekKnoop<Sleutel, Data>>
 {
 public:
-    //....move en copy. Noot: als er geen copy nodig is, zet hem beste op delete.
-
+   
     // constructoren met zoekboom als parameter
     Zoekboom(){};                                    //default
     Zoekboom(const Zoekboom &) = default;            // copy 1
@@ -71,11 +70,14 @@ public:
     Zoekboom<Sleutel, Data> *geefBoomBovenKnoop(zoekKnoop<Sleutel, Data> &knoopptr);
     void voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan = false);
 
+     void zig(bool naarRechts);
+    void zigzig(bool naarRechts);
+    void zigzag(bool naarRechts);
+
     //eigen
+private:
     void roteer(bool naarRechts);
-    void maakOnevenwichtig();
-    void maakEvenwichtig();
-    void maakEvenwichtigRec(int debugcounter);
+  
 
 protected:
     //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
@@ -86,7 +88,33 @@ protected:
 
 /*****************************************************************************
 
-    Implementatie
+    Implementatie Splay Tree
+    
+*****************************************************************************/
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::zig(bool naarRechts)
+{
+    roteer(naarRechts);
+};
+
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::zigzag(bool naarRechts)
+{
+    (*this)->geefKind(naarRechts).zig(!naarRechts);
+    zig(naarRechts);
+};
+
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::zigzig(bool naarRechts)
+{
+    Zoekboom<Sleutel, Data> *p = &((*this)->geefKind(naarRechts));//betekenis P zie cursus pagina 18
+    zig(naarRechts);
+    zig(naarRechts);
+}
+
+/*****************************************************************************
+
+    Implementatie gelijk aan labo 1 bin boom
     
 *****************************************************************************/
 
@@ -100,6 +128,138 @@ void Zoekboom<Sleutel, Data>::inorder(std::function<void(const zoekKnoop<Sleutel
         (*this)->rechts.inorder(bezoek);
     };
 }
+
+template <class Sleutel, class Data>
+Zoekboom<Sleutel, Data> *Zoekboom<Sleutel, Data>::geefBoomBovenKnoop(zoekKnoop<Sleutel, Data> &knoop)
+{
+    if (knoop.ouder == 0)
+        return this;
+    else if (knoop.ouder->links.get() == &knoop)
+        return &(knoop.ouder->links);
+    else
+        return &(knoop.ouder->rechts);
+}
+
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan)
+{
+    zoekKnoop<Sleutel, Data> *ouder;
+    Zoekboom<Sleutel, Data> *plaats;
+    Zoekboom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
+    if (dubbelsToestaan)
+        while (*plaats)
+            (*plaats)->geefKind(random() % 2).zoek(sleutel, ouder, plaats);
+    if (!*plaats)
+    {
+        Zoekboom<Sleutel, Data> nieuw =
+            std::make_unique<zoekKnoop<Sleutel, Data>>(sleutel, data);
+        nieuw->ouder = ouder;
+        *plaats = move(nieuw);
+    }
+}
+
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
+{
+    plaats = this;
+    ouder = 0;
+    while (*plaats && (*plaats)->sleutel != sleutel)
+    {
+        ouder = plaats->get();
+        if ((*plaats)->sleutel < sleutel)
+            plaats = &(*plaats)->rechts;
+        else
+            plaats = &(*plaats)->links;
+    };
+};
+
+/* eigen implementatie */
+
+template <class Sleutel, class Data>
+int Zoekboom<Sleutel, Data>::geefDiepte()
+{
+    // randgevallen, lege parameter.
+    if (!(*this))
+    {
+        return 0;
+    }
+    int L_diepte, R_diepte;
+
+    if ((*this)->links)
+    {
+        L_diepte = (*this)->links.geefDiepte();
+    }
+    else
+    {
+        L_diepte = 0;
+    }
+
+    if ((*this)->rechts)
+    {
+        R_diepte = (*this)->rechts.geefDiepte();
+    }
+    else
+    {
+
+        R_diepte = 0;
+    }
+
+    return (L_diepte > R_diepte) ? (L_diepte + 1) : (R_diepte + 1); // of roep de functie max op.
+};
+
+template <class Sleutel, class Data>
+/*
+*            P
+*           / \
+*          I   △
+*         / \
+*        △   △ 
+*        α   ß
+*/
+// preconditie: nodige knopen zijn aanwezig. Deze preconditie is niet nodig, de functie test erop.
+void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
+{
+    //je kan niet roteren op een lege (deel)boom
+    // geen assert op this. Indien deze knoop niet bestaat kun je de functie  niet oproepen. Is *this beter?
+    //assert(this) is useless, want this zal altijd wel naar iets wijzen.
+    assert(*this);
+
+    // koppel I los van P
+    Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
+
+    //a rotate function requires a child.
+    // assert(pointerToI);
+    if (!pointerToI)
+    {
+        return;
+    }
+    // rechter kind van I wordt linkerkind van P
+    (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
+
+    // P wordt nu linkerkind van I
+    pointerToI->geefKind(!naarRechts) = move(*this);
+
+    // zet I als nieuwe parent
+    *this = move(pointerToI);
+
+    //ouderpointers
+    // in P->ouder zit nog de ouder van de boom boven hem die niet aangepast is. I is de nieuwe wortel en deze krijgt dus de (oude) ouder van P
+    (*this)->ouder = (*this)->geefKind(!naarRechts)->ouder;
+    // p ouder wijst naar i (this)
+    (*this)->geefKind(!naarRechts)->ouder = this->get();
+
+    //roteer: beta na rotatie moet naar beta naar p wijzen. Maar enkel als beta bestaat uiteraard.
+    if ((*this)->geefKind(!naarRechts)->geefKind(naarRechts))
+    {
+        (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder = (*this)->geefKind(!naarRechts).get();
+    }
+};
+
+/*****************************************************************************
+
+    Tools: teken & schrijf
+    
+*****************************************************************************/
 
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::schrijf(ostream &os) const
@@ -151,194 +311,5 @@ string Zoekboom<Sleutel, Data>::tekenrec(ostream &uit, int &knoopteller)
     };
     return wortelstring.str();
 }
-
-template <class Sleutel, class Data>
-Zoekboom<Sleutel, Data> *Zoekboom<Sleutel, Data>::geefBoomBovenKnoop(zoekKnoop<Sleutel, Data> &knoop)
-{
-    if (knoop.ouder == 0)
-        return this;
-    else if (knoop.ouder->links.get() == &knoop)
-        return &(knoop.ouder->links);
-    else
-        return &(knoop.ouder->rechts);
-}
-
-template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan)
-{
-    zoekKnoop<Sleutel, Data> *ouder;
-    Zoekboom<Sleutel, Data> *plaats;
-    Zoekboom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
-    if (dubbelsToestaan)
-        while (*plaats)
-            (*plaats)->geefKind(random() % 2).zoek(sleutel, ouder, plaats);
-    if (!*plaats)
-    {
-        Zoekboom<Sleutel, Data> nieuw =
-            std::make_unique<zoekKnoop<Sleutel, Data>>(sleutel, data);
-        nieuw->ouder = ouder;
-        *plaats = move(nieuw);
-    }
-}
-
-template <class Sleutel,class Data>
-void Zoekboom<Sleutel,Data>::zoek(const Sleutel& sleutel, zoekKnoop<Sleutel,Data>*& ouder, Zoekboom<Sleutel,Data>*& plaats){
-    plaats=this;
-    ouder=0;
-    while (*plaats && (*plaats)->sleutel !=sleutel){
-        ouder=plaats->get();
-        if ((*plaats)->sleutel < sleutel)
-            plaats=&(*plaats)->rechts;
-        else
-            plaats=&(*plaats)->links;
-    };
-};
-
-/* eigen implementatie */
-
-template <class Sleutel, class Data>
-int Zoekboom<Sleutel, Data>::geefDiepte()
-{
-    // randgevallen, lege parameter.
-    if (!(*this))
-    {
-        return 0;
-    }
-    int L_diepte, R_diepte;
-
-    if ((*this)->links)
-    {
-        L_diepte = (*this)->links.geefDiepte();
-    }
-    else
-    {
-        L_diepte = 0;
-    }
-
-    if ((*this)->rechts)
-    {
-        R_diepte = (*this)->rechts.geefDiepte();
-    }
-    else
-    {
-
-        R_diepte = 0;
-    }
-
-    return (L_diepte > R_diepte) ? (L_diepte + 1) : (R_diepte + 1); // of roep de functie max op.
-};
-
-template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::maakEvenwichtig()
-{
-    // de opgave stelt dat we gebruik mogen maken van 'de vorige' functie. Maw, maakonevenwichtig.
-    maakOnevenwichtig();
-    int i = 0;
-    maakEvenwichtigRec(i);
-};
-
-template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(int debugcounter)
-{
-    
-     int L_diepte;
-     int R_diepte;
-     bool naarRechts;
-     Zoekboom<Sleutel, Data> * origineleWortel = this;
-     do{
-        
-        L_diepte = (*origineleWortel)->links.geefDiepte();
-        R_diepte =  (*origineleWortel)->rechts.geefDiepte();
-        std::cout << "sleutel " << (*origineleWortel)->sleutel << "\tdiepte L is " << L_diepte << " en diepte R is " << R_diepte << std::endl;
-        naarRechts = R_diepte < L_diepte;
-        roteer(naarRechts);
-         } while(abs(R_diepte - L_diepte) > 1); // herhaaal zolang hij onevenwicht is
- teken(("tussenstap_"+std::to_string(debugcounter) +".dot").c_str());
-  debugcounter++;
-std::cout  << std::endl<< "herhaal recursief naar links " << std::endl;
-    if((*origineleWortel)->links){
-        
-        (*origineleWortel)->links.maakEvenwichtigRec(debugcounter);
-    }
-    std::cout << std::endl << "herhaal recursief naar rechts " << std::endl;
-    if((*origineleWortel)->rechts){
-        (*origineleWortel)->rechts.maakEvenwichtigRec(debugcounter);
-    }
-    //
-};
-
-template <class Sleutel, class Data>
-/*
-*            P
-*           / \
-*          I   △
-*         / \
-*        △   △ 
-*        α   ß
-*/
-// preconditie: nodige knopen zijn aanwezig. Deze preconditie is niet nodig, de functie test erop.
-void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
-{
-    //je kan niet roteren op een lege (deel)boom
-    // geen assert op this. Indien deze knoop niet bestaat kun je de functie  niet oproepen. Is *this beter?
-    //assert(this) is useless, want this zal altijd wel naar iets wijzen.
-    assert(*this);
-
-    // koppel I los van P
-    Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
-
-    //a rotate function requires a child.
-   // assert(pointerToI);
-    if(!pointerToI){
-        return;
-    }
-    // rechter kind van I wordt linkerkind van P
-    (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
-
-    // P wordt nu linkerkind van I
-    pointerToI->geefKind(!naarRechts) = move(*this);
-
-    // zet I als nieuwe parent
-    *this = move(pointerToI);
-
-    //ouderpointers
-    // in P->ouder zit nog de ouder van de boom boven hem die niet aangepast is. I is de nieuwe wortel en deze krijgt dus de (oude) ouder van P
-    (*this)->ouder =  (*this)->geefKind(!naarRechts)->ouder;
-    // p ouder wijst naar i (this)
-    (*this)->geefKind(!naarRechts)->ouder = this->get();
-    
-    //roteer: beta na rotatie moet naar beta naar p wijzen. Maar enkel als beta bestaat uiteraard.
-    if((*this)->geefKind(!naarRechts)->geefKind(naarRechts)){
-        (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder =  (*this)->geefKind(!naarRechts).get();
-    }
-    
-
-
-   
-
-};
-
-template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::maakOnevenwichtig()
-{
-    // op een lege boom kunnen we geen operaties uitvoeren.
-    if (!*this)
-    {
-        return;
-    }
-    // als er een rechterkind is
-    if ((*this)->rechts)
-    {
-        // zolang er links kinderen zijn gaan we naar rechts roteren
-        while ((*this)->links)
-        {
-            (*this).roteer(true);
-        }
-        //recursief herhalen. Het is belangrijk dat je eerst alle kinderen van links naar rechts roteert. Als er namelijk linker kinderen zijn
-        //met een rechter kleinkind zouden deze niet weggeroteerd worden. Als we eerst roteren en dan pas recursief herhalen heb je dit probleem niet.
-        //snap je niet wat ik bedoel? wissel beide statements om en run het programma.
-        (*this)->rechts.maakOnevenwichtig();
-    }
-};
 
 #endif

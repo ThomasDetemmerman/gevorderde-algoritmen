@@ -14,22 +14,17 @@ int main()
     vector<char> values = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'h', 'i', 'j'};
 
     vector<int> keys_small = {50, 30, 100, 20, 40};
-    vector<char> value_small = {'a', 'b', 'c', 'd', 'k'};
+    vector<char> values_small = {'a', 'b', 'c', 'd', 'k'};
 
     Zoekboom<int, char> zkbm;
-    for (int i = 0; i < keys.size(); i++)
+    for (int i = 0; i < keys_small.size(); i++)
     {
-        zkbm.voegtoe(keys[i], values[i]);
+        zkbm.voegtoe(keys_small[i], values_small[i]);
     }
-    zkbm.teken("1_output_before.dot");
-    cout << "Diepte van deze boom is " << zkbm.geefDiepte() << endl;
-    zkbm.roteer(true);
-    zkbm.teken("2_narotatie.dot");
-    zkbm.maakOnevenwichtig();
-    zkbm.teken("3_onevenwichtig.dot");
-    zkbm.maakEvenwichtig();
-    zkbm.teken("4_evenwichtig.dot");
-
+    zkbm.teken("output.dot");
+    zkbm.zigzig(true);
+     zkbm.teken("output_after.dot");
+   
     // convert dot files to png.
     execl("./dot2png.sh", "./dot2png.sh", NULL);
 }
