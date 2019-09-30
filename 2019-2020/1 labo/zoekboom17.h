@@ -65,6 +65,7 @@ public:
 
     //te implementeren
     bool repOK() const;
+    void isInOrder(zoekKnoop<Sleutel, Data> knoop);
     int geefDiepte();
     // geefBoomBovenKnoop: gegeven een knooppointer, wele boom wijst naar de knoop
     // preconditie: knoop moet een naar een geldige knoop wijzen.
@@ -75,7 +76,7 @@ public:
     void roteer(bool naarRechts);
     void maakOnevenwichtig();
     void maakEvenwichtig();
-    void maakEvenwichtigRec(int debugcounter);
+    void maakEvenwichtigRec(bool naarRechts);
 
 protected:
     //zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
@@ -89,6 +90,36 @@ protected:
     Implementatie
     
 *****************************************************************************/
+template <class Sleutel, class Data>
+bool Zoekboom<Sleutel, Data>::repOK() const{
+
+
+    const Sleutel * vorige = nullptr; // we gebruiken een pointer zodat het ook voor Strings werkt
+    bool boomIsOk = true;
+    // Wil je iets gebruiken in uw lamda dat je van buiteaf nodig hebt? dan moet je deze definieren in [ ]. Dit heten captures.
+    inorder([&vorige, &boomIsOk](const zoekKnoop<Sleutel, Data> &b){
+        // Sectie 1: Is in order
+        if(vorige && boomIsOk){
+            boomIsOk = (b.sleutel >= *vorige);
+        }
+        vorige = &b.sleutel;
+
+        // Sectie 2: parent pointers controleren
+        if(b.links && boomIsOk){
+            boomIsOk = b.links->ouder == &b;
+        }
+        if(b.rechts && boomIsOk){
+            boomIsOk = b.rechts->ouder == &b;
+        }
+    });
+    return boomIsOk;
+}
+
+template <class Sleutel, class Data>
+void isInOrder(zoekKnoop<Sleutel, Data> knoop){
+    std::cout << knoop.sleutel;
+}
+
 
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::inorder(std::function<void(const zoekKnoop<Sleutel, Data> &)> bezoek) const
@@ -237,6 +268,8 @@ void Zoekboom<Sleutel, Data>::maakEvenwichtig()
     maakEvenwichtigRec(i);
 };
 
+/*
+// Eigen versie
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(int debugcounter)
 {
@@ -253,9 +286,9 @@ void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(int debugcounter)
         naarRechts = R_diepte < L_diepte;
         roteer(naarRechts);
          } while(abs(R_diepte - L_diepte) > 1); // herhaaal zolang hij onevenwicht is
- teken(("tussenstap_"+std::to_string(debugcounter) +".dot").c_str());
-  debugcounter++;
-std::cout  << std::endl<< "herhaal recursief naar links " << std::endl;
+        teken(("tussenstap_"+std::to_string(debugcounter) +".dot").c_str());
+        debugcounter++;
+        std::cout  << std::endl<< "herhaal recursief naar links " << std::endl;
     if((*origineleWortel)->links){
         
         (*origineleWortel)->links.maakEvenwichtigRec(debugcounter);
@@ -266,6 +299,30 @@ std::cout  << std::endl<< "herhaal recursief naar links " << std::endl;
     }
     //
 };
+ */
+
+// Demian zijn aanpak, ook volgens assistent
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(bool naarRechts)
+{
+    if((*this)->geefKind(!naarRechts)) {
+        return;
+    }
+
+    int diepte = this->geefDiepte();
+
+    for(int i = 0; i < diepte / 2; i++) {
+        this->roteer(naarRechts);
+    }
+
+    if((*this)->links) {
+        (*this)->links.maakEvenwichtigRec(!naarRechts);
+    }
+
+    if((*this)->rechts) {
+        (*this)->rechts.maakEvenwichtigRec(naarRechts);
+    }
+}
 
 template <class Sleutel, class Data>
 /*

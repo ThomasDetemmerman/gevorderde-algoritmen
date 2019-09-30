@@ -29,6 +29,7 @@ int main()
     zkbm.teken("3_onevenwichtig.dot");
     zkbm.maakEvenwichtig();
     zkbm.teken("4_evenwichtig.dot");
+    std::cout << "Status zoekboom: " << zkbm.repOK();
 
     // convert dot files to png.
     execl("./dot2png.sh", "./dot2png.sh", NULL);
