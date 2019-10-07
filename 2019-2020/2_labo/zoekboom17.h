@@ -65,8 +65,7 @@ public:
     void maakEvenwichtig();
     void maakEvenwichtigRec(bool naarRechts);
 
-protected:
-    void zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats);
+    int zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats);
 };
 
 /*****************************************************************************
@@ -134,6 +133,7 @@ Zoekboom<Sleutel, Data> *Zoekboom<Sleutel, Data>::geefBoomBovenKnoop(zoekKnoop<S
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, bool dubbelsToestaan)
 {
+
     zoekKnoop<Sleutel, Data> *ouder;
     Zoekboom<Sleutel, Data> *plaats;
     Zoekboom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
@@ -147,21 +147,25 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
         nieuw->ouder = ouder;
         *plaats = move(nieuw);
     }
+
 }
 
 template <class Sleutel, class Data>
-void Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
+int Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
 {
     plaats = this;
     ouder = 0;
+    int counter = 0;
     while (*plaats && (*plaats)->sleutel != sleutel)
     {
+        counter++;
         ouder = plaats->get();
         if ((*plaats)->sleutel < sleutel)
             plaats = &(*plaats)->rechts;
         else
             plaats = &(*plaats)->links;
     };
+    return counter;
 };
 
 /* eigen implementatie */

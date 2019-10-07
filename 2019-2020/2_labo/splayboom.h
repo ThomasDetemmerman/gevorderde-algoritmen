@@ -11,7 +11,7 @@ template <class Sleutel, class Data>
 class Splayboom : public Zoekboom<Sleutel, Data> {
 
     public:
-        void zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats);
+        int zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats);
 
     private:
         void splay(zoekKnoop<Sleutel,Data> *& ouder, Zoekboom<Sleutel,Data> *& plaats );
@@ -20,15 +20,16 @@ class Splayboom : public Zoekboom<Sleutel, Data> {
 };
 
 template <class Sleutel, class Data>
-void Splayboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
+int Splayboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
 {
-    Zoekboom<Sleutel,Data>::zoek(sleutel, ouder, plaats);
+    int counter = Zoekboom<Sleutel,Data>::zoek(sleutel, ouder, plaats);
     if(*plaats != NULL){
         //indien de knoop gevonden is
         splay(ouder, plaats);
     } else {
         //todo: breng zijn ouder naar de root
     }
+    return counter;
 
 }
 

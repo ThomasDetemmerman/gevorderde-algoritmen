@@ -2,8 +2,17 @@
 
 Een splayboom in een uitgebreidere implementatie van zoekbomen. Splayboom zal dus van zoekbomen overerven.
 
+## main1
+Bevat een eenvoudige binaire boom voor test doeleinden. Is gebruikt om splayboom.h te implementeren en te testen.
 
-# Considerations
+## main2
+Leest Shakespeare of AChristmasCarol in.
+
+## main3
+Leest een document in in twee tabellen en probeert met dynamisch programmeren een optimale boom te bekomen. 
+Dit is niet afgewerkt. https://www.geeksforgeeks.org/optimal-binary-search-tree-dp-24/
+
+# Considerations bij main1
 
 ## Zoeken
 
