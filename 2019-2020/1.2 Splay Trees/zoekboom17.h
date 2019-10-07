@@ -127,7 +127,7 @@ void Zoekboom<Sleutel, Data>::splay(zoekKnoop<Sleutel, Data>*knoop){
         bool cIsLeftChildOfP = knoop->isLeftChild();
         bool pIsLeftChildOfG = knoop->ouder->isLeftChild();
 
-        if(cIsLeftChildOfP && pIsLeftChildOfG){
+        if(cIsLeftChildOfP == pIsLeftChildOfG){
             zigzig(cIsLeftChildOfP); //je kan ook pIsLeftChildOfG schrijven als parameter
         } else {
             zigzag(pIsLeftChildOfG);

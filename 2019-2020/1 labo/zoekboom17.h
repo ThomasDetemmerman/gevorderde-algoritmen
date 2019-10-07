@@ -91,24 +91,27 @@ protected:
     
 *****************************************************************************/
 template <class Sleutel, class Data>
-bool Zoekboom<Sleutel, Data>::repOK() const{
+bool Zoekboom<Sleutel, Data>::repOK() const
+{
 
-
-    const Sleutel * vorige = nullptr; // we gebruiken een pointer zodat het ook voor Strings werkt
+    const Sleutel *vorige = nullptr; // we gebruiken een pointer zodat het ook voor Strings werkt
     bool boomIsOk = true;
     // Wil je iets gebruiken in uw lamda dat je van buiteaf nodig hebt? dan moet je deze definieren in [ ]. Dit heten captures.
-    inorder([&vorige, &boomIsOk](const zoekKnoop<Sleutel, Data> &b){
+    inorder([&vorige, &boomIsOk](const zoekKnoop<Sleutel, Data> &b) {
         // Sectie 1: Is in order
-        if(vorige && boomIsOk){
+        if (vorige && boomIsOk)
+        {
             boomIsOk = (b.sleutel >= *vorige);
         }
         vorige = &b.sleutel;
 
         // Sectie 2: parent pointers controleren
-        if(b.links && boomIsOk){
+        if (b.links && boomIsOk)
+        {
             boomIsOk = b.links->ouder == &b;
         }
-        if(b.rechts && boomIsOk){
+        if (b.rechts && boomIsOk)
+        {
             boomIsOk = b.rechts->ouder == &b;
         }
     });
@@ -116,10 +119,10 @@ bool Zoekboom<Sleutel, Data>::repOK() const{
 }
 
 template <class Sleutel, class Data>
-void isInOrder(zoekKnoop<Sleutel, Data> knoop){
+void isInOrder(zoekKnoop<Sleutel, Data> knoop)
+{
     std::cout << knoop.sleutel;
 }
-
 
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::inorder(std::function<void(const zoekKnoop<Sleutel, Data> &)> bezoek) const
@@ -212,16 +215,18 @@ void Zoekboom<Sleutel, Data>::voegtoe(const Sleutel &sleutel, const Data &data, 
     }
 }
 
-template <class Sleutel,class Data>
-void Zoekboom<Sleutel,Data>::zoek(const Sleutel& sleutel, zoekKnoop<Sleutel,Data>*& ouder, Zoekboom<Sleutel,Data>*& plaats){
-    plaats=this;
-    ouder=0;
-    while (*plaats && (*plaats)->sleutel !=sleutel){
-        ouder=plaats->get();
+template <class Sleutel, class Data>
+void Zoekboom<Sleutel, Data>::zoek(const Sleutel &sleutel, zoekKnoop<Sleutel, Data> *&ouder, Zoekboom<Sleutel, Data> *&plaats)
+{
+    plaats = this;
+    ouder = 0;
+    while (*plaats && (*plaats)->sleutel != sleutel)
+    {
+        ouder = plaats->get();
         if ((*plaats)->sleutel < sleutel)
-            plaats=&(*plaats)->rechts;
+            plaats = &(*plaats)->rechts;
         else
-            plaats=&(*plaats)->links;
+            plaats = &(*plaats)->links;
     };
 };
 
@@ -305,21 +310,25 @@ void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(int debugcounter)
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::maakEvenwichtigRec(bool naarRechts)
 {
-    if((*this)->geefKind(!naarRechts)) {
+    if ((*this)->geefKind(!naarRechts))
+    {
         return;
     }
 
     int diepte = this->geefDiepte();
 
-    for(int i = 0; i < diepte / 2; i++) {
+    for (int i = 0; i < diepte / 2; i++)
+    {
         this->roteer(naarRechts);
     }
 
-    if((*this)->links) {
+    if ((*this)->links)
+    {
         (*this)->links.maakEvenwichtigRec(!naarRechts);
     }
 
-    if((*this)->rechts) {
+    if ((*this)->rechts)
+    {
         (*this)->rechts.maakEvenwichtigRec(naarRechts);
     }
 }
@@ -345,10 +354,10 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
     Zoekboom<Sleutel, Data> pointerToI = move((*this)->geefKind(naarRechts));
 
     //a rotate function requires a child.
-   // assert(pointerToI);
-    if(!pointerToI){
-        return;
-    }
+    assert(pointerToI);
+    // if(!pointerToI){
+    //   return;
+    //}
     // rechter kind van I wordt linkerkind van P
     (*this)->geefKind(naarRechts) = move(pointerToI->geefKind(!naarRechts)); // to do: kan dit een segmetation fault opleveren? kan ik een lege pointer moven? antwoord: dit is ok.
 
@@ -360,19 +369,15 @@ void Zoekboom<Sleutel, Data>::roteer(bool naarRechts)
 
     //ouderpointers
     // in P->ouder zit nog de ouder van de boom boven hem die niet aangepast is. I is de nieuwe wortel en deze krijgt dus de (oude) ouder van P
-    (*this)->ouder =  (*this)->geefKind(!naarRechts)->ouder;
+    (*this)->ouder = (*this)->geefKind(!naarRechts)->ouder;
     // p ouder wijst naar i (this)
     (*this)->geefKind(!naarRechts)->ouder = this->get();
-    
+
     //roteer: beta na rotatie moet naar beta naar p wijzen. Maar enkel als beta bestaat uiteraard.
-    if((*this)->geefKind(!naarRechts)->geefKind(naarRechts)){
-        (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder =  (*this)->geefKind(!naarRechts).get();
+    if ((*this)->geefKind(!naarRechts)->geefKind(naarRechts))
+    {
+        (*this)->geefKind(!naarRechts)->geefKind(naarRechts)->ouder = (*this)->geefKind(!naarRechts).get();
     }
-    
-
-
-   
-
 };
 
 template <class Sleutel, class Data>

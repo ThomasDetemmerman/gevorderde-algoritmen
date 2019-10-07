@@ -43,7 +43,6 @@ bool Zoekboom<Sleutel, Data>::repOK() const{
         }
     });
     return boomIsOk;
-}
 ```
 Wil je iets gebruiken in uw lamda dat je van buiteaf nodig hebt? dan moet je deze definieren in [ ]. Dit heten captures.
 
