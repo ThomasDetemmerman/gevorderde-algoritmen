@@ -5,6 +5,12 @@ Een splayboom in een uitgebreidere implementatie van zoekbomen. Splayboom zal du
 ## main1
 Bevat een eenvoudige binaire boom voor test doeleinden. Is gebruikt om splayboom.h te implementeren en te testen.
 
+### Voorbeeld: zoek(20)
+Input:
+![Input image](https://github.ugent.be/thdtemme/Gevorderde-Algoritmen/blob/master/2019-2020/2_labo/1_input.dot.png)
+Output:
+![Output image](https://github.ugent.be/thdtemme/Gevorderde-Algoritmen/blob/master/2019-2020/2_labo/1_output2.dot.png)
+
 ## main2
 Leest Shakespeare of AChristmasCarol in.
 
