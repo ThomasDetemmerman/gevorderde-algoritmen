@@ -50,17 +50,39 @@ void dynamicProgramming::run(){
 
     //calculation phase
 
+    // Matrix opvullen
+    // Start bij 2 eieren want 0 en 1 hebben we al opgevuld
     for(int aantalEi = 2; aantalEi <= totEi; aantalEi++){
         for(int huidigverdiep=2; huidigverdiep <= totverdiep; huidigverdiep++){ //aantalEI mag starten op 1. Maar hoeft niet aangezien we heb bij init phase op 1 zetten.
+
+            // Bij aanvang is het minimum oneindig groot
             int minimumEggDrops = INT_MAX;
+
+            // Nu overlopen we alle mogelijke startpunten en
+            // zoeken we het startpunt met de kleinste waarde
             for(int x=1; x<=huidigverdiep; x++){
+
+                // Als het ei niet breekt, neem je de waarde uit de matrix bij hetzelfde aantal eieren
+                // Maar je weet dat het ei niet breekt op de eerste x verdiepingen dus kijk je bij het
+                // v-x
                 int alsNietBreekt = eggdrops[aantalEi][huidigverdiep - x];
+
+                // ALs het ei breekt, neem je de waarde uit de matrix bij 1 ei minder
+                // aangezien je al 1x geworpen hebt op punt x moet je x-1 nemen
+                // zodat x + (x-1) = x
                 int alsBreekt = eggdrops[aantalEi - 1][x-1];
+
+                // De waarde die gekozen wordt voor deze x is het maximum van eiBreekt en eiBreekt niet
+                // We hadden al 1x geworpen om te zien of het ei breekt op x of niet
+                // dus moeten we de waarde + 1 doen
                 int currentEggDrops = 1 + max(alsBreekt, alsNietBreekt);
+
+                // Check of gekozenWaarde het nieuwe minimum is
                 if(currentEggDrops < minimumEggDrops){
                     minimumEggDrops = currentEggDrops;
                 }
 
+                // Vul het gevonden minimum in
                 eggdrops[aantalEi][huidigverdiep] = minimumEggDrops;
 
             }
