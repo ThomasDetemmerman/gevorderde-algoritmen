@@ -12,5 +12,12 @@ int main(){
     bt.voegToe(7,'a');
     bt.voegToe(5,'a');
     bt.voegToe(4,'a');
-    //bt.toString();
+    bt.toString();
+
+
+    Schijf<string> disk;
+    blokindex a = disk.schrijf("test");
+    string b;
+    disk.lees(b,a);
+    cout << b;
 }

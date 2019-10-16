@@ -13,7 +13,7 @@ private:
     int m;
 public:
     Btree(int orde);
-    void voegToe()
+    void voegToe();
 };
 
 template <class Sleutel, class Data>

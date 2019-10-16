@@ -18,7 +18,7 @@ private:
     int k = 0; //huidig aantal sleutels. Dit is max m-1
     vector<Sleutel> sleutels;
     vector<Data> data;
-    vector<int> kinderen;
+    vector<blokindex> kinderen;
 
     int eigenSchijfpagina;
 
@@ -32,7 +32,7 @@ private:
     bool isBlad = true;
     int parent = -1;
 public:
-    Bknoop();
+    Bknoop(){};
 
     Bknoop(int orde) : m(orde) {};
 
@@ -40,7 +40,7 @@ public:
 
     void voegToe(Sleutel s, Data d);
 
-    Bknoop zoek(Sleutel s, Data d);
+    Bknoop& zoek(Sleutel s, Data d);
 
     void voegToe(Sleutel, Data, int, int);
 
@@ -55,26 +55,29 @@ public:
 
 template<class Sleutel, class Data>
 void Bknoop<Sleutel, Data>::voegToe(Sleutel s, Data d, int schijfIDLinkerKind, int schijfIDRechterKind) {
-    Bknoop<Sleutel,Data> knoop = Bknoop<Sleutel,Data>();//zoek(s,d);
-    k++;
-    knoop.sleutels.resize(k);   //k telt vanaf nul, maar de size moet dus plus 1 zijn.
-    knoop.data.resize(k);
-    knoop.kinderen.resize(k + 1);
+    Bknoop<Sleutel,Data>& knoop = zoek(s,d);
+    knoop.k++;
+    std::cout << "resizing knoop.sleutels to" << knoop.k << endl;
+    knoop.sleutels.resize(knoop.k);   //k telt vanaf nul, maar de size moet dus plus 1 zijn.
+    std::cout << " resizing done" << std::endl;
+    knoop.data.resize(knoop.k);
+    knoop.kinderen.resize(knoop.k + 1);
 
-    int i = k - 1;
-    if (isBlad) {
-        while (i > 1 && sleutels[i - 1] > s) {
+    int i = knoop.k - 1;
+    if ( knoop.isBlad) {
+        while (i > 1 &&  knoop.sleutels[i - 1] > s) {
             knoop.sleutels[i] = move(knoop.sleutels[i - 1]);
             knoop.data[i] = move(knoop.data[i - 1]);
             knoop.setSchijfIDVanRechterKind(knoop.geefSchijfIDVanRechterKind(i - 1), i); //no need to move() int.
             i--;
         }
-        sleutels[i] = s;
-        data[i] = d;
+        knoop.sleutels[i] = s;
+        knoop.data[i] = d;
         knoop.setSchijfIDVanLinkerKind(i, schijfIDLinkerKind);
         knoop.setSchijfIDVanRechterKind(i, schijfIDRechterKind);
 
-        if (k == m) {
+        if ( knoop.k ==  knoop.m && knoop.k != 0) {
+            std::cout << "splits" << endl;
             knoop.splits();
         }
     }
@@ -106,6 +109,7 @@ void Bknoop<Sleutel, Data>::toString() {
 
 
     }
+ //herhaal recursief
     std::cout << std::endl;
     std::cout << std::endl;
     for (int k: kinderen) {
@@ -116,6 +120,7 @@ void Bknoop<Sleutel, Data>::toString() {
         }
 
     }
+
 }
 
 // Lijkt misschien beetje belachelijk om hiervan functies te maken. Maar het verduidelijkt wel veel. Moet je niet telkens
@@ -147,13 +152,15 @@ void Bknoop<Sleutel, Data>::splits() {
         int midden = (int) k / 2;
 
         Bknoop Lknoop(m);
+        Lknoop.isBlad = true;
         for (int i = 0; i < midden; i++) {
             Lknoop.voegToe(sleutels[i], data[i], geefSchijfIDVanLinkerKind(i), geefSchijfIDVanRechterKind(i));
         }
 
-        int lknoopID = this->schrijf(Lknoop);
+        blokindex lknoopID = this->schrijf(Lknoop);
 
         Bknoop Rknoop(m);
+        Rknoop.isBlad = true;
         for (int i = midden + 1; i < k; i++) {
 
             int sleutelTobemoved = sleutels[i];
@@ -161,7 +168,7 @@ void Bknoop<Sleutel, Data>::splits() {
                            geefSchijfIDVanRechterKind(i));
         }
 
-        int rknoopID = this->schrijf(Lknoop);
+        blokindex rknoopID = this->schrijf(Lknoop);
 
         Bknoop nieuweWortel(m);
         nieuweWortel.voegToe(sleutels[midden], data[midden], lknoopID, rknoopID);
@@ -173,17 +180,18 @@ void Bknoop<Sleutel, Data>::splits() {
 }
 
 template<class Sleutel, class Data>
-Bknoop<Sleutel, Data> Bknoop<Sleutel, Data>::zoek(Sleutel s, Data d) {
+Bknoop<Sleutel, Data>& Bknoop<Sleutel, Data>::zoek(Sleutel s, Data d) {
     if (isBlad) {
         return *this;
     }
-    int schijfID;
+    blokindex schijfID;
 
     int i = 0;
     while (i < k && s < sleutels[i]) {
         i++;
     }
-    if(i == k && s > sleutels[i]){
+    //i--;
+    if(i == k && s > sleutels[i-1]){
         schijfID = geefSchijfIDVanRechterKind(i);
     } else {
         schijfID = geefSchijfIDVanLinkerKind(i);
