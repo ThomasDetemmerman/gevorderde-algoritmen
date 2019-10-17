@@ -31,9 +31,6 @@ void BinQueue<Sleutel,Data>::voegToe(Sleutel prioriteit, Data data) {
 template <class Sleutel, class Data>
 void BinQueue<Sleutel,Data>::voegToe(int diepte, BinomialTree<Sleutel,Data> &bt) {
 
-
-
-
     if(this->at(diepte) == NULL){
         this->at(diepte) = move(bt);
     } else {
