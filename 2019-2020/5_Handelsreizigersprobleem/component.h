@@ -15,7 +15,7 @@ public:
 
     component(std::set<int> leden): _verantwoordelijke(*(leden.begin())), std::set<int>(leden){};
     bool contains(int lid) const{
-       return (this->find(lid) == this->end());
+       return (this->find(lid) != this->end());
     }
 
     int getVerantwoordelijke() const{

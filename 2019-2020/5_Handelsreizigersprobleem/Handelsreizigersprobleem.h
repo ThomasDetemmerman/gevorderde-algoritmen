@@ -50,6 +50,7 @@ void Handelsreizigersprobleem::run() {
 }
 
 void Handelsreizigersprobleem::stap1() {
+    std::cout << "stap 1";
     int asociaalGezin = 774;
     std::set<int> visited;
     std::stack<int> tmp;
@@ -104,7 +105,6 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
     //mapt huisID (dus nummer in rss.txt) op knoopID. Dit is nodig omdat de niet alle huisID's meer gebruikt worden en dat zou te veel onnodig geheugen alloceren
     std::unordered_map<int, int> umap;
     for (int i = 0; i < vector.size(); i++) {
-        std::cout << "boom " << i << "/" << vector.size() << " -> " << vector[i].size() <<  " members" << std::endl << std::flush;
         std::set<int>::iterator compontent_it = vector[i].begin();
         int knoopIDCurrent, knoopIDBuur;
         int verantwoordelijkeHuidige = vector[i].getVerantwoordelijke();
@@ -115,6 +115,9 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
         } else {
             knoopIDCurrent = umap[verantwoordelijkeHuidige];
         }
+
+        std::cout << "boom " << i << "/" << vector.size()<< " (verantwoordelijke: " << verantwoordelijkeHuidige <<  " ) \t-> " << vector[i].size()<< " members" << std::endl << std::flush;
+
 
         // voor elk knoop in compontent
         while (compontent_it != vector[i].end()) {
@@ -135,7 +138,8 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
                     // ofwel zat hij er al in ofwel hebben we hem net toegevoegd. Wat het ook is, nu voegen we de verbinding toe.
                     try {
                         componentengraaf.voegVerbindingToe(knoopIDCurrent, knoopIDBuur);
-                        std::cout << "  └ verbinding toegevoegd van " << knoopIDCurrent << " -> " << knoopIDBuur <<std::endl;
+                        std::cout << "  └ verbinding toegevoegd van " << knoopIDCurrent << " -> " << knoopIDBuur
+                                  << std::endl;
                     } catch (...) {
                         // verbinding bestaat al. Je zou er op kunnen chechen en indien het niet bestaat voeg je het toe
                         // of je maakt het je gemakkelijk en je catcht de error
@@ -152,10 +156,10 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
 int Handelsreizigersprobleem::vindVerantwoordelijkeVan(int lid, std::vector<component> vector) {
     for (component c: vector) {
         if (c.contains(lid)) {
-            c.getVerantwoordelijke();
+            return c.getVerantwoordelijke();
         }
     }
-    return -1;
+    throw ("verantwoordelijke niet gevonden");
 }
 
 std::set<int> Handelsreizigersprobleem::convertStackToSet(std::stack<int> &stack) {
