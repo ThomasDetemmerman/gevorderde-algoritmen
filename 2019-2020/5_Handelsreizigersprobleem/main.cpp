@@ -34,7 +34,13 @@ int main(int argc, char *argv[]) {
     }
     istrm.close();
 
-    Handelsreizigersprobleem hrp(graaf, omgekeerdeGraaf);
-    hrp.run();
+    Handelsreizigersprobleem hrp;
+    std::stack<int> verkoopsvolgorde = hrp.run(graaf, omgekeerdeGraaf);
+
+    std::cout << "Verkopen aan " << verkoopsvolgorde.size() << " gezinngen in onderstaande volgorde:" << std::endl;
+    while(!verkoopsvolgorde.empty()){
+        std::cout << verkoopsvolgorde.top() <<  " >> ";
+        verkoopsvolgorde.pop();
+    }
 
 }

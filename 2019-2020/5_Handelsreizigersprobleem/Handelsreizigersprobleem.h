@@ -12,54 +12,80 @@
 
 class Handelsreizigersprobleem {
 private:
-    Graaf<GERICHT> graaf;
-    Graaf<GERICHT> omgekeerdeGraaf;
-    std::stack<int> postorder;//todo: not hardcode
-    int size;
+
 public:
-    Handelsreizigersprobleem(Graaf<GERICHT> &g, Graaf<GERICHT> &gr) : graaf(g), omgekeerdeGraaf(gr) {
-        postorder.push(3);
-    }
+    Handelsreizigersprobleem() {
+    };
 
-    void run();
 
-    void stap1();
+
+    void calculateePostOrder();
 
 
     void DEZrec(int startpunt, std::stack<int> &postordernummering, std::set<int> *visited, Graaf<GERICHT> &graaf);
 
 
-    void stap3(std::vector<component> vector);
 
-    int vindVerantwoordelijkeVan(int lid, std::vector<component> vector);
 
-    std::vector<component> stap2();
+    int vindVerantwoordelijkeVan(int lid, std::vector<component> &vector);
+
+
 
     std::set<int> convertStackToSet(std::stack<int> &stack);
+
+    std::stack<int> calculateePostOrder(Graaf<GERICHT> &g, int size);
+
+    std::vector<component> calculateComponents(Graaf<GERICHT> &graaf, std::stack<int> &stack);
+
+    GraafMetKnoopdata<GERICHT, int> convertToComponentGrapth(Graaf<GERICHT> &graaf, std::vector<component> &vector );
+
+    std::stack<int>  run(Graaf<GERICHT> &graaf, Graaf<GERICHT> &omgekeerdeGraaf);
 };
 
-void Handelsreizigersprobleem::run() {
+std::stack<int>  Handelsreizigersprobleem::run(Graaf<GERICHT> &graaf, Graaf<GERICHT> &omgekeerdeGraaf) {
     //stap 1: bereken postordering met dez
-    stap1();
+    std::stack<int> postorder = calculateePostOrder(graaf, 5000);
 
     //stap 2: pas dez toe op elke postorder nummer dat nog niet vistided is
-    std::vector<component> bos = stap2();
+    std::vector<component> bos = calculateComponents(omgekeerdeGraaf, postorder);
 
     // stap 3: stel componentengraaf op
-    stap3(bos);
+    GraafMetKnoopdata<GERICHT, int> componentengraaf =  convertToComponentGrapth(graaf, bos);
+
+
+    //stap 4: topologisch sorteren
+    //todo: mooier geprogrammeerd met een graaf.size() functie.
+
+
+    std::stack<int> verkoopvolgordeknoopID = calculateePostOrder(componentengraaf, bos.size());
+    std::stack<int> verkoopvolgorde;
+    while(!verkoopvolgordeknoopID.empty()){
+        int knoopID = verkoopvolgordeknoopID.top();
+        verkoopvolgordeknoopID.pop();
+
+        int familieID = *(componentengraaf.geefKnoopdata(knoopID));
+        verkoopvolgorde.push(familieID);
+
+    }
+    return verkoopvolgorde;
+
+
 }
 
-void Handelsreizigersprobleem::stap1() {
-    std::cout << "stap 1";
-    int asociaalGezin = 774;
+std::stack<int> Handelsreizigersprobleem::calculateePostOrder(Graaf<GERICHT> &g,int size) {
     std::set<int> visited;
     std::stack<int> tmp;
-    DEZrec(asociaalGezin, tmp, &visited, this->graaf);
-    this->postorder = tmp;
+    for(int i=0; i < size; i++){
+        if(visited.find(i) == visited.end()){
+            DEZrec(i, tmp, &visited, g);
+        }
+
+    }
+
+    return tmp;
 }
 
-std::vector<component> Handelsreizigersprobleem::stap2() {
-    std::cout << std::endl << "stap 2" << std::endl;
+std::vector<component> Handelsreizigersprobleem::calculateComponents(Graaf<GERICHT> &omgekeerdegraaf, std::stack<int> &postorder) {
     std::set<int> visited;
     std::vector<component> bos;
 
@@ -68,7 +94,7 @@ std::vector<component> Handelsreizigersprobleem::stap2() {
         int startpunt = postorder.top();
         postorder.pop();
         if (visited.find(startpunt) == visited.end()) {
-            DEZrec(startpunt, tmpboom, &visited, omgekeerdeGraaf);
+            DEZrec(startpunt, tmpboom, &visited, omgekeerdegraaf);
             //waarom een stack als je hem toch converteert naar een set? DEZ wordt ook in stap1 aangeroepen en deze verwacht een stack.
             bos.push_back(component(convertStackToSet(tmpboom)));
         }
@@ -99,8 +125,8 @@ void Handelsreizigersprobleem::DEZrec(int startpunt, std::stack<int> &postnummer
     postnummering.push(startpunt);
 }
 
-void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
-    std::cout << "stap 3" << std::endl << "go catch some coffee ☕" << std::endl;
+GraafMetKnoopdata<GERICHT, int> Handelsreizigersprobleem::convertToComponentGrapth(Graaf<GERICHT> &graaf, std::vector<component> &vector) {
+    std::cout <<  "go catch some coffee ☕" << std::endl;
     GraafMetKnoopdata<GERICHT, int> componentengraaf;
     //mapt huisID (dus nummer in rss.txt) op knoopID. Dit is nodig omdat de niet alle huisID's meer gebruikt worden en dat zou te veel onnodig geheugen alloceren
     std::unordered_map<int, int> umap;
@@ -138,8 +164,7 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
                     // ofwel zat hij er al in ofwel hebben we hem net toegevoegd. Wat het ook is, nu voegen we de verbinding toe.
                     try {
                         componentengraaf.voegVerbindingToe(knoopIDCurrent, knoopIDBuur);
-                        std::cout << "  └ verbinding toegevoegd van " << knoopIDCurrent << " -> " << knoopIDBuur
-                                  << std::endl;
+                        //std::cout << "  └ verbinding toegevoegd van " << knoopIDCurrent << " -> " << knoopIDBuur << std::endl;
                     } catch (...) {
                         // verbinding bestaat al. Je zou er op kunnen chechen en indien het niet bestaat voeg je het toe
                         // of je maakt het je gemakkelijk en je catcht de error
@@ -151,9 +176,11 @@ void Handelsreizigersprobleem::stap3(std::vector<component> vector) {
     }
     std::cout << "compontentgraaf gegenereerd in dot file" << std::endl;
     componentengraaf.teken("output2.dot");
+    return componentengraaf;
+
 }
 
-int Handelsreizigersprobleem::vindVerantwoordelijkeVan(int lid, std::vector<component> vector) {
+int Handelsreizigersprobleem::vindVerantwoordelijkeVan(int lid, std::vector<component> &vector) {
     for (component c: vector) {
         if (c.contains(lid)) {
             return c.getVerantwoordelijke();
@@ -170,5 +197,8 @@ std::set<int> Handelsreizigersprobleem::convertStackToSet(std::stack<int> &stack
     }
     return tmp;
 }
+
+
+
 
 #endif //INC_5_HANDELSREIZIGERSPROBLEEM_HANDELSREIZIGERSPROBLEEM_H
