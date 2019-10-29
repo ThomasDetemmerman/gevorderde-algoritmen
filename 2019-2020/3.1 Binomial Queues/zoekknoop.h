@@ -16,5 +16,6 @@ public:
     Data data;
     BinomialTree<Sleutel, Data> kind, broer;
 
+
 };
 
