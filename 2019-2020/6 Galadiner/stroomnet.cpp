@@ -23,5 +23,7 @@ int main(){
 
     cout<<sn<<endl;
     sn.teken("gr2.dot");
-    assert(sn.geefStroom().geefCapaciteit()==14);
+    if(sn.geefStroom().geefCapaciteit()!=14){
+        std::cout << "Oplossing incorrect. Verwachte capaciteit is 14";
+    };
 }

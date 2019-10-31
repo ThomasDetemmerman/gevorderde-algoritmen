@@ -144,6 +144,7 @@ Stroomnetwerk(const Stroomnetwerk<T>& gr);
 Stroomnetwerk(Stroomnetwerk<T>&& gr);
 Stroomnetwerk<T>& operator+=(const Pad<T> & vergrotendpad);
 Stroomnetwerk<T>& operator-=(const Pad<T> & vergrotendpad);
+void updateVerbinding(int van, int naar, T stroom);
 Stroomnetwerk<T> geefStroom();
 T geefCapaciteit();
 
@@ -152,7 +153,6 @@ virtual void teken(const char* bestandsnaam) const;
 protected:
     virtual std::string knooplabel(int i) const;
 
-    void updateStroom(int van, int naar, int stroom);
 };
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(int grootte,int _van,int _naar):
@@ -246,7 +246,7 @@ Stroomnetwerk<T>& Stroomnetwerk<T>::operator+=(const Pad<T> & vergrotendpad){
 
 
         //eerst controleren of er al een terugverbinding is.
-        if(this->verbindingsnummer(naar, van) != -1){
+        if(this->verbindingsnummer(naar, van) == -1){
             int terugCapaciteit = *(this->geefTakdata(naar, van));
 
             // als de capaciteit van de terugverbinding groter is dan de capaciteit dat we aan de heencapaciteit zouden geven, trekken we deze gewoon af van elkaar
@@ -264,31 +264,52 @@ Stroomnetwerk<T>& Stroomnetwerk<T>::operator+=(const Pad<T> & vergrotendpad){
             }
 
         } else {
-            this->voegVerbindingToe(van, naar, vergrotendPadCapaciteit);
+           updateVerbinding(van, naar,vergrotendPadCapaciteit );
+
         }
     }
+    return *this;
 
 }
 
 
 template <class T>
 Stroomnetwerk<T>& Stroomnetwerk<T>::operator-=(const Pad<T> & vergrotendpad) {
-    int vergrotendPadCapaciteit = vergrotendpad.geefCapaciteit();
+    T vergrotendPadCapaciteit = vergrotendpad.geefCapaciteit();
     for(int i=1; i < vergrotendpad.size(); i++){
         int van = vergrotendpad[i];
         int naar = vergrotendpad[i-1];
 
-        assert(this->verbindingsnummer(van, naar) == -1);
-        *(this->geefTakdata(naar, van)) -= vergrotendPadCapaciteit;
+        this->teken("error.dot");
+        std::cout << "Trying to get connection between:" << van << " -> " << naar << std::endl;
 
-        if(this->verbindingsnummer(naar, van) == -1){
-            //maak terugverbinding aan
-            this->voegVerbindingToe(naar, naar, vergrotendPadCapaciteit);
-        } else {
-            *(this->geefTakdata(naar, van)) += vergrotendPadCapaciteit;
+        //assert(!(this->verbindingsnummer(van, naar) == -1));
+        if(this->verbindingsnummer(van, naar) == -1){
+            this->teken("error.dot");
+            std::cout << "Trying to get connection between:" << van << " -> " << naar << std::endl;
+
+            exit(-1);
         }
+
+
+        updateVerbinding(van, naar, -vergrotendPadCapaciteit);
+        updateVerbinding(naar, van, vergrotendPadCapaciteit);
+
     }
 
 }
+
+template <class T>
+void Stroomnetwerk<T>::updateVerbinding(int van, int naar, T stroom){
+    if(this->verbindingsnummer(van, naar) == -1){
+        this->voegVerbindingToe(van, naar, stroom);
+    } else {
+        *(this->geefTakdata(van, naar)) += stroom;
+    }
+    if( *(this->geefTakdata(van, naar)) == 0){
+        this->verwijderVerbinding(van, naar);
+    }
+}
+
 
 #endif
