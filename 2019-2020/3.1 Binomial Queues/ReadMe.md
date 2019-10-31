@@ -1,6 +1,6 @@
-#Binomiaal bomen
+# Binomiaal bomen
 
-*status:* zogoed als afgewerkt
+**status:** zogoed als afgewerkt
 
 Als je de tekeningen bekijkt dient er wel rekening mee gehouden te worden dat linkerkind effectief het kind is maar rechterkind eigenlijk een broer is. Het zijn namelijk meerwegszoekbomen opgebouwd mbv gelinkte lijsten.
 
