@@ -234,6 +234,8 @@ int PRBlad::geefDiepte() {
 
 void PRQuadtree::voegToe(int x, int y) {
     if (!(*this)) {
+        // of in 1 lijn
+        // *this = PRQuadtree(make_unique<PRBlad>(x, y));
         Knoopptr nieuw = std::make_unique<PRBlad>(x, y);
         *this = move(nieuw);
     } else {
