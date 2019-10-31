@@ -8,12 +8,14 @@ int main() {
     }
 
 
+    bq.teken();
+    bq.toString();
 
-    //bq.teken();
-    int min = bq.min();
+    char min = bq.top();
     while (min != -1){
         std::cout << min << " - "  << std::flush;
-        min = bq.min();
+        min = bq.top();
+
     }
 
     return 0;

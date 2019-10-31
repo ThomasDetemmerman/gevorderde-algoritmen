@@ -18,9 +18,11 @@ public:
     };
     void voegToe(Sleutel, Data);
     void teken();
-    Data min();
+    Data top();
     //todo: waarom kan dit geen private functie zijn:
     void voegToe(int, BinomialTree<Sleutel,Data> &&bq);
+
+    void toString();
 };
 
 template <class Sleutel, class Data>
@@ -53,11 +55,17 @@ void BinQueue<Sleutel, Data>::teken() {
 }
 
 template<class Sleutel, class Data>
-Data BinQueue<Sleutel, Data>::min() {
+Data BinQueue<Sleutel, Data>::top() {
 
     BinomialTree<Sleutel, Data> *min = nullptr;
     int diepte;
-    for(int i = 1; i < this->size(); i++){
+    for(int i = 0; i < this->size(); i++){
+       /* if(this->at(i)){
+            std::cout << "min van boom " << i << " is " << this->at(i)->prioriteit << std::endl;
+        } else {
+            std::cout << "min van boom " << i << " bestaat niet" << std::endl;
+        }
+        */
         if(this->at(i) != NULL && min == nullptr){
             min = &(this->at(i));
             diepte = i;
@@ -77,12 +85,23 @@ Data BinQueue<Sleutel, Data>::min() {
     while(broer){
         BinomialTree<Sleutel, Data> tmp = move(broer->broer);
 
-        voegToe(diepte--, move(broer));
+        voegToe(--diepte, move(broer));
         broer = move(tmp);
     }
-
+    // delete de huidige binomiaal boom.
+    // *min wijst naar de unique pointer van het type binomaal boom. Door deze te resetten verwijderen we hem.
+    (*min).reset();
 
     return mindata;
+}
+
+template<class Sleutel, class Data>
+void BinQueue<Sleutel, Data>::toString(){
+    std::cout << std::endl;
+    for (int i = 0; i < this->size(); ++i) {
+        std::cout << i << " : " <<  this->at(i).toString() << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 

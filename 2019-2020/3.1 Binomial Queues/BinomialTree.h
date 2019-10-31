@@ -33,8 +33,12 @@ public:
     //BinomialTree(unique_ptr<zoekKnoop<Sleutel, Data>> &&k) : unique_ptr<zoekKnoop<Sleutel, Data>>(move(k)){};
     void teken(const char *bestandsnaam);
 
+    string toString();
+
 private:
     string tekenrec(ostream &uit, int &knoopteller);
+
+
 };
 
 template<class Sleutel, class Data>
@@ -87,4 +91,22 @@ string BinomialTree<Sleutel, Data>::tekenrec(ostream &uit, int &knoopteller) {
     return wortelstring.str();
 }
 
+template<class Sleutel, class Data>
+string BinomialTree<Sleutel, Data>::toString(){
+    string sol = " ";
+    if(!*this){
+        return "NULL";
+    }
+    else {
+        sol = sol + (*this)->data;
+        if((*this)->kind){
+            sol += (" " + (*this)->kind.toString());
+        }
+
+        if((*this)->broer){
+            sol += (" " + (*this)->broer.toString());
+        }
+    }
+    return sol;
+}
 #endif //INC_4_1_BINOMIAL_QUEUES_BINOMIALTREE_H
