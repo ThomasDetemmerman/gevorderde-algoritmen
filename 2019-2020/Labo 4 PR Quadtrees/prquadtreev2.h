@@ -234,6 +234,8 @@ int PRBlad::geefDiepte() {
 
 void PRQuadtree::voegToe(int x, int y) {
     if (!(*this)) {
+        // of in 1 lijn
+        // *this = PRQuadtree(make_unique<PRBlad>(x, y));
         Knoopptr nieuw = std::make_unique<PRBlad>(x, y);
         *this = move(nieuw);
     } else {
@@ -244,6 +246,9 @@ void PRQuadtree::voegToe(int x, int y) {
         // blad converten naar inwendige knoop met twee bladeren
         if ((*doel) != nullptr && (*doel)->isBlad()) {
             // we slaan eerst ons huidig blad op voor later
+            //alternatief:  PRBlad *oudBlad = static_cast<PRBlad*>(&(**doel);
+            // doel->PRQuadtree = PRKnoop = *PRknoop -> knoop. Deze laatste zijn addres moeten we hebben.
+            // we kunnen enkel het adres casten en niet het object
             PRBlad* huidigBlad = static_cast<PRBlad* >(doel->get());
 
             // we maken een nieuwe inwendige knoop aan
