@@ -7,18 +7,15 @@
 
 #include <iostream>
 #include <vector>
+#include <stack>
 #include "schijf.h"
 
 using namespace std;
 
 template<class Sleutel, class Data>
-class Bknoop : private Schijf<Bknoop<Sleutel, Data>> {
+class Bknoop {
 private:
-    int m; //orde / aantal kinderen
-    int k = 0; //huidig aantal sleutels. Dit is max m-1
-    vector<Sleutel> sleutels;
-    vector<Data> data;
-    vector<blokindex> kinderen;
+
 
     int eigenSchijfpagina;
 
@@ -29,9 +26,16 @@ private:
     void setSchijfIDVanLinkerKind(int sleutelIndex, int schijfID);
 
     void setSchijfIDVanRechterKind(int sleutelIndex, int schijfID);
-    bool isBlad = true;
-    int parent = -1;
+
+
 public:
+    vector<Sleutel> sleutels;
+    vector<Data> data;
+    vector<blokindex> kinderen;
+    bool isBlad = true;
+    int m; //orde / aantal kinderen
+    int k = 0; //huidig aantal sleutels. Dit is max m-1
+
     Bknoop(){};
 
     Bknoop(int orde) : m(orde) {};
@@ -40,14 +44,14 @@ public:
 
     void voegToe(Sleutel s, Data d);
 
-    Bknoop& zoek(Sleutel s, Data d);
+    bool contains(Sleutel &s);
 
     void voegToe(Sleutel, Data, int, int);
 
     void toString();
 
 
-    void splits();
+    void splits(stack<int> parents);
 
 
 };
@@ -57,9 +61,8 @@ template<class Sleutel, class Data>
 void Bknoop<Sleutel, Data>::voegToe(Sleutel s, Data d, int schijfIDLinkerKind, int schijfIDRechterKind) {
     Bknoop<Sleutel,Data>& knoop = zoek(s,d);
     knoop.k++;
-    std::cout << "resizing knoop.sleutels to" << knoop.k << endl;
+    std::cout << "aantal sleutels in deze knoop: " << knoop.k << endl;
     knoop.sleutels.resize(knoop.k);   //k telt vanaf nul, maar de size moet dus plus 1 zijn.
-    std::cout << " resizing done" << std::endl;
     knoop.data.resize(knoop.k);
     knoop.kinderen.resize(knoop.k + 1);
 
@@ -83,12 +86,6 @@ void Bknoop<Sleutel, Data>::voegToe(Sleutel s, Data d, int schijfIDLinkerKind, i
     }
 
 }
-
-template<class Sleutel, class Data>
-void Bknoop<Sleutel, Data>::voegToe(Sleutel s, Data d) {
-    voegToe(s, d, -1, -1);
-}
-
 
 template<class Sleutel, class Data>
 void Bknoop<Sleutel, Data>::toString() {
@@ -146,9 +143,11 @@ void Bknoop<Sleutel, Data>::setSchijfIDVanRechterKind(int sleutelIndex, int schi
 }
 
 template<class Sleutel, class Data>
-void Bknoop<Sleutel, Data>::splits() {
+void Bknoop<Sleutel, Data>::splits(stack<int> parents) {
+
+
     // geval 1: knoop is de wortel
-    if (parent == -1) {
+    if (parents.emtpy()) {
         int midden = (int) k / 2;
 
         Bknoop Lknoop(m);
@@ -176,6 +175,10 @@ void Bknoop<Sleutel, Data>::splits() {
         *this = move(nieuweWortel);
 
 
+    } else {
+        int parent = parents.top();
+        parents.pop();
+        //todo
     }
 }
 
@@ -201,6 +204,15 @@ Bknoop<Sleutel, Data>& Bknoop<Sleutel, Data>::zoek(Sleutel s, Data d) {
     this->lees(tmp, schijfID);
     return tmp.zoek(s, d);
 }
+template<class Sleutel, class Data>
+bool Bknoop<Sleutel, Data>::contains(Sleutel &s){
+    for (int i = 0; i < k; ++i) {
+        if(sleutels.at(i)== s){
+            return true;
+        }
+    }
+    return false;
 
+}
 
 #endif //GEVORDERDE_ALGORITMEN_BTREE_H
