@@ -180,8 +180,8 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 	huidig.k = midden - 1;
 	broer.isblad = huidig.isblad;
 
-    // we hebben alle data kleinder dan midden in de broer gezet
-    // alle data groter dan midden laten staan.
+    // we hebben alle data groter dan midden in de broer gezet
+    // alle data kleiner dan midden laten staan.
     // midden zelf moet nu naar de parent. 
 	T sleutel = huidig.sleutel[midden];
 	D data = huidig.data[midden];
