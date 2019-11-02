@@ -1,13 +1,13 @@
-# Extendible hasing
+# Extendible hashing
 
-status: afgewerkt
+**status:** afgewerkt
 
 - [x] toevoegen
 - [x] zoeken
 
 
 Ik ben vergeten dat als je een sleutel zoek je data moet hebben bij die sleutel. In plaats daarvan slaat hij de sleutel op.
-Beetje usele
+Beetje useless dus om een sleutel te returnen als je een sleutel zoekt ma bon.
 
 ```
 tests:
