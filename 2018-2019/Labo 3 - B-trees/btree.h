@@ -186,7 +186,7 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 		broer.data[start - midden - 1] = huidig.data[start];
 	}
 	broer.k = midden - 1;
-	huidig.k = midden - 1;
+	huidig.k = m - midden;
 	broer.isblad = huidig.isblad;
 
     // we hebben alle data groter dan midden in de broer gezet
@@ -392,7 +392,7 @@ string Bknoop<T,D,m>::dotstring() const{
     }
     else{
         os<<"  ";
-        for (int i=1; i<=k; i++ ){
+        for (int i=0; i<k; i++ ){
             os<<sleutel[i]<<"  ";
         }
     }
