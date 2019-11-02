@@ -15,21 +15,16 @@ int main2();
 
 int main(){
     main2();
+    //main1();
 }
 
 int main2(){
     Schijf<Bknoop<int, char, M>> C_disk =  Schijf<Bknoop<int, char, M>>();
     Btree<int, char, M> bt(C_disk);
-    bt.voegToe(1,'a');
-    bt.teken("output.dot");
-    bt.voegToe(2,'b');
-    bt.teken("output.dot");
-    bt.voegToe(3,'c');
-    bt.teken("output.dot");
-    bt.voegToe(4,'d');
-    bt.teken("output.dot");
-    bt.voegToe(5,'d');
-    bt.teken("output.dot");
+    for (int i = 0; i < 40; ++i) {
+        bt.voegToe(i, i+'a');
+        bt.teken("output.dot");
+    }
     std::cout << "tekening gemaakt in output.dot"<< std::endl;
 
 }
@@ -48,11 +43,15 @@ int main1(){
     string input;
 	while (infile >> input)
     {
+	    std::cout << "voeg toe:" << input << std::endl;
         bt.voegToe(input,key);
+        //indien xdot loopt kan je live aanpassingen volgen
+        bt.teken("output.dot");
         key++;
     }
-    
 
+    bt.teken("output.dot");
+    std::cout << "tekening gemaakt in output.dot"<< std::endl;
     
 
     //Knoop<string, int, 3> result = bt.zoek("lorem");

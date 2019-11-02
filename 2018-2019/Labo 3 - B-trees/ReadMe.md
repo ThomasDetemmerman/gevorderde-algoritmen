@@ -1,5 +1,6 @@
 ## strikvraag
 
+Status: Vrij goed voltooid maar crasht bij te veel knopen.
 ```c
 template<class T,class D,unsigned int m>
 int Knoop<T,D,m>::crashtest=0;

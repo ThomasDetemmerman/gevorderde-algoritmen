@@ -129,7 +129,7 @@ void Btree<T, D, m>::voegToe(T sleutel, D data)
     while (!huidig.isblad)
     {
         int i = huidig.k - 1;
-        std::cout << "i was " << i << ", with " << huidig.k << " keys in it ";
+        //std::cout << "i was " << i << ", with " << huidig.k << " keys in it ";
 
         while (i >= 0 && huidig.sleutel[i] > sleutel)
         {
