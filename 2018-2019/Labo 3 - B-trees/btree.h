@@ -11,6 +11,7 @@ using std::cout;
 using std::endl;
 using std::move;
 using std::ostream;
+using std::string;
 
 // Dit bestand bevat code en hoofdingen van ...
 template <class T, class D, unsigned int m>
@@ -68,6 +69,8 @@ class Bknoop
     void addChildren(T& sleutel, blokindex& lChild, blokindex& rChild);
 
     void toString();
+
+    string dotstring() const;
 };
 
 template <class T, class D, unsigned int m>
@@ -94,6 +97,8 @@ class Btree
 
 
     void toString();
+
+    void teken(const char *bestandsnaam) const;
 
 private:
     Schijf<Knoop> &schijf;
@@ -293,6 +298,13 @@ bool Btree<T, D, m>::zoek(T &sleutel, Bknoop<T, D, m> *zoekKnoop, blokindex &par
     return zoek(sleutel, zoekKnoop, zoekKnoop->index[i]);
 }
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////        tekenfuncties             ////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 template <class T, class D, unsigned int m>
 void Btree<T, D, m>::toString(){
     wortel.toString();
@@ -330,8 +342,61 @@ void Bknoop<T, D, m>::toString() {
             std::cout << "[]\t";
         }
     }
+}
 
+template <class T, class D, unsigned int m>
+void Btree<T, D, m>::teken(const char * bestandsnaam) const{
+    std::ofstream uit(bestandsnaam);
+    //    ostream& uit=cerr;
+    assert(uit);
+    uit<<"digraph {\n";
+    //    uit<<wortel.aantalSleutels<<"\n";
+    //    uit<<wortel.isBlad<<"\n";
+    //noot: beetje ineffici"ent: knopen worden twee keer ingelezen
+    std::queue<std::pair<blokindex,string>> BEq;//queue voor breedte eerst;
+    if (!wortel.isblad)
+        BEq.emplace(wortelindex,wortel.dotstring());
+    uit<<"\""<<wortel.dotstring()<<"\" [shape=rectangle] [label=\""<<wortel.dotstring()<<"\"];\n";
+    while (!BEq.empty()){
+        Knoop ouder;
+        schijf.lees(ouder,BEq.front().first);
+        string& ouderstring=BEq.front().second;
+        for (int i=0; i<=ouder.k; i++ ){
+            Knoop kind;
+            schijf.lees(kind,ouder.index[i]);
+            string kindstring=kind.dotstring();
+            uit<<"\""<<kindstring<<"\" [shape=rectangle] [label=\""<<kindstring<<"\"];\n";
+            uit<<"\""<<ouderstring<<"\" -> \""<<kindstring<<"\";\n";
+            if (!kind.isblad){
+                BEq.emplace(ouder.index[i],kindstring);
+            };
+        }
+        BEq.pop();
+    };
 
+    uit<<"}\n";
+}
+
+template<class T, class D,unsigned int m>
+string Bknoop<T,D,m>::dotstring() const{
+    std::ostringstream os;
+//noot: voor debugdoelen is het vaak handig de indexen van de kinderen uit te schrijven
+//vervang dan volgende lijn door
+//        if (!isBlad){
+    if (false){
+        os<<"niet-blad: ";
+        os<<" ("<<index[0]<<")";
+        for (int i=1; i<=k; i++ ){
+            os<<sleutel[i]<<"("<<index[i]<<") ";
+        }
+    }
+    else{
+        os<<"  ";
+        for (int i=1; i<=k; i++ ){
+            os<<sleutel[i]<<"  ";
+        }
+    }
+    return os.str();
 }
 
 #endif
