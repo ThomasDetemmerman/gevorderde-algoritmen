@@ -28,6 +28,7 @@ class Bknoop
   public:
     Bknoop<T, D, m>()
     {
+
         // temp is nodig om te verhinderen dat de compiler dit negeert
         int temp = (4 / (-4 + crashtest));
         crashtest++;
@@ -163,8 +164,8 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
             ▭ ▭ ▭                      ▭ ▭ ▭ ▭
                  \           ==>            | \
                   ▭▭▭▭▭                    ▭▭   ▭▭▭
-                    ^                       ^
-                 splits                  broer
+                    ^                            ^
+                 splits                         broer
 
     */
 	// Knoop splitsen
