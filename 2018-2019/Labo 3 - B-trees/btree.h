@@ -28,7 +28,7 @@ class Bknoop
   public:
     Bknoop<T, D, m>()
     {
-
+        int crashtest = 0;
         // temp is nodig om te verhinderen dat de compiler dit negeert
         int temp = (4 / (-4 + crashtest));
         crashtest++;
@@ -66,6 +66,8 @@ class Bknoop
     static int crashtest;
     void addKeyAndValue(T &sleutel, D &data);
     void addChildren(T& sleutel, blokindex& lChild, blokindex& rChild);
+
+    void toString();
 };
 
 template <class T, class D, unsigned int m>
@@ -89,9 +91,11 @@ class Btree
     };
     void voegToe(T sleutel, D data);
     bool zoek(T &sleutel, Bknoop<T, D, m> *zoekKnoop, blokindex &parent);
-    
 
-  private:
+
+    void toString();
+
+private:
     Schijf<Knoop> &schijf;
     Knoop wortel;
     blokindex wortelindex;
@@ -287,6 +291,47 @@ bool Btree<T, D, m>::zoek(T &sleutel, Bknoop<T, D, m> *zoekKnoop, blokindex &par
     schijf.lees(*zoekKnoop, zoekKnoop->index[i]);
     // recursief verder zoeken.
     return zoek(sleutel, zoekKnoop, zoekKnoop->index[i]);
+}
+
+template <class T, class D, unsigned int m>
+void Btree<T, D, m>::toString(){
+    wortel.toString();
+}
+
+template <class T, class D, unsigned int m>
+void Bknoop<T, D, m>::toString() {
+    std::cout << "\t";
+    for (int i = 0; i < m; ++i) {
+        if(i < k) {
+            std::cout << sleutel[i] << "\t";
+        }
+        else {
+            std::cout << "[]\t";
+        }
+    }
+    std::cout << std::endl;
+
+    std::cout << "\t";
+    for (int i = 0; i < m; ++i) {
+        if(i < k) {
+            std::cout << data[i] << "\t";
+        }
+        else {
+            std::cout << "[]\t";
+        }
+    }
+    std::cout << std::endl;
+    std::cout << " ";
+    for (int i = 0; i < m; ++i) {
+        if(i < k) {
+            std::cout << index[i] << "\t";
+        }
+        else {
+            std::cout << "[]\t";
+        }
+    }
+
+
 }
 
 #endif
