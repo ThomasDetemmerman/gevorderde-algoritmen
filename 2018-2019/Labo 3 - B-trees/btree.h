@@ -138,7 +138,7 @@ void Btree<T, D, m>::voegToe(T sleutel, D data)
         i++;
 
         int tmp;
-        std::cin >> tmp;
+        //std::cin >> tmp; //purpose?
         huidigeIndex = huidig.index[i];
         parents.push(huidigeIndex);
         // lees zal de eerste parameter overschrijven met de nieuwe Bknoop.
