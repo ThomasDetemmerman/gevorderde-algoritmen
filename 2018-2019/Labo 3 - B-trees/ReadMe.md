@@ -1,6 +1,9 @@
-## strikvraag
+# B-tree
 
 Status: Vrij goed voltooid maar crasht bij te veel knopen.
+
+## strikvraag
+
 ```c
 template<class T,class D,unsigned int m>
 int Knoop<T,D,m>::crashtest=0;
