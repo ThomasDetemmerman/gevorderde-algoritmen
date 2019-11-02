@@ -2,6 +2,8 @@
 
 Status: Vrij goed voltooid maar crasht bij te veel knopen.
 
+![result](output.png)
+
 ## strikvraag
 
 ```c
