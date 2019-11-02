@@ -1,3 +1,4 @@
 # Btree
 
-Linker issue not solved.
+
+[Solution can be found in previous year](../../2018-2019/Labo\ 3\ -\ B-trees)

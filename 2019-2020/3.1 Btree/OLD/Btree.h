@@ -28,11 +28,11 @@ Btree<Sleutel,Data>::Btree(int orde) :m(orde){}
 template<class Sleutel, class Data>
 void Btree<Sleutel, Data>::voegToe(Sleutel s, Data d) {
     Bknoop<Sleutel,Data> doel;
-    stack<int> parents;
-    Btree<Sleutel,Data>::zoek(&s, &doel, &parents);
+    stack<blokindex> parents;
+    Btree<Sleutel,Data>::zoek(s, doel, parents);
     assert(!doel.contains(s)); // sleutel bestaat al.
-    doel.voegToe(s,d);
-    if(doel.k = m){
+    doel.voegToe(s,d,NULL, NULL);
+    if(doel.k == m){
         splits(parents);
     }
 };
@@ -49,7 +49,7 @@ void Btree<Sleutel, Data>::voegToe(Sleutel s, Data d) {
 template <class Sleutel, class Data>
 void  Btree<Sleutel,Data>::zoek(Sleutel &s,Bknoop<Sleutel,Data> &doel,  stack<blokindex>  &parents){
     Bknoop<Sleutel, Data> *current;
-    lees(&(*current), root);
+    this->lees(*current, root);
     //parents.push(root);
     while(!current->contains(s) && !current->isBlad){
 
@@ -61,9 +61,9 @@ void  Btree<Sleutel,Data>::zoek(Sleutel &s,Bknoop<Sleutel,Data> &doel,  stack<bl
             i++;
         }
         parents.push(current->kinderen[i]);
-       (*this).lees(&(*current), current->kinderen[i]);
+       this->lees(*current, current->kinderen[i]);
     }
-    return current;
+
 }
 
 /*
@@ -75,7 +75,7 @@ void Btree<Sleutel, Data>::splits(stack<blokindex> parents) {
     // geval 1: knoop is de wortel
     if (parents.empty()) {
         Bknoop<Sleutel, Data> parent;
-        lees(&(parent), root);
+        this->lees(parent, root);
         if(parent.k == m){
             int midden = (int) parent.k / 2;
 
@@ -111,7 +111,7 @@ void Btree<Sleutel, Data>::splits(stack<blokindex> parents) {
         blokindex parentBlokIndex = parents.top();
         parents.pop();
         Bknoop<Sleutel, Data> parent;
-        lees(&(parent), parentBlokIndex);
+        this->lees(parent, parentBlokIndex);
         if(parent.k == m){
 
             splits(parents);
@@ -130,7 +130,7 @@ void Btree<Sleutel, Data>::splits(stack<blokindex> parents) {
 template<class Sleutel, class Data>
 void Btree<Sleutel, Data>::toString() {
     Bknoop<Sleutel, Data> parent;
-    lees(&(parent), root);
+    this->lees(parent, root);
     parent.toString();
 }
 

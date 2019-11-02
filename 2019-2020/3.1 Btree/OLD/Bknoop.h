@@ -44,7 +44,6 @@ public:
 
     void voegToe(Sleutel s, Data d);
 
-    bool contains(Sleutel &s);
 
     void voegToe(Sleutel, Data, int, int);
 
@@ -204,15 +203,6 @@ Bknoop<Sleutel, Data>& Bknoop<Sleutel, Data>::zoek(Sleutel s, Data d) {
     this->lees(tmp, schijfID);
     return tmp.zoek(s, d);
 }
-template<class Sleutel, class Data>
-bool Bknoop<Sleutel, Data>::contains(Sleutel &s){
-    for (int i = 0; i < k; ++i) {
-        if(sleutels.at(i)== s){
-            return true;
-        }
-    }
-    return false;
 
-}
 
 #endif //GEVORDERDE_ALGORITMEN_BTREE_H

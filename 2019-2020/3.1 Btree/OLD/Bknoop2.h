@@ -13,8 +13,8 @@
 using namespace std;
 
 template<class Sleutel, class Data>
-class Bknoop : private Schijf<Bknoop<Sleutel, Data>> {
-private:
+class Bknoop {
+public:
     int m; //orde / aantal kinderen
     int k = 0; //huidig aantal sleutels. Dit is max m-1
     vector<Sleutel> sleutels;
@@ -32,7 +32,7 @@ private:
     void setSchijfIDVanRechterKind(int sleutelIndex, int schijfID);
     bool isBlad = true;
 
-public:
+
     Bknoop(){};
 
     Bknoop(int orde) : m(orde) {};
@@ -47,9 +47,15 @@ public:
     void splits(stack<int> parents);
 
 
-    void splits(stack<blokindex> parents);
 
-    void voegToe(Sleutel s, Data d);
+
+
+
+
+    void voegToe(Sleutel s, Data d, int schijfIDLinkerKind, int schijfIDRechterKind);
+
+
+    bool contains(Sleutel &s);
 };
 
 
@@ -100,17 +106,7 @@ void Bknoop<Sleutel, Data>::toString() {
 
 
     }
- //herhaal recursief
-    std::cout << std::endl;
-    std::cout << std::endl;
-    for (int k: kinderen) {
-        Bknoop kind(m);
-        if (k != -1) {
-            this->lees(kind, k);
-            kind.toString();
-        }
 
-    }
 
 }
 
@@ -134,6 +130,17 @@ void Bknoop<Sleutel, Data>::setSchijfIDVanLinkerKind(int sleutelIndex, int schij
 template<class Sleutel, class Data>
 void Bknoop<Sleutel, Data>::setSchijfIDVanRechterKind(int sleutelIndex, int schijfID) {
     kinderen[sleutelIndex + 1] = schijfID;
+}
+
+template<class Sleutel, class Data>
+bool Bknoop<Sleutel, Data>::contains(Sleutel &s){
+    for (int i = 0; i < k; ++i) {
+        if(sleutels.at(i)== s){
+            return true;
+        }
+    }
+    return false;
+
 }
 
 #endif //GEVORDERDE_ALGORITMEN_BTREE_H
