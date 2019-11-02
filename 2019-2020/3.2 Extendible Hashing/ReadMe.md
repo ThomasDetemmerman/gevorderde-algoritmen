@@ -1,6 +1,6 @@
 # Extendible hashing
 
-status: afgewerkt
+**status:** afgewerkt
 
 - [x] toevoegen
 - [x] zoeken
