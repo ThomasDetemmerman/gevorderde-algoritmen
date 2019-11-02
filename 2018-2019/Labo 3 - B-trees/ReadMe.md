@@ -1,6 +1,6 @@
 # B-tree
 
-Status: Vrij goed voltooid maar crasht bij te veel knopen.
+Status: Afgewerkt
 
 ![result](output.png)
 
