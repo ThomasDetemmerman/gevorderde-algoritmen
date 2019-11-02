@@ -177,6 +177,12 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
                  splits                         broer
 
     */
+    std::cout << "huidige knoop is ";
+    for(auto t: huidig.sleutel){
+        std::cout << t << " ";
+    }
+    std::cout << std::endl;
+    teken("output.dot");
 	// Knoop splitsen
 	Knoop broer;
     // helft van de data kopiëren
@@ -184,7 +190,17 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 	for (int start = midden + 1; start < m; start++) {
 		broer.sleutel[start - midden - 1] = huidig.sleutel[start];
 		broer.data[start - midden - 1] = huidig.data[start];
+		if(!huidig.isblad){
+		    //zowel de het kind voor als na de sleutel moeten gekopieerd worden.
+		    //je zou kunnen doen, telkens het kind voor de sleutel kopieeren en als de loop gedaan is nog één keer extra voor het laatste kind na de laatste sleutel.
+		    //hier is gekozen voor een quick en dirty oplossing waarbij sommige kinderen dubbel gekopieerd worden.
+            broer.index[start - midden-1] = huidig.index[start];
+            broer.index[start - midden] = huidig.index[start+1];
+		}
+
 	}
+
+
 	broer.k = midden - 1;
 	huidig.k = m - midden;
 	broer.isblad = huidig.isblad;
@@ -196,7 +212,7 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 	D data = huidig.data[midden];
 	
     // parent vinden we terug dankzij de stack
-	blokindex lChild = parents.top(); 
+	blokindex lChild = parents.top();
     parents.pop();
 	blokindex rChild = schijf.schrijf(broer);
 	
@@ -211,7 +227,7 @@ void Btree<T, D, m>::splits(Knoop& huidig, stack<blokindex>& parents) {
 		wortelindex = schijf.schrijf(huidig);
 		wortel = huidig;
 	} else {
-		blokindex huidigeIndex = parents.top(); parents.pop();
+		blokindex huidigeIndex = parents.top(); //parents.pop();
 		schijf.lees(huidig, huidigeIndex);
 		huidig.addKeyAndValue(sleutel, data);
 		huidig.addChildren(sleutel, lChild, rChild);

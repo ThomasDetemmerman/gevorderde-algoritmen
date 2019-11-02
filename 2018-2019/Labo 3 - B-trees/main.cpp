@@ -24,6 +24,7 @@ int main2(){
     for (int i = 0; i < 40; ++i) {
         bt.voegToe(i, i+'a');
 
+
     }
     bt.teken("output.dot");
 
