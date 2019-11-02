@@ -23,8 +23,10 @@ int main2(){
     Btree<int, char, M> bt(C_disk);
     for (int i = 0; i < 40; ++i) {
         bt.voegToe(i, i+'a');
-        bt.teken("output.dot");
+
     }
+    bt.teken("output.dot");
+
     std::cout << "tekening gemaakt in output.dot"<< std::endl;
 
 }
