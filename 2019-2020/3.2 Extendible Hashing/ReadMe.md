@@ -1,4 +1,4 @@
-# Extendible hasing
+# Extendible hashing
 
 status: afgewerkt
 
