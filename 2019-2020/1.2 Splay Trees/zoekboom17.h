@@ -108,7 +108,7 @@ void Zoekboom<Sleutel, Data>::zigzig(bool naarRechts)
 }
 
 /*
-*   Deze functie maakt de knoop tot een wortel. It recursively decides wheter to apply zig, zigzig or zigzag.
+*   Deze functie maakt de knoop tot een wortel. It recursively decides whether to apply zig, zigzig or zigzag.
 */
 template <class Sleutel, class Data>
 void Zoekboom<Sleutel, Data>::splay(zoekKnoop<Sleutel, Data>*knoop){
