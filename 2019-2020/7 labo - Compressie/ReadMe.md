@@ -1,6 +1,6 @@
 # Compressie: decoderingstries
 
-status opdracht: afgewerkt. 
+status opdracht: afgewerkt.   
 status bijkomende opdracht: niet afgewerkt
 
 ## Known issues
