@@ -72,12 +72,6 @@ void Splayboom<Sleutel, Data>::splay( zoekKnoop<Sleutel,Data> *& ouder, Zoekboom
 
         splay((*grandparent)->ouder, grandparent);
     }
-
-
-
-
-
-
 }
 
 #endif //INC_2_LABO_SPLAYBOOM_H

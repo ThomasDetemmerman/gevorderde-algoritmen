@@ -62,7 +62,7 @@ void SplayTree<Sleutel, Data>::voegToe(Sleutel s, Data d) {
 
 template<class Sleutel, class Data>
 SplayTree<Sleutel, Data>* SplayTree<Sleutel, Data>::zoek(Sleutel s, Data d) {
-
+    //todo
     return this;
 }
 
