@@ -20,14 +20,17 @@ private:
     BinaireTrie decodetrie;
 public:
     decoderingstrie(const char *fileName);
-    void decode(const char *fileName);
+    void decode(const char *fileName, const char *output);
     void teken(const char* bestandsnaam);
 };
 
 
 decoderingstrie::decoderingstrie(const char *fileName): bincode(fileName), decodetrie(bincode){};
 
-void decoderingstrie::decode(const char *codedFile){
+void decoderingstrie::decode(const char *codedFile, const char *output){
+
+    std::ofstream outfile (output);
+
     ibitstream bitstream(codedFile);
     BinaireTrie* current = &decodetrie;
     TrieBlad* tb = static_cast<TrieBlad*>(current->get());
@@ -39,7 +42,7 @@ void decoderingstrie::decode(const char *codedFile){
            // std::cout << "found blad at adress " << *current  << " with value " << letter << std::endl;
             //reset
             current = &decodetrie;
-            std::cout << (char)letter << std::flush;
+            outfile << (char)letter;
         } else {
             bool currentBit = bitstream.leesbit();
             TrieNietblad* tnb = static_cast<TrieNietblad*>(current->get());
@@ -47,6 +50,9 @@ void decoderingstrie::decode(const char *codedFile){
             current =  &(tnb->geefKind(currentBit));
         }
     }
+
+    outfile.close();
+    bitstream.close();
 
 }
 
