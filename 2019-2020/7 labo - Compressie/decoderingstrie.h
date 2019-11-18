@@ -10,6 +10,7 @@
 #include "bitstream.h"
 #include "bincode.h"
 #include "binairetrie.h"
+#include "EliasCode.h"
 #include <iostream>
 
 using namespace std;
@@ -22,6 +23,7 @@ public:
     decoderingstrie(const char *fileName);
     void decode(const char *fileName, const char *output);
     void teken(const char* bestandsnaam);
+    void encodeAsEliasGammaCode(const char * filename);
 };
 
 
@@ -58,6 +60,11 @@ void decoderingstrie::decode(const char *codedFile, const char *output){
 
 void decoderingstrie::teken(const char* bestandsnaam) {
     decodetrie.teken(bestandsnaam);
+}
+
+void decoderingstrie::encodeAsEliasGammaCode(const char *filename) {
+    EliasCode ec;
+    ec.encode(bincode, filename);
 }
 
 #endif //INC_7_LABO___COMPRESSIE_DECODERINGSTRIE_H

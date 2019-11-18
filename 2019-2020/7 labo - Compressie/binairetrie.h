@@ -144,6 +144,8 @@ string BinaireTrie::tekenrec(ostream &uit, int &knoopteller, int diepte) {
     return wortelstring.str();
 }
 
+
+
 string TrieNietblad::tekenrec(ostream &uit, int &knoopteller, int diepte) {
     std::ostringstream wortelstring;
     if (this == nullptr)
