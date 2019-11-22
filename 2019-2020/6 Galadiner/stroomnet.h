@@ -4,6 +4,9 @@
 #include <cassert>
 #include <iostream>
 #include <functional>
+#include <list>
+#include <algorithm>
+
 using std::vector;
 using std::function;
 using std::ostream;
@@ -58,16 +61,19 @@ template <class T>
 class Vergrotendpadzoeker{
 public:
     Vergrotendpadzoeker(const Stroomnetwerk<T>& stroomnetwerk):
-                    q(stroomnetwerk),v(stroomnetwerk.van),v2(stroomnetwerk.naar),
-                    l(q.aantalKnopen()), m(q.aantalKnopen(),false){};
+            q(stroomnetwerk),v(stroomnetwerk.van),v2(stroomnetwerk.naar),
+            l(q.aantalKnopen()), m(q.aantalKnopen(),false){};
     Pad<T> geefVergrotendPad();
+    Pad<T> geefVergrotendBFS();
 protected:
     virtual void foo(int t, int x,Pad<T>& p);
     const Stroomnetwerk<T>& q;
     vector<int> l;
     vector<bool> m;
     int v,v2;
+
 };
+
 
 
 template <class T>
@@ -97,7 +103,7 @@ void Vergrotendpadzoeker<T>::foo(int t,int x, Pad<T>& p){
     const typename GraafMetTakdata<GERICHT,T>::Burenlijst& a=q[t];
     int ychx=x+1;
     for (typename GraafMetTakdata<GERICHT,T>::Burenlijst::const_iterator it=a.begin();
-                it!=a.end();it++){
+         it!=a.end();it++){
         int u=it->first;
         if (*q.geefTakdata(t,u)> 0){
             if (it->first==v2 && ychx+1 > p.size()){
@@ -133,38 +139,39 @@ template <class T>//T = takdata
 class Stroomnetwerk:public GraafMetTakdata<GERICHT, T >{
 public:
 //leeg netwerk; alleen aantal knopen en van en naar gegeven.
-Stroomnetwerk(int grootte, int _van, int _naar);
+    Stroomnetwerk(int grootte, int _van, int _naar);
 //Copyconstructor. Let op: Graaf<GERICHT>(gr) moet toegevoegd,
 //anders roept de copyconstructor van GraafMetTakdata de defaultconstructor
 //van Graaf op en krijgen we een lege graaf.
 //Stroomnetwerk(const GraafMetTakdata<GERICHT, T>& gr):
 //                    Graaf<GERICHT>(gr),GraafMetTakdata<GERICHT, T>(gr),van(0),naar(1){};
-Stroomnetwerk(const GraafMetTakdata<GERICHT, T>& gr, int _van, int _naar);
-Stroomnetwerk(const Stroomnetwerk<T>& gr);
-Stroomnetwerk(Stroomnetwerk<T>&& gr);
-Stroomnetwerk<T>& operator+=(const Pad<T> & vergrotendpad);
-Stroomnetwerk<T>& operator-=(const Pad<T> & vergrotendpad);
-void updateVerbinding(int van, int naar, T stroom);
-Stroomnetwerk<T> geefStroom();
-T geefCapaciteit();
+    Stroomnetwerk(const GraafMetTakdata<GERICHT, T>& gr, int _van, int _naar);
+    Stroomnetwerk(const Stroomnetwerk<T>& gr);
+    Stroomnetwerk(Stroomnetwerk<T>&& gr);
+
+    Stroomnetwerk<T> geefStroom();
+
+    Stroomnetwerk<T>& operator-=(const Pad<T>& pad);
+    Stroomnetwerk<T>& operator+=(const Pad<T>& pad);
+    void vergrootTak(int start, int eind, T delta);
+    T geefCapaciteit();
 
     int van,naar;
-virtual void teken(const char* bestandsnaam) const;
+    virtual void teken(const char* bestandsnaam) const;
 protected:
     virtual std::string knooplabel(int i) const;
-
 };
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(int grootte,int _van,int _naar):
-                    Graaf<GERICHT>(grootte),GraafMetTakdata<GERICHT, T>(grootte),van(_van),naar(_naar){}
+        Graaf<GERICHT>(grootte),GraafMetTakdata<GERICHT, T>(grootte),van(_van),naar(_naar){}
 
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(const GraafMetTakdata<GERICHT ,T>& gr,int _van,int _naar):
-                    Graaf<GERICHT>(gr),GraafMetTakdata<GERICHT, T>(gr),van(_van),naar(_naar){}
+        Graaf<GERICHT>(gr),GraafMetTakdata<GERICHT, T>(gr),van(_van),naar(_naar){}
 
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(const Stroomnetwerk<T>& gr):
-                    Graaf<GERICHT>(gr),GraafMetTakdata<GERICHT, T>(gr),van(gr.van),naar(gr.naar){}
+        Graaf<GERICHT>(gr),GraafMetTakdata<GERICHT, T>(gr),van(gr.van),naar(gr.naar){}
 
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(Stroomnetwerk<T>&& gr):Stroomnetwerk(0,0,0){
@@ -181,20 +188,69 @@ Stroomnetwerk<T> Stroomnetwerk<T>::geefStroom(){
     Stroomnetwerk<T> oplossing(this->aantalKnopen(),van,naar);
     Stroomnetwerk<T> restnetwerk(*this);
     Vergrotendpadzoeker<T> vg(restnetwerk);
-    Pad<T> vergrotendpad=vg.geefVergrotendPad();
+    Pad<T> vergrotendpad=vg.geefVergrotendBFS();//vg.geefVergrotendPad();
     while(vergrotendpad.size() !=0 ){
         restnetwerk-=vergrotendpad;
         oplossing+=vergrotendpad;
-        vergrotendpad=vg.geefVergrotendPad();
+        vergrotendpad=vg.geefVergrotendBFS();//vg.geefVergrotendPad();
     }
     restnetwerk.teken("restnet.dot");
     return oplossing;
 }
+
+template <class T>
+Stroomnetwerk<T>& Stroomnetwerk<T>::operator-=(const Pad<T>& pad){
+    T padcapaciteit=pad.geefCapaciteit();
+    for (int i=1; i<pad.size(); i++ ){
+        int start=pad[i-1];//start en eind van de tak
+        int eind=pad[i];
+        int taknr=this->verbindingsnummer(start,eind);
+        assert (taknr >= 0);
+        assert(this->takdatavector[taknr]>=padcapaciteit);
+        if (this->takdatavector[taknr]==padcapaciteit)
+            this->verwijderVerbinding(start,eind);
+        else
+            this->takdatavector[taknr]-=padcapaciteit;
+        vergrootTak(eind,start, padcapaciteit);
+    }
+}
+
+template <class T>
+Stroomnetwerk<T>& Stroomnetwerk<T>::operator+=(const Pad<T>& pad){
+    T padcapaciteit=pad.geefCapaciteit();
+    for (int i=1; i<pad.size(); i++ ){
+        T nucapaciteit=padcapaciteit;
+        int van=pad[i-1];
+        int naar=pad[i];
+        int terugtak=this->verbindingsnummer(naar,van);
+        if (terugtak != -1){
+            if (this->takdatavector[terugtak] <= nucapaciteit){
+                nucapaciteit-=this->takdatavector[terugtak];
+                this->verwijderVerbinding(naar,van);
+                if (nucapaciteit > 0)
+                    vergrootTak(van, naar, nucapaciteit);
+            }else{
+                this->takdatavector[terugtak]-=nucapaciteit;
+            }
+        }else
+            vergrootTak(van, naar, padcapaciteit);
+    }
+}
+
+template <class T>
+void Stroomnetwerk<T>::vergrootTak(int start,int eind,T delta){
+    int taknr=this->verbindingsnummer(start,eind);
+    if (taknr==-1)
+        taknr=this->voegVerbindingToe(start,eind,delta);
+    else
+        this->takdatavector[taknr]+=delta;
+}
+
 template <class T>
 T Stroomnetwerk<T>::geefCapaciteit(){
     T som=0;
     for (typename GraafMetTakdata<GERICHT,T>::Burenlijst::const_iterator it=this->burenlijsten[van].begin();
-                it!=this->burenlijsten[van].end();it++)
+         it!=this->burenlijsten[van].end();it++)
         som+=this->takdatavector[it->second];
     return som;
 }
@@ -204,15 +260,15 @@ void Stroomnetwerk<T>::teken(const char* bestandsnaam) const{
     std::ofstream uit(bestandsnaam);
     assert(uit);
     std::string pijl;
-        uit<<"digraph {\n";
-        pijl="->";
+    uit<<"digraph {\n";
+    pijl="->";
     uit<<"{ rank=source; "<<knooplabel(van)<<" }\n";
     uit<<"{ rank=sink; "<<knooplabel(naar)<<" }\n";
     for (int k=0; k<this->aantalKnopen(); k++){
         if (this->burenlijsten[k].empty())
             uit<<knooplabel(k)<<";\n";
         else{
-        for (auto& p: this->burenlijsten[k])
+            for (auto& p: this->burenlijsten[k])
                 uit<<knooplabel(k)<<" "<<pijl<<" "
                    <<knooplabel(p.first)<<this->taklabel(p.second)<<";\n";
         };
@@ -233,83 +289,58 @@ std::string Stroomnetwerk<T>::knooplabel(int i) const{
     return uit.str();
 }
 
-/** eigen aanvulling **/
-
+/*
+ * Een Grootstecapaciteitszoeker. Deze geeft een vergrotend pad met maximale capaciteit.
+ */
 template <class T>
-Stroomnetwerk<T>& Stroomnetwerk<T>::operator+=(const Pad<T> & vergrotendpad){
+Pad<T>Vergrotendpadzoeker<T>::geefVergrotendBFS(){
 
-    int vergrotendPadCapaciteit = vergrotendpad.geefCapaciteit();
-    for(int i=1; i < vergrotendpad.size(); i++){
-        int van = vergrotendpad[i];
-        int naar = vergrotendpad[i-1];
+    int size = this->q.aantalKnopen();
+    vector<bool> visited(size, false);
+    vector<int> voorhanger(size);
+    std::list<int> queue;
+    int laatstBezochte;
+
+    visited[0] = true;
+    queue.push_back(0); //v is start (v2 is consumpent)
 
 
+    while(!queue.empty())
+    {
+        // Dequeue a vertex from queue and print it
+        int s = queue.front();
+        voorhanger[0] = -1;
+        queue.pop_front();
 
-        //eerst controleren of er al een terugverbinding is.
-        if(this->verbindingsnummer(naar, van) == -1){
-            int terugCapaciteit = *(this->geefTakdata(naar, van));
-
-            // als de capaciteit van de terugverbinding groter is dan de capaciteit dat we aan de heencapaciteit zouden geven, trekken we deze gewoon af van elkaar
-            if(terugCapaciteit > vergrotendPadCapaciteit){
-                *(this->geefTakdata(naar, van)) -= vergrotendPadCapaciteit;
+        // Get all adjacent vertices of the dequeued
+        // vertex s. If a adjacent has not been visited,
+        // then mark it visited and enqueue it
+        std::cout << "behandelen van " << s << std::endl;
+        for(auto buur: this->q.operator[](s)){
+            if(!visited[buur.first]){
+                visited[buur.first] = true;
+                queue.push_back(buur.first);
+                voorhanger[buur.first] = s;
+                laatstBezochte = buur.first;
+                std::cout << "buur " << buur.first << " heeft als ouder " << s << std::endl;
             }
-            //indien de heencapaciteit groter is mogen we de terugcapaciteit gewoon verwijderen en wat nog overblijft toevoegen als een heencapaciteit
-            else {
-                this->verwijderVerbinding(naar, van);
-                // als terugcapaciteit == heencapaciteit moeten we de terugverbinding gewoon verwijderen. In het andere geval moet onderstaande nog gebeuren
-                if(vergrotendPadCapaciteit > terugCapaciteit){
-                    this->voegVerbindingToe(van, naar, (vergrotendPadCapaciteit - terugCapaciteit));
-                }
-
-            }
-
-        } else {
-           updateVerbinding(van, naar,vergrotendPadCapaciteit );
-
         }
     }
-    return *this;
-
-}
-
-
-template <class T>
-Stroomnetwerk<T>& Stroomnetwerk<T>::operator-=(const Pad<T> & vergrotendpad) {
-    T vergrotendPadCapaciteit = vergrotendpad.geefCapaciteit();
-    for(int i=1; i < vergrotendpad.size(); i++){
-        int van = vergrotendpad[i];
-        int naar = vergrotendpad[i-1];
-
-        this->teken("error.dot");
-        std::cout << "Trying to get connection between:" << van << " -> " << naar << std::endl;
-
-        //assert(!(this->verbindingsnummer(van, naar) == -1));
-        if(this->verbindingsnummer(van, naar) == -1){
-            this->teken("error.dot");
-            std::cout << "Trying to get connection between:" << van << " -> " << naar << std::endl;
-
-            exit(-1);
+    Pad<T> p;
+    p.zetCapaciteit(INT_MAX);
+    int i = 4; //todo: vervang door v2 wat destination zou moeten zijn
+    while(i != -1){
+        p.emplace_back(i);
+        if(voorhanger[i] != -1){
+            p.zetCapaciteit(std::min(p.geefCapaciteit(),*(this->q.geefTakdata(voorhanger[i], i))));
         }
-
-
-        updateVerbinding(van, naar, -vergrotendPadCapaciteit);
-        updateVerbinding(naar, van, vergrotendPadCapaciteit);
-
+        i = voorhanger[i];
     }
-
+    std::reverse(p.begin(), p.end());
+    return p;
 }
-
-template <class T>
-void Stroomnetwerk<T>::updateVerbinding(int van, int naar, T stroom){
-    if(this->verbindingsnummer(van, naar) == -1){
-        this->voegVerbindingToe(van, naar, stroom);
-    } else {
-        *(this->geefTakdata(van, naar)) += stroom;
-    }
-    if( *(this->geefTakdata(van, naar)) == 0){
-        this->verwijderVerbinding(van, naar);
-    }
-}
-
+/*
+ * bijkomende opgave: Een Kortstepadzoeker. Deze geeft een vergrotend pad terug dat zo kort mogelijk is.
+ */
 
 #endif
