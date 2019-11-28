@@ -10,6 +10,8 @@ using std::ostream;
 using std::vector;
 using std::exception;
 using std::unique_ptr;
+using std::swap;
+
 typedef unsigned char uchar;
 //Regexp leest een reguliere expressie in, en zet ze om naar een
 //boomstructuur.
@@ -50,7 +52,8 @@ enum opcode {ster,of,plus,letter};
     const Regexp* geefEersteOperand() const;//zinloos als opcode letter is.
     const Regexp* geefTweedeOperand() const;//zinloos als opcode letter of ster is.
     uchar  geefLetter() const;//zinloos als opcode niet letter is.
-    friend ostream& operator<<(ostream& os, const Regexp& re);                                                 
+    friend ostream& operator<<(ostream& os, const Regexp& re);
+    void keerOm();
 private:
 //parsen is gemakkelijker als de + expliciet vermeld is
 //maar dit mag van buitenuit niet gezien zijn.
@@ -193,6 +196,19 @@ void Regexp::schrijf(ostream& os) const{
         os<<"["<<*op1<<" | "<<*op2<<']';
           break;
     }
+}
+
+void Regexp::keerOm() {
+    if(deOpcode == plus){
+        swap(op1,op2);
+    }
+    if(op1 != nullptr){
+        op1->keerOm();
+    }
+    if(op2 != nullptr){
+        op2->keerOm();
+    }
+
 }
 
 #endif

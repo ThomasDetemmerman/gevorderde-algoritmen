@@ -16,7 +16,7 @@ class ThompsonNA{
 //friend class ZoekNA;
 public:
     ThompsonNA(const Regexp& re);
-    void schrijf(ostream& os);
+    void schrijf(ostream& os) const;
     class Verbinding{
     friend class ThompsonNA;
     public:
@@ -93,7 +93,7 @@ const ThompsonNA::Verbinding& ThompsonNA::operator[](int i) const{
 }
 
 
-void ThompsonNA::schrijf(ostream& os){
+void ThompsonNA::schrijf(ostream& os) const{
     os<<"aantal statenbiten: "<<aantalStatenbits<<" aantal verbindingen: "<<geefAantalVerbindingen()<<'\n';
     for (int i=0; i<overgang.size() ;i++){
         os<<overgang[i].bron<<' '
