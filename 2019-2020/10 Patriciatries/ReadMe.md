@@ -5,4 +5,4 @@
 - [x] toevoegen
 - [ ] zoeken
 
-![Patricia trie output](output.pngs)
+![Patricia trie output](output.png)
