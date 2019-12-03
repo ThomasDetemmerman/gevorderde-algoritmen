@@ -6,6 +6,7 @@
 ## implementatie details
 - Enkel indexen worden opgeslagen in de knopen zelf.
 - Staartpointers worden gebruikt bij toevoegen
+- Afsluitteken: `$`
 
 
 ## Resultaat
