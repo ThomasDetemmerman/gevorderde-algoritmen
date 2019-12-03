@@ -7,7 +7,7 @@
 - Enkel indexen worden opgeslagen in de knopen zelf.
 - Staartpointers worden gebruikt bij toevoegen
 - Afsluitteken: `$`
-
+- Todo: In `Knoop.h` zou niet alles public mogen zijn. Sommige moeten protected zijn.
 
 ## Resultaat
 Suffix boom voor het woord `blabla`
