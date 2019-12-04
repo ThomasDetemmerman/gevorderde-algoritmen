@@ -1,6 +1,6 @@
 # Knuth-Morris-Pratt
 
-## status
+## Status
 
 - [x] Prefixfunctie van de zoekterm wordt gebouwd.
 - [x] Zoeken met behulp van KMP
