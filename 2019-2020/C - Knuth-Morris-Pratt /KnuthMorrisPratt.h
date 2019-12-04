@@ -25,8 +25,6 @@ queue<int> KnuthMorrisPratt::zoek(const string &tekst) {
     int Tc = 0; //tekstcounter
 
     while(Tc < tekst.size()){
-
-
         if(tekst[Tc] == prefixTabel.data[Pc]){
             Tc++;
             Pc++;
@@ -47,7 +45,5 @@ queue<int> KnuthMorrisPratt::zoek(const string &tekst) {
     }
     return resultaten;
 };
-
-
 
 #endif //C___KNUTH_MORRIS_PRATT__KNUTHMORRISPRATT_H
