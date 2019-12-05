@@ -16,7 +16,7 @@ en slaan het direct op als een LCP. Dit is eigenlijk gewoon een LGP maar in ande
 ![oplossing prof](./oplossingProf.jpg)
 
 ## Log
-
+```
 index, Suffix Array, LCP
 0	elling 1
 1	ententententoonstelling 9
@@ -51,3 +51,4 @@ index, Suffix Array, LCP
 30	tottententententoonstelling 1
 31	ttententententoonstelling 5
 32	ttentottententententoonstelling 0
+```
