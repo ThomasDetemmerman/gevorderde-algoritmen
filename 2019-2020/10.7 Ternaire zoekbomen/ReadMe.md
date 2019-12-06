@@ -1,0 +1,4 @@
+# Ternaire zoekbomen
+
+## Status
+- [ ] toevoegen
