@@ -17,9 +17,11 @@ using std::ofstream;
 using std::ostringstream;
 
 
+class Knoop;
 
+typedef unique_ptr<Knoop> Knoopptr;
 
-class TernaireBoom: public unique_ptr<Knoop>{
+class TernaireBoom: public Knoopptr{
 
 public:
     TernaireBoom();
@@ -28,31 +30,42 @@ public:
     void teken(const char *bestandsnaam);
     void voegToe(string data);
 private:
-    string tekenrec(ostream &uit, int &nullteller);
+    char afsluitteken = (char)1000;
+
 };
 
 TernaireBoom::TernaireBoom(unique_ptr<Knoop> uniquePtr): unique_ptr<Knoop>(move(uniquePtr)){};
 TernaireBoom::TernaireBoom(){};
 
 void TernaireBoom::voegToe(string data) {
-    data = data + "$";
-    TernaireBoom * current = this;
+    data = data + afsluitteken;
+    Knoopptr * current = this;
+    Knoopptr * prev = nullptr;
+    Knoopptr * prevprev = nullptr;
     for(int i=0; i < data.size(); i++){
+
+
         if(*current == nullptr){
+            if(prevprev != nullptr && (*prev)->teken == afsluitteken){
+                (*prevprev)->r = move(make_unique<Knoop>(afsluitteken));
+                 current = prev;
+                teken("ternaireBoom.dot");
+            }
             *current = move(make_unique<Knoop>(data[i]));
 
-        } else {
-            if(data[i] == (*current)->teken){
-                current = static_cast<TernaireBoom *>(&((*current)->m));
-            } else if (data[i] < (*current)->teken){
-                current = static_cast<TernaireBoom *>(&((*current)->l));
-                i--; //if the character didnt match, we have to check the same character agian. Therefore we undo the i++ is the for(;;)
-            } else {
-                current = static_cast<TernaireBoom *>(&((*current)->r));
-                i--;
-            }
         }
-
+        prevprev = prev;
+        prev = current;
+        if(data[i] == (*current)->teken){
+            current =&((*current)->m);
+        } else if (data[i] < (*current)->teken){
+            current =&((*current)->l);
+            i--; //if the character didnt match, we have to check the same character agian. Therefore we undo the i++ is the for(;;)
+        } else {
+            current = &((*current)->r);
+            i--;
+        }
+        teken("ternaireBoom.dot");
     }
 
 }
@@ -67,33 +80,11 @@ void TernaireBoom::teken(const char *bestandsnaam)
     assert(uit);
     int knoopteller = 0; //knopen moeten een eigen nummer krijgen.
     uit << "digraph {\n";
-    this->tekenrec(uit, knoopteller);
+    (*this)->tekenrec(uit, knoopteller);
     uit << "}";
 }
 
 
-string TernaireBoom::tekenrec(ostream &uit, int &nullteller)
-{
-    ostringstream wortelstring;
-    if (!*this)
-    {
-        wortelstring << "null" << ++nullteller;
-        uit << wortelstring.str() << " [shape=point];\n";
-    }
-    else
-    {
-        wortelstring << '"' << (*this)->teken << '"';
-        uit << wortelstring.str() << "[label=\"" << (*this)->teken << "\"]";
-        uit << ";\n";
-        string linkskind = (*this)->l.tekenrec(uit, nullteller);
-        string rechtskind = (*this)->r.tekenrec(uit, nullteller);
-        string middenkind = (*this)->m.tekenrec(uit, nullteller);
-        uit << wortelstring.str() << " -> " << linkskind << ";\n";
-        uit << wortelstring.str() << " -> " << middenkind << ";\n";
-        uit << wortelstring.str() << " -> " << rechtskind << ";\n";
-    };
-    return wortelstring.str();
-}
 
 
 

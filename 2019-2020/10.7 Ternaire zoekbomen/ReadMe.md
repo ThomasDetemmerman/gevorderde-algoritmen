@@ -1,4 +1,6 @@
 # Ternaire zoekbomen
 
 ## Status
-- [ ] toevoegen
+- [x] toevoegen
+
+![Ternaire Boom](./TernaireBoom.png)
