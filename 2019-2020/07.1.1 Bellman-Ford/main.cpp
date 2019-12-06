@@ -72,21 +72,23 @@ void bellmanFord( GraafMetTakdata <GERICHT,int> graaf, int SIZE){
         for(int i = 0; i < SIZE; i++){
             std::cout << "Vertex " << i << " can be reached via " << predepredecessors[i] << " with a wait of " << weightToReachThisVertex[i] << std::endl;
         }
+
+        //print shortest path
+        std::stack<int> shortesPath;
+        int next = SIZE-1;
+        while(next != -1){
+            shortesPath.push(next);
+            next = predepredecessors[next];
+        }
+        std::cout << std::endl << "Shortest path: ";
+        while(!shortesPath.empty()){
+            std::cout << shortesPath.top() << " -> ";
+            shortesPath.pop();
+        }
+        std::cout << "end" << std::endl << std::endl;
     }
 
-    //print shortest path
-    std::stack<int> shortesPath;
-    int next = SIZE-1;
-    while(next != -1){
-        shortesPath.push(next);
-        next = predepredecessors[next];
-    }
-    std::cout << std::endl << "Shortest path: ";
-    while(!shortesPath.empty()){
-        std::cout << shortesPath.top() << " -> ";
-        shortesPath.pop();
-    }
-    std::cout << "end" << std::endl << std::endl;
+
 
 }
 bool containsNegativeLoop(std::vector<int> vector) {
