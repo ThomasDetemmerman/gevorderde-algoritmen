@@ -26,7 +26,7 @@ uint64_t KarpRabin::h(string zt) {
 }
 ```
 
-Om ervoor de zorgen dat de hash in een processor woord past mogen we altijd modulo priemgetal doen dat kleiner is dan 2^w. Bij de meeste processoren is deze 64 (bits)
+Om ervoor de zorgen dat de hash in een processor woord past mogen we altijd modulo priemgetal doen dat kleiner is dan 2^w. Bij de meeste processoren is deze 64 (bits)  
 ![formule 2](./img/formule2.png)
 
 **Voorbeeld**  
@@ -36,7 +36,7 @@ a=0, b=1 ... j=9. Het woord "dba" is dan 421
 ![formule 4](./img/formule4.png)
 
 Hier wordt d gelijk gesteld aan 10 omdat dat gemakkelijk rekend. Voor het alfabet gebruiken we bijvoorbeeld d=26 (indien we hoofdletters niet meetellen).
-### Roling hash
+### Rolling hash
 Na de hash van de p eerste tekens uit onze tekst te hebben berekend moeten we deze niet voordurend herberekenen. We kunnen telkens
 het eerste teken verwijderen en het nieuwe teken opnieuw toevoegen.
 
@@ -60,6 +60,6 @@ het eerste teken verwijderen en het nieuwe teken opnieuw toevoegen.
     }
 ```
 **Voorbeeld**  
-Om huidige hash T_huidig` te vertalen naar hash T_next` wordt dit dan:  
+Om huidige hash `T_huidig` te vertalen naar hash `T_next` wordt dit dan:  
 
 ![](./img/formule5.jpg)
