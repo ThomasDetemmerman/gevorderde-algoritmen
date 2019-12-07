@@ -26,7 +26,7 @@ uint64_t KarpRabin::h(string zt) {
 }
 ```
 
-Om ervoor de zorgen dat de hash in een processor woord past mogen we altijd modulo priemgetal doen dat kleiner is dan 2^w. Bij de meeste processoren is deze 64 (bits)
+Om ervoor de zorgen dat de hash in een processor woord past mogen we altijd modulo priemgetal doen dat kleiner is dan 2^w. Bij de meeste processoren is deze 64 (bits)  
 ![formule 2](./img/formule2.png)
 
 **Voorbeeld**  
