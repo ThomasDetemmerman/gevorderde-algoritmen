@@ -60,6 +60,6 @@ het eerste teken verwijderen en het nieuwe teken opnieuw toevoegen.
     }
 ```
 **Voorbeeld**  
-Om huidige hash T_huidig` te vertalen naar hash T_next` wordt dit dan:  
+Om huidige hash `T_huidig` te vertalen naar hash `T_next` wordt dit dan:  
 
 ![](./img/formule5.jpg)
