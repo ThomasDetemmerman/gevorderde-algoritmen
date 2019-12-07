@@ -36,7 +36,7 @@ a=0, b=1 ... j=9. Het woord "dba" is dan 421
 ![formule 4](./img/formule4.png)
 
 Hier wordt d gelijk gesteld aan 10 omdat dat gemakkelijk rekend. Voor het alfabet gebruiken we bijvoorbeeld d=26 (indien we hoofdletters niet meetellen).
-### Roling hash
+### Rolling hash
 Na de hash van de p eerste tekens uit onze tekst te hebben berekend moeten we deze niet voordurend herberekenen. We kunnen telkens
 het eerste teken verwijderen en het nieuwe teken opnieuw toevoegen.
 
