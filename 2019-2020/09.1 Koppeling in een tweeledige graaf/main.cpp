@@ -9,12 +9,13 @@ using namespace std;
 int main() {
 
     // gegeven
-    vector<string> taakverdeling = { "1:987" , "2:567", "3:567", "4:9"};
+    vector<string> taakverdeling = { "1:987" , "2:567", "3:567", "4:9"}; //user 1 kan taken 9,8 en 7 uitvoeren. User 2 kan 5,6 en 7 uitvoeren.
     int size = 9; //gaande van 1-9
 
-    //bouw een index
+    //definieer producent en consument
     int producentID = 0;
     int consumentID = size+1;
+    
     //bouwen van bipartite graaf
     GraafMetTakdata <GERICHT,int> gr(size+2);
     for(string taak: taakverdeling){
@@ -29,6 +30,8 @@ int main() {
 
         }
     }
+    
+    //toon resultaat
     gr.teken("graaf.dot");
     Stroomnetwerk<int> sn(gr,0,size+1);
     sn.geefStroom().teken("sn.dot");
