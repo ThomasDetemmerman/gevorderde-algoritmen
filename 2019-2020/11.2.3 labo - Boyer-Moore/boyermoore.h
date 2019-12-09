@@ -23,7 +23,7 @@ private:
     vector<int> MRP;
     const string naald;
     //een character loopt van -127 tot 128
-    int ALFABET_SIZE = abs(-127) + 128;
+    const int ALFABET_SIZE = abs(-127) + 128;
 
     void print(string naald, int naaldindex, string hooiber, int hooibergindex);
 };
