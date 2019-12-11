@@ -9,8 +9,3 @@ int main() {
     dt.encodeAsEliasGammaCode("../eliasCode.dat");
     return 0;
 };
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 78332085c787a0ea5c261994fae14953a284577b
