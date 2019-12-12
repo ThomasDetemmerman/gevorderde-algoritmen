@@ -1,4 +1,4 @@
-#Binaire Trie
+# Binaire Trie
 
 ## Status
 - [x] toevoegen
