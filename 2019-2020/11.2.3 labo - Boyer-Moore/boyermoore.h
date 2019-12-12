@@ -29,9 +29,9 @@ private:
 };
 
 
-BoyerMoore::BoyerMoore(const string &_naald) : naald(_naald), MRP(naald.lenght(), -1) {
+BoyerMoore::BoyerMoore(const string &_naald) : naald(_naald) {
     map<char, int> MRPLookup;
-   // MRP.resize(naald.length());
+    MRP = vector<int>(ALFABET_SIZE, -1);
     for (int i = 0; i < naald.length(); ++i) {
         MRP[naald[i] + 128] = i;
     }
