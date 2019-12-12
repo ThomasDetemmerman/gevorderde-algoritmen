@@ -8,8 +8,8 @@
 #include <string>
 
 class EliasCode {
-    virtual void encode(const char *bestandsnaam, const char *outname);
-    virtual void decode(const char *bestandsnaam, const char *outname);
+    virtual void encode(const char *bestandsnaam, const char *outname) = 0;
+    virtual void decode(const char *bestandsnaam, const char *outname) = 0;
 };
 
 

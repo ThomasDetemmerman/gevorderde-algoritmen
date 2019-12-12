@@ -8,21 +8,23 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <fstream>
 
 #include "EliasCode.h"
-#include "bitstream.h"
+
 
 using std::string;
 using std::bitset;
 using std::vector;
 using std::merge;
+using std::ofstream;
+using std::ifstream;
 
-
-class EliasGammeCode { //: public EliasCode
+class EliasGammeCode : public EliasCode{
 public:
-    void encode(const char *bestandsnaam, const char *outname);
+    virtual void encode(const char *bestandsnaam, const char *outname);
 
-    void decode(const char *bestandsnaam, const char *outname);
+    virtual void decode(const char *bestandsnaam, const char *outname);
 
 private:
     vector<bool> int2Bin(int val);
