@@ -1,12 +1,31 @@
 
 #include "regexp11.h"
 #include "thompsonna.h"
-#include "zoeker.h"
+#include "NAzoeker.h"
+#include "DAzoeker.h"
 
 using namespace std;
 
+int main1();
+int main2();
 
-int main() {
+int main(){
+    main1();
+}
+
+int main1() {
+    Regexp regex("trie|tree");
+
+    ThompsonNA thompsonNa(regex);
+
+    DAzoeker da(thompsonNa);
+
+
+
+    return 0;
+}
+
+int main2() {
     Regexp regex("trie|tree");
     Regexp regexReversed("trie|tree");
     regexReversed.keerOm();
@@ -33,6 +52,7 @@ int main() {
 
     }
     file.close();
+
 
 
     return 0;

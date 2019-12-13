@@ -2,14 +2,15 @@
 // Created by Thomas on 25/11/2019.
 //
 
-#ifndef LABO_9___AUTOMATEN_ZOEKER_H
-#define LABO_9___AUTOMATEN_ZOEKER_H
+#ifndef LABO_9___AUTOMATEN_NAZOEKER_H
+#define LABO_9___AUTOMATEN_NAZOEKER_H
 
 #include "regexp11.h"
 #include "thompsonna.h"
 #include <queue>
 #include <ostream>
 #include <fstream>
+
 using std::set;
 using std::cout;
 using std::endl;
@@ -95,7 +96,6 @@ bool ZoekerNA::exist(set<int> toestanden, int element) const{
 void ZoekerNA::enableEpsilonNeighbours(set<int>& toestanden){
     int debugcounter =0;
     for(int i=0; i < thompsonNa.geefAantalVerbindingen(); i++){
-
         if(toestanden.find(thompsonNa.operator[](i).geefBron()) != toestanden.end() && thompsonNa.operator[](i).geefKarakter() == epsilon){
             toestanden.insert(thompsonNa.operator[](i).geefDoel());
             debugcounter++;
@@ -116,4 +116,4 @@ void ZoekerNA::printSet(const set<int> &toestanden) const{
 
 
 
-#endif //LABO_9___AUTOMATEN_ZOEKER_H
+#endif //LABO_9___AUTOMATEN_NAZOEKER_H
