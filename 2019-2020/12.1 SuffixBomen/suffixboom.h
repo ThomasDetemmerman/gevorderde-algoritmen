@@ -17,29 +17,36 @@ private:
     string data;
     unique_ptr<Knoop> root;
     string tekenrec(ostream &uit, int &knoopteller, Knoop* knoop);
-    string getSuffix(Knoop *knoop);
+    string geefSubstring(Knoop *knoop);
+    int getLongestCommonPrefixLenght(int start1, int start2);
+    bool isPrefix(string a, string b);
+
+
 public:
     suffixboom(string data_);
     void teken(const char *bestandsnaam);
     Knoop * voegToe(int suffix, Knoop* prev);
-    int getLongestCommonPrefixLenght(int start1, int start2);
-
-
+    vector<int> zoek(const string  &zoekterm);
+    void diepteEerstZoeken(unique_ptr<Knoop> *pKnoop,vector<int> & resultaten );
+    vector<int> geefStartIndexVanKinderen(unique_ptr<Knoop> *pKnoop);
 };
 
-suffixboom::suffixboom(string data_) : data(data_+"$"), root(make_unique<Knoop>(data.size(),data.size() , nullptr)){
+suffixboom::suffixboom(string data_) : data(data_+"$"), root(make_unique<Knoop>(data.size(),data.size() , data.size(), nullptr)){
+    //data input cleanup
+    //data.erase(remove_if(data.begin(), data.end(), [](char c) { return !isalpha(c); } ), data.end());
+    //std::cout  << data << std::flush;
     Knoop* prev = nullptr;
     for(int i = data.size()-1; i >= 0; i--){
         prev = voegToe(i, prev);
-        teken("output.dot");
     }
 }
 
 Knoop* suffixboom::voegToe(int suffix,  Knoop* prev) {
+    int startIndexOfEntireSuffix = suffix;
     std::cout << "adding: " << data.substr(suffix, data.length())<< std::endl;
     if(prev == nullptr){
         std::cout << "first value, adding " << data.substr(suffix) << " to root " << std::endl;
-       return this->root->voegToe(0, suffix, this->root.get());
+       return this->root->voegToe(0, suffix, startIndexOfEntireSuffix,this->root.get());
     }
     Knoop * current = prev->staart;
     while(current->beginIndex > 0 && data.substr(current->beginIndex, 1) != data.substr(suffix, 1) && current->staart){
@@ -48,8 +55,8 @@ Knoop* suffixboom::voegToe(int suffix,  Knoop* prev) {
     }
 
     int prefixLengte = getLongestCommonPrefixLenght(suffix, current->beginIndex);
-    std::cout << ((current->beginIndex == data.size()) ? "root " : "knoop met " + getSuffix(current)) << " krijgt kind met suffix " << data.substr(suffix, data.size()) << std::endl;
-    return current->voegToe(prefixLengte, suffix, prev);
+    std::cout << ((current->beginIndex == data.size()) ? "root " : "knoop met " + geefSubstring(current)) << " krijgt kind met suffix " << data.substr(suffix, data.size()) << std::endl;
+    return current->voegToe(prefixLengte, suffix,startIndexOfEntireSuffix, prev);
 
 
 
@@ -65,10 +72,78 @@ int suffixboom::getLongestCommonPrefixLenght(int start1, int start2){
     return counter;
 }
 
-string suffixboom::getSuffix(Knoop* knoop) {
+string suffixboom::geefSubstring(Knoop* knoop) {
     return data.substr(knoop->beginIndex, knoop->eindIndex-knoop->beginIndex);
 }
 
+// is a a prefix of b
+bool suffixboom::isPrefix(string a, string b){
+    if(a.size() > b.size()){
+        return false;
+    }
+    // a = tot
+    // b = totaal
+    b = b.substr(0, a.size());
+    return (a==b);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//                               zoek
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+vector<int> suffixboom::zoek(const string  &zoekterm) {
+    vector<int> resultaten;
+    int eersteTeken = zoekterm[0];
+    unique_ptr<Knoop> * current = &root;
+    bool afdalen = true;
+    int zoekdataindex = 0;
+    while(afdalen){
+        afdalen = false;
+
+        for(int i=0; i < (*current)->kinderen.size(); i++) { // moet een while zijn
+            unique_ptr<Knoop> * huidigKind = &(*current)->kinderen[i];
+            std::cout << "processing:" << geefSubstring(huidigKind->get())[0] << " =?= " << zoekterm[zoekdataindex] << std::endl;
+            if (geefSubstring(huidigKind->get())[0] == zoekterm[zoekdataindex]){
+                // 3 scenarios
+                // a) takdata =/= zoekterm -> afbreken
+                // b) takdata prefix van zoekterm -> recursief verder gaan
+                // c) zoekterm prefix van takdata -> alle kinderen zijn resultaat
+
+                if(isPrefix(zoekterm, data.substr((*huidigKind)->startIndexOfEntireSuffix,(*huidigKind)->eindIndex- (*huidigKind)->startIndexOfEntireSuffix) )){
+                    // scenario c
+                    return geefStartIndexVanKinderen(huidigKind);}
+                else if(isPrefix(geefSubstring(huidigKind->get()), zoekterm )){
+                    // scenario b
+                    current = huidigKind;
+                    zoekdataindex += ((*current)->eindIndex - (*current)->beginIndex);
+                    afdalen = true;
+                    break;
+                } else {
+                    // scenario a
+                    return resultaten;
+                }
+            }
+        }
+    }
+    return resultaten;
+
+}
+
+vector<int> suffixboom::geefStartIndexVanKinderen(unique_ptr<Knoop> *pKnoop) {
+    vector<int> resultaten;
+    diepteEerstZoeken(pKnoop,  resultaten);
+    return resultaten;
+}
+
+void suffixboom::diepteEerstZoeken(unique_ptr<Knoop> *pKnoop,vector<int> & resultaten ){
+    if((*pKnoop)->isBlad()){
+        resultaten.emplace_back((*pKnoop)->startIndexOfEntireSuffix);
+    }else {
+        for(int i=0; i <  (*pKnoop)->kinderen.size(); i++){
+            diepteEerstZoeken(&(*pKnoop)->kinderen[i], resultaten);
+        }
+    }
+}
 /////////////////////////////////////////////////////////////////////////////////////////////
  //                               teken
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +166,7 @@ string suffixboom::tekenrec(ostream &uit, int &knoopteller, Knoop *knoop) {
     if(knoop->beginIndex < 0){
         uit << wortelstring.str() << "[label=\"" << "."  << "\"]";
     } else {
-        uit << wortelstring.str() << "[label=\"" << getSuffix(knoop) << "\"]";
+        uit << wortelstring.str() << "[label=\"" << geefSubstring(knoop) << "\"]";
     }
 
     uit << ";\n";

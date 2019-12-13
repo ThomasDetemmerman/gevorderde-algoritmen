@@ -1,7 +1,10 @@
 # Suffixbomen
 
 ## status
-- [x] Toevoegen
+- [x] Toevoegen (Moeten we eigenlijk niet kunnen implementeren aldus Cnops)
+    - er zit nog een fout in denk ik.
+- [x] Zoeken: alle voorkomens terug geven.
+- [ ] LGD tussen twee teksten
 
 ## implementatie details
 - Enkel indexen worden opgeslagen in de knopen zelf.
