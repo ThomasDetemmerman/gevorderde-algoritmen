@@ -5,11 +5,6 @@
 #include <set>
 using namespace std;
 
-string toString(int num, bool neg){
-    string s = "xx" + std::to_string(num);
-    return neg? s+="-" : s+="+";
-}
-
 int main() {
     // gegeven
     map<string,vector<string>> gegeven = {{ "F1", { "xx1+","xx2-","xx3+"}}, {"F2",{"xx4-","xx2+","xx6+"}}};
