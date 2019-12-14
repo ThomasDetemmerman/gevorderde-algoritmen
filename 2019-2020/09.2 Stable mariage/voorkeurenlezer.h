@@ -14,6 +14,7 @@
 using namespace std;
 
 class voorkeurenlezer {
+private:
     vector<string> getValue(string rawline){
         int start = rawline.find(':');
         rawline = rawline.substr(start+2);
