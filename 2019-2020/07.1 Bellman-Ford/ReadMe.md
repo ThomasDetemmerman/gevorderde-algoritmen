@@ -1,7 +1,7 @@
 # Bellman-Ford
 
 ## Status
-- [x] afgewerkt (maar zit nog fout in)
+- [x] afgewerkt
 
 ## issues
 Het normale algoritme is:
@@ -12,7 +12,7 @@ while(wijzigingenInVorigeIteratie && minderDanV-1_iteraties){
   }
 }
 ```
-Nu spreekt cnops van optimalisatie door gebruik te maken van push based queue's. Is er maar 1 lus waardoor het (bijna?) Dijkstra is. Hierrond moet dus nog een extra lus komen denk ik.
+Nu spreekt cnops van optimalisatie door gebruik te maken van push based queue's. Is er maar 1 lus waardoor het (bijna?) Dijkstra is. Hierrond moet dus misschien nog een lus komen? geen idee.
 
 ## Implementatie details
 - **Optimalisatie 1:** Er wordt gebruik gemaakt van het Push-based principe waarbij enkel vertices overwogen worden die buur zijn van een vertex die in de vorige iteratie aangepast zijn geweest. (zie cursus)
