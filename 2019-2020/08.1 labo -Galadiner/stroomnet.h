@@ -213,6 +213,7 @@ Stroomnetwerk<T>& Stroomnetwerk<T>::operator-=(const Pad<T>& pad){
             this->takdatavector[taknr]-=padcapaciteit;
         vergrootTak(eind,start, padcapaciteit);
     }
+    return *this;
 }
 
 template <class T>
@@ -235,6 +236,7 @@ Stroomnetwerk<T>& Stroomnetwerk<T>::operator+=(const Pad<T>& pad){
         }else
             vergrootTak(van, naar, padcapaciteit);
     }
+    return *this;
 }
 
 template <class T>

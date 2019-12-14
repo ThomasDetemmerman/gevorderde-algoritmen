@@ -15,12 +15,14 @@ int main() {
     //definieer producent en consument
     int producentID = 0;
     int consumentID = size+1;
-    
+    int aantaldagen = 1;
+
+
     //bouwen van bipartite graaf
     GraafMetTakdata <GERICHT,int> gr(size+2);
     for(string taak: taakverdeling){
         int userID = ((taak[0])- '0');
-        gr.voegVerbindingToe(producentID, userID, 1);
+        gr.voegVerbindingToe(producentID, userID, aantaldagen);
         for(int i=2; i < taak.size(); i++){
             int taakID = ((taak[i])- '0');
             try {
