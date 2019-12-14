@@ -98,6 +98,7 @@ vector<int> BoyerMoore::calculateMRP() {
 /////////////////////
 //// good suffix  //
 ////////////////////
+// kijk naar martijn zijn oplossing
 // https://www.geeksforgeeks.org/boyer-moore-algorithm-good-suffix-heuristic/
 
 vector<int> BoyerMoore::preprocess_strong_suffix(){

@@ -4,7 +4,7 @@
 - [x] Heurirstiek van het verkeerde karakter.
 - [ ] Naïve methode.
 - [ ] Vergelijken van aantal karaktervergelijkingen.
-- [x] Heuristiek van het juiste suffix
+- [ ] Heuristiek van het juiste suffix (half)
 
 ## Implementatie details: verkeerde karakter
 - Je houdt een MRP set bij die de grote is van uw alfabet. Op positie `char` wordt
@@ -27,6 +27,8 @@ aaaaaaaaaxaaaaaa -> aaaaaaaaaxaaaaaa
 ```
 
 ## Implementatie details: juiste suffix
+
+--> kijk naar martijn zijn oplossing
 
 - aangezien dat een juist suffix altijd een possitieve verschuiving is moeten we niet meer controleren of het slechte karakter heuristiek een negatieve verschuiving heeft. We nemen toch max van beide
 - op [geekforgeeks](https://www.geeksforgeeks.org/boyer-moore-algorithm-good-suffix-heuristic/) staat er nog een tweede functie voor deze heuristiek die opgeroepen wordt na de eerste functie. Deze twee wordt hier niet geïmplementeerd.
