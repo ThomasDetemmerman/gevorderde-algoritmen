@@ -1,0 +1,31 @@
+geslacht: m
+naam: Daan
+voorkeurenlijst: Anke Emma Sophie Julia
+
+geslacht: m
+naam: Koen
+voorkeurenlijst: Anke Julia Sophie Emma
+
+geslacht: m
+naam: Tom
+voorkeurenlijst: Sophie Anke Julia Emma
+
+geslacht: m
+naam: Thomas
+voorkeurenlijst: Anke Julia Emma Sophie
+
+geslacht: v
+naam: Anke
+voorkeurenlijst: Daan Tom Koen Thomas
+
+geslacht: v
+naam: Julia
+voorkeurenlijst: Daan Tom Koen Thomas
+
+geslacht: v
+naam: Emma
+voorkeurenlijst: Thomas Tom Koen Daan
+
+geslacht: v
+naam: Sophie
+voorkeurenlijst: Tom Thomas Daan Koen
