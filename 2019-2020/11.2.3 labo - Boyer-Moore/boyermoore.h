@@ -102,7 +102,6 @@ vector<int> BoyerMoore::calculateMRP() {
 
 vector<int> BoyerMoore::preprocess_strong_suffix(){
     vector<int> shift(naald.size()+1), borderpositions(naald.size()+1);
-    // m is the length of pattern
     int i=naald.size(), j=naald.size()+1;
     borderpositions[i]=j;
 
