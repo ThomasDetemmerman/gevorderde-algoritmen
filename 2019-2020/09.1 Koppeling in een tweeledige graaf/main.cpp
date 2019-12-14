@@ -16,7 +16,7 @@ int main() {
     int producentID = 0;
     int consumentID = size+1;
     int aantaldagen = 1;
-
+    int aantalWerknemersPerTaak = 1;
 
     //bouwen van bipartite graaf
     GraafMetTakdata <GERICHT,int> gr(size+2);
@@ -27,7 +27,7 @@ int main() {
             int taakID = ((taak[i])- '0');
             try {
                 gr.voegVerbindingToe(userID, taakID, 1);
-                gr.voegVerbindingToe(taakID, consumentID, 1);
+                gr.voegVerbindingToe(taakID, consumentID, aantalWerknemersPerTaak);
             }catch(GraafExceptie e){}
 
         }
