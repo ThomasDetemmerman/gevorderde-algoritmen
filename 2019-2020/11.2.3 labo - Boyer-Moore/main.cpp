@@ -1,6 +1,6 @@
 #include <iostream>
 #include "woordstroom.h"
-#include "boyermoore.h"
+#include "boyermoore_badHeuristic.h"
 using namespace std;
 
 int main() {

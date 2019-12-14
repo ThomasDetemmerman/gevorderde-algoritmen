@@ -24,9 +24,7 @@ private:
     const string naald;
     //een character loopt van -127 tot 128
     const int ALFABET_SIZE = abs(-127) + 128;
-
     vector<int> calculateMRP();
-    vector<int> preprocess_strong_suffix();
 
     void print(string naald, int naaldindex, string hooiber, int hooibergindex);
 };
@@ -51,42 +49,67 @@ void BoyerMoore::printMRP() {
 
 std::queue<int> BoyerMoore::zoek(const string &hooiberg, int teller) {
     vector<int> MRP = calculateMRP();
-    vector<int> shift = preprocess_strong_suffix();
     std::queue<int> matches;
     int hooibergIndex_startpoint = naald.length() - 1;
     int hooibergIndex = hooibergIndex_startpoint;
     int naaldIndex = naald.length() - 1;
 
     while (hooibergIndex <= hooiberg.length()) {
+        //print(naald, naaldIndex, hooiberg, hooibergIndex);
         while (hooiberg[hooibergIndex] == naald[naaldIndex] && naaldIndex > 0) {
             hooibergIndex--;
             naaldIndex--;
+            //print(naald, naaldIndex, hooiberg, hooibergIndex);
         }
-
         if (naaldIndex == 0 && naald[naaldIndex] == hooiberg[hooibergIndex]) {
             matches.push(hooibergIndex);
             hooibergIndex_startpoint++;
             hooibergIndex = hooibergIndex_startpoint;
+            naaldIndex = naald.length() - 1;
+            //print(naald, naaldIndex, hooiberg, hooibergIndex);
         } else {
-            int verschuiven_H1 = naald.length()-1 - MRP[hooiberg[hooibergIndex] + 128];
-            int verschuiven_H2 = naald.length()-1 - MRP[hooiberg[hooibergIndex] + 128];
-            int aantalOpschuiven = max(verschuiven_H1,verschuiven_H2);
+            //print(naald, naaldIndex,hooiberg,hooibergIndex);
+           // cout << "looking up " << hooiberg[hooibergIndex] << " it has " << MRP[hooiberg[hooibergIndex] + 128] << endl;
 
-            //if (aantalOpschuiven <= 0) <-- dankzij de introductie van H2 zal de vershuiving altijd possitief zijn
-            hooibergIndex_startpoint += aantalOpschuiven;
+            int aantalOpschuiven = naald.length()-1 - MRP[hooiberg[hooibergIndex] + 128];
+            //indien MRPval -1 is krijgen we naaldlengte -1 - - 1 = naaldlengte. maw, indien een teken niet voorkomt kunnen we ons patroon tot volledig na het niet voorkomende teken schuiven.
+            //cout << "moving " << aantalOpschuiven << " possitions" << endl;
+            //als het -1 is krijgen we naaldlengte-1 - - MRPvalue. Maw, we gaan de volledige woordlengte opschuiven want het teken komt toch niet voor in het patroon
+
+            if (aantalOpschuiven <= 0) {
+                // als je potron hebt en je zit aan de t die je wilt matchen met o in de teskt gaat hij de o rechts van jou geven
+                //waardoor je een negatieve aantalOpschuiven hebt. Je weet dus niet dus kies je maar voor het veilige incrementeren.
+                // dus niet enkel -1 maar ook alles kleiner dan -1 vallen in deze categorie
+                hooibergIndex_startpoint++;
+            } else {
+                hooibergIndex_startpoint += aantalOpschuiven;
+            }
             hooibergIndex = hooibergIndex_startpoint;
         }
         naaldIndex = naald.length() - 1;
     }
 return matches;
 }
-///////////////////////////////////////////////////////////////
-////                    heuristieken                       ////
-///////////////////////////////////////////////////////////////
 
-/////////////////////
-//// bad character //
-/////////////////////
+void BoyerMoore::print(string naald, int naaldindex, string hooiber, int hooibergindex) {
+    for (char c: naald) {
+        std::cout << c;
+    }
+    cout << endl;
+    for (int i = 0; i < naaldindex; ++i) {
+        cout << " ";
+    }
+    cout << "^" << endl;
+    for (char c: hooiber) {
+        std::cout << c;
+    }
+    cout << endl;
+    for (int i = 0; i < hooibergindex; ++i) {
+        cout << " ";
+    }
+    cout << "^" << endl << endl;
+}
+
 vector<int> BoyerMoore::calculateMRP() {
     vector<int> MRP(ALFABET_SIZE, -1);
     for (int i = 0; i < naald.length(); ++i) {
@@ -94,44 +117,6 @@ vector<int> BoyerMoore::calculateMRP() {
     }
     return MRP;
 }
-
-/////////////////////
-//// good suffix  //
-////////////////////
-// https://www.geeksforgeeks.org/boyer-moore-algorithm-good-suffix-heuristic/
-
-vector<int> BoyerMoore::preprocess_strong_suffix(){
-    vector<int> shift(naald.size()+1), borderpositions(naald.size()+1);
-    // m is the length of pattern
-    int i=naald.size(), j=naald.size()+1;
-    borderpositions[i]=j;
-
-    while(i>0)
-    {
-        /*if character at position i-1 is not equivalent to
-          character at j-1, then continue searching to right
-          of the pattern for border */
-        while(j<=naald.size() && naald[i-1] != naald[j-1])
-        {
-            /* the character preceding the occurrence of t in
-               pattern P is different than the mismatching character in P,
-               we stop skipping the occurrences and shift the pattern
-               from i to j */
-            if (shift[j]==0)
-                shift[j] = j-i;
-
-            //Update the position of next border
-            j = borderpositions[j];
-        }
-        /* p[i-1] matched with p[j-1], border is found.
-           store the  beginning position of border */
-        i--;j--;
-        borderpositions[i] = j;
-    }
-    return  shift;
-}
-
-
 
 #endif
     
