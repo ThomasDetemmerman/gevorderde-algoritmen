@@ -118,6 +118,8 @@ DigitaleZoekboom<T> *DigitaleZoekboom<T>::zoekRec(std::bitset<T> patroon, int di
                 return (*this)->links.zoekRec(patroon, ++diepte);
             }
         }
+    } else {
+        return this;
     }
 
 
