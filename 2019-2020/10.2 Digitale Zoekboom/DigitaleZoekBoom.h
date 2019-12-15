@@ -57,6 +57,7 @@ template<int T>
 void DigitaleZoekboom<T>::voegToe(string woord) {
     std::bitset<T> bitpatroon(woord);
     DigitaleZoekboom *  dest = zoek(woord);
+    //todo: kijk of dest wel een nullptr is, anders gooi error of return bool=false
     *dest = move(make_unique<zoekKnoop<T>>(bitset<T>(woord)));
 }
 
