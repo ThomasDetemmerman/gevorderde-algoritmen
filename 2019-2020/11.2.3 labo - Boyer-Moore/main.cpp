@@ -1,15 +1,18 @@
 #include <iostream>
 #include "woordstroom.h"
-#include "boyermoore_badHeuristic.h"
+#include "boyermoore.h"
 using namespace std;
 
 int main() {
 
-    BoyerMoore bm("tot");
-    std::queue<int> matches = bm.zoek("taaltottaoaldlsqjfkldsqjfldstotdlsfjdsklfjzeototj", 0);
-    cout << matches.size();
+    string zoekterm1 = "totottot";
+    BoyerMoore bm(zoekterm1);
+    std::queue<int> matches = bm.zoek("taaltottaoaldlsqjfktotottotldsqjfldstotdlsfjdstotottototottottklfjzeototj", 0);
+    cout << "Zoekterm " << zoekterm1 << " was found " << matches.size() << " times (eventueel met overlapping)" << endl << endl;
+
 
     string zoekterm = "Thomas";
+    cout << zoekterm << " zoeken in de bijbel: " << endl;
     BoyerMoore zoeker(zoekterm);
     std::ifstream ifs("../bible.txt");
     //om de computer te sparen en niet heel de bijbel in te lezen, lezen we het bestand lijn per lijn in.

@@ -26,7 +26,7 @@ private:
     const int ALFABET_SIZE = abs(-127) + 128;
 
     vector<int> calculateMRP();
-    vector<int> preprocess_strong_suffix();
+    vector<int> preprocessWeakShiftTable();
 
     void print(string naald, int naaldindex, string hooiber, int hooibergindex);
 };
@@ -51,7 +51,7 @@ void BoyerMoore::printMRP() {
 
 std::queue<int> BoyerMoore::zoek(const string &hooiberg, int teller) {
     vector<int> MRP = calculateMRP();
-    vector<int> shift = preprocess_strong_suffix();
+    vector<int> shift = preprocessWeakShiftTable();
     std::queue<int> matches;
     int hooibergIndex_startpoint = naald.length() - 1;
     int hooibergIndex = hooibergIndex_startpoint;
@@ -73,7 +73,12 @@ std::queue<int> BoyerMoore::zoek(const string &hooiberg, int teller) {
             int aantalOpschuiven = max(verschuiven_H1,verschuiven_H2);
 
             //if (aantalOpschuiven <= 0) <-- dankzij de introductie van H2 zal de vershuiving altijd possitief zijn
-            hooibergIndex_startpoint += aantalOpschuiven;
+            if (aantalOpschuiven <= 0) {
+
+                hooibergIndex_startpoint++;
+            } else {
+                hooibergIndex_startpoint += aantalOpschuiven;
+            }
             hooibergIndex = hooibergIndex_startpoint;
         }
         naaldIndex = naald.length() - 1;
@@ -98,39 +103,56 @@ vector<int> BoyerMoore::calculateMRP() {
 /////////////////////
 //// good suffix  //
 ////////////////////
-// kijk naar martijn zijn oplossing
-// https://www.geeksforgeeks.org/boyer-moore-algorithm-good-suffix-heuristic/
+// Credits @ Martijn
+// Deze oplossing is in O(p^2) en kan dus efficienter O(p)
+// Deze oplossing kan nog beter door er een strong shift table van te maken
+//  O(p^2) good suffix heuristic
+//
+//      i                   |   0   1   2   3   4   5   6
+//      p-i-1               |   6   5   4   3   2   1   0
+//      --------------------+-------------------------------
+//      p[i]                |   a   b   b   a   b   a   b
+//      --------------------+-------------------------------
+//      suffix[i]           |   2   1   3   2   1   0   0
+//      k                   |   /   /   /   2   3   4   6
+//      i+1-k               |   /   /   /   2   2   2   1
+//      verschuiving[i]     |   5   5   5   2   2   2   1
+//                             ~~~~~~~~~~~             ~~~
+//                                  |                   |
+//                                  |                   V
+//                                  |
+//                                  |         Er is geen juiste suffix
+//                                  V
+//
+//              Het juiste suffix komt niet meer in P voor:
+//              p - s[0] = 7 - 2 = 5
+//
+vector<int> BoyerMoore::preprocessWeakShiftTable(){
 
-vector<int> BoyerMoore::preprocess_strong_suffix(){
-    vector<int> shift(naald.size()+1), borderpositions(naald.size()+1);
-    int i=naald.size(), j=naald.size()+1;
-    borderpositions[i]=j;
-
-    while(i>0)
-    {
-        /*if character at position i-1 is not equivalent to
-          character at j-1, then continue searching to right
-          of the pattern for border */
-        while(j<=naald.size() && naald[i-1] != naald[j-1])
-        {
-            /* the character preceding the occurrence of t in
-               pattern P is different than the mismatching character in P,
-               we stop skipping the occurrences and shift the pattern
-               from i to j */
-            if (shift[j]==0)
-                shift[j] = j-i;
-
-            //Update the position of next border
-            j = borderpositions[j];
+    //PART 1: build suffix[i] (zie tekening hierboven)
+    vector<int> commonSuffix(naald.size());
+    int commonSuffixLenght = 0;
+    for (int i = commonSuffix.size()-2; i >= 0 ; i--) {
+        while(commonSuffixLenght > 0 && naald[i] != naald[naald.size()-1-commonSuffixLenght]){
+            commonSuffixLenght = commonSuffix[naald.size()-commonSuffixLenght]; //geen -1
         }
-        /* p[i-1] matched with p[j-1], border is found.
-           store the  beginning position of border */
-        i--;j--;
-        borderpositions[i] = j;
+
+        if(naald[i] == naald[naald.size()-1-commonSuffixLenght]){
+            commonSuffixLenght++;
+        }
+        commonSuffix[i] = commonSuffixLenght;
     }
+
+    //PART 2: build shift table (zie rij 'verschuiving' hierboven)
+    int defaultValue = naald.size() - commonSuffix[0]; // Dit is die 5 in het voorbeeld hierboven (Het juiste suffix komt niet meer in P voor)
+    vector<int> shift(naald.size(), defaultValue);
+    for(int i=0; i < shift.size(); i++){
+        int startIndex = naald.size() - 1 - commonSuffix[i];
+        shift[startIndex] = (startIndex + 1 - i);
+    }
+
     return  shift;
 }
-
 
 
 #endif
