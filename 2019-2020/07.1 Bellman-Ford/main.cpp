@@ -45,11 +45,11 @@ void bellmanFord( GraafMetTakdata <GERICHT,int> graaf, int SIZE){
     order.push_back(0);
     weightToReachThisVertex[0] = 0;
 
-    bool wijzigingenInVorigeIteratie = true;
+    //bool wijzigingenInVorigeIteratie = true;
     int aantalIteraties = 0;
     int V = SIZE
 
-    while(wijzigingenInVorigeIteratie && aantalIteraties < V-1){
+    //while(wijzigingenInVorigeIteratie && aantalIteraties < V-1){
     while(!order.empty() && !containsNegativeLoop(negativeLoopCounter)){
         int start = order.front();
         negativeLoopCounter[start]++;
