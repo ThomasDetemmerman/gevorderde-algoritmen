@@ -9,8 +9,8 @@ De `-=operator()` wordt opgeroepen in de context van `restnetwerk-=vergrotendpad
 Hierbij moeten we dus het vergrotendpad verwijderen uit het restnetwerk en terugverbindingen aanmaken met terug stroom. Tussen twee knopen kunnen dus twee verbindingen voorkomen.
 
 - terugtak.cap = nieuwecap
-  - verwijder terugtak
-  - voeg heentak toe
+  - verwijder heentak
+  - voeg terugtak toe
 - terug.cap =/= nieuwecap
   - update: terugtak.cap -= nieuwecap
   - update heentak of voeg toe 
