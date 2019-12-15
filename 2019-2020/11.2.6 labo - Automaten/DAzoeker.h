@@ -109,6 +109,7 @@ set<int> DAzoeker::signaal(set<int> oudeToestand, char overgansteken) {
         auto verbinding = NA.operator[](i);
         if(oudeToestand.find(verbinding.geefBron()) != oudeToestand.end() && verbinding.geefKarakter() == overgansteken){
             nieuweToestand.insert(verbinding.geefDoel());
+            //todo: denk dat dit ook recursief moet herhalen. In dat opzicht zouden signaalrec en zoekepsilonrec analoog zijn maar voor een ander overgansteken.
         }
     }
     return nieuweToestand;
