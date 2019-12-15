@@ -8,7 +8,7 @@
 
 ## Werking
 
-- sorteer bos op frequentie  (Kan verbetered worden met een prioriteitsqueue)
+- sorteer bos op frequentie  (Kan ook met een prioriteitsqueue)
 - merge twee eerste knopen tot 1 boom
 - herhaal
 
