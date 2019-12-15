@@ -22,9 +22,9 @@ private:
     void convertNA2DA();
     void zoekAlleOvergansSymbolen();
     void voegEpsilonBurenToe(set<int> &set);
-    void zoekEpsilonRec(set<int> &set, int statenbit);
     set<int> signaal(set<int> set, char overgansteken);
     void printTransitionTable();
+    void zoekRec(set<int> &set, int statenbit, uchar overgansteken);
 };
 
 DAzoeker::DAzoeker(ThompsonNA na): NA(na) {
@@ -84,19 +84,11 @@ void DAzoeker::zoekAlleOvergansSymbolen(){
     }
 }
 
-void DAzoeker::zoekEpsilonRec(set<int> &set, int statenbit) {
-    for(int i=0; i < NA.geefAantalVerbindingen(); i++){
-        auto verbinding = NA.operator[](i);
-        if(verbinding.geefBron() == statenbit && verbinding.geefKarakter() == epsilon){
-            set.insert(verbinding.geefDoel());
-            zoekEpsilonRec(set, verbinding.geefDoel());
-        }
-    }
-}
+
 
 void DAzoeker::voegEpsilonBurenToe(set<int> &staat) {
     for(int statenbit : staat){
-        zoekEpsilonRec(staat, statenbit);
+        zoekRec(staat, statenbit, epsilon);
     }
 
 }
@@ -104,15 +96,21 @@ void DAzoeker::voegEpsilonBurenToe(set<int> &staat) {
 //  input: oudeToestand & overgansteken
 //  output: nieuwe toestand die bekomen wordt indien 'overgansteken' de inputwaarde geweest zou zijn.
 set<int> DAzoeker::signaal(set<int> oudeToestand, char overgansteken) {
-    set<int> nieuweToestand;
+    set <int> nieuweStaat;
+    for(int statenbit : oudeToestand){
+        zoekRec(nieuweStaat, statenbit, overgansteken);
+    }
+}
+
+
+void DAzoeker::zoekRec(set<int> &set, int statenbit, uchar overgansteken) {
     for(int i=0; i < NA.geefAantalVerbindingen(); i++){
         auto verbinding = NA.operator[](i);
-        if(oudeToestand.find(verbinding.geefBron()) != oudeToestand.end() && verbinding.geefKarakter() == overgansteken){
-            nieuweToestand.insert(verbinding.geefDoel());
-            //todo: denk dat dit ook recursief moet herhalen. In dat opzicht zouden signaalrec en zoekepsilonrec analoog zijn maar voor een ander overgansteken.
+        if(verbinding.geefBron() == statenbit && verbinding.geefKarakter() == overgansteken){
+            set.insert(verbinding.geefDoel());
+            zoekRec(set, verbinding.geefDoel(), overgansteken);
         }
     }
-    return nieuweToestand;
 }
 
 void DAzoeker::printTransitionTable() {
