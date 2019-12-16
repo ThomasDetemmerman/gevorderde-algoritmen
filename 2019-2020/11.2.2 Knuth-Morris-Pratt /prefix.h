@@ -25,8 +25,8 @@ Prefix::Prefix(const string &zoekstring) : data(zoekstring), vector<int>(zoekstr
             j = this->operator[](j-1);
         }
         if( zoekstring[i] == zoekstring[j]){
-            j++;
-            this->operator[](i) = j;
+            //j++;
+            this->operator[](i) = ++j;
         }
     }
 }
