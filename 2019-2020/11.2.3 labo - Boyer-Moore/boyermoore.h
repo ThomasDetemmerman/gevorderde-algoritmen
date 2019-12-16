@@ -50,35 +50,41 @@ void BoyerMoore::printMRP() {
 }
 
 std::queue<int> BoyerMoore::zoek(const string &hooiberg, int teller) {
-    vector<int> MRP = calculateMRP();
-    vector<int> shift = preprocessWeakShiftTable();
+    vector<int> MRP = calculateMRP();   //verhuis naar constructor
+    vector<int> shift = preprocessWeakShiftTable();   //verhuis naar constructor
     std::queue<int> matches;
-    int hooibergIndex_startpoint = naald.length() - 1;
-    int hooibergIndex = hooibergIndex_startpoint;
-    int naaldIndex = naald.length() - 1;
 
-    while (hooibergIndex <= hooiberg.length()) {
-        while (hooiberg[hooibergIndex] == naald[naaldIndex] && naaldIndex > 0) {
-            hooibergIndex--;
-            naaldIndex--;
+    if(hooiberg.size() < naald.size()){
+        return matches;
+    }
+
+    int text_i = 0;
+    while(text_i   <= hooiberg.size()-naald.size()){
+        int pattern_i = naald.size()-1;
+        while(pattern_i > 0 && hooiberg[text_i+pattern_i] == naald[pattern_i]){
+            text_i--;
         }
 
-        if (naaldIndex == 0 && naald[naaldIndex] == hooiberg[hooibergIndex]) {
-            matches.push(hooibergIndex);
-            hooibergIndex_startpoint++;
-            hooibergIndex = hooibergIndex_startpoint;
+        int aantalOpschuiven=0;
+        if(pattern_i < 0){
+            matches.push(text_i);
+            if(text_i + naald.size() < hooiberg.size()){
+                uchar teken = hooiberg[text_i+naald.size()];
+                aantalOpschuiven = naald.size() - shift[teken];
+            }
+        }
+        else {
+            uchar teken = hooiberg[text_i+pattern_i];
+            aantalOpschuiven = pattern_i - shift[teken];
+        }
+
+        if(aantalOpschuiven <= 0){
+            text_i++;
         } else {
-            int verschuiven_H1 = naald.length()-1 - MRP[hooiberg[hooibergIndex] + 128];
-            int verschuiven_H2 = naald.length()-1 - shift[hooiberg[hooibergIndex]];
-            int aantalOpschuiven = max(max(verschuiven_H1,verschuiven_H2),1);
-
-            //std::cout << "shifting over " << aantalOpschuiven << std::endl;
-            //if (aantalOpschuiven <= 0) <-- dankzij de introductie van H2 zal de vershuiving altijd possitief zijn
-
-            hooibergIndex_startpoint += aantalOpschuiven;
-            hooibergIndex = hooibergIndex_startpoint;
+            text_i += aantalOpschuiven;
         }
-        naaldIndex = naald.length() - 1;
+
+        int tmp;
     }
 return matches;
 }
