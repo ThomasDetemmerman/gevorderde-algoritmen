@@ -7,7 +7,7 @@ int main() {
 
     string zoekterm1 = "totottot";
     BoyerMoore bm(zoekterm1);
-    std::queue<int> matches = bm.zoek("taaltottaoaldlsqjfktotottotldsqjfldstotdlsfjdstotottototottottklfjzeototj", 0);
+    std::queue<int> matches = bm.zoek("taaltottaoaldlsqjfktotottotldsqjfldstototottottdlsfjdstotottototottottklfjzeototj", 0);
     cout << "Zoekterm " << zoekterm1 << " was found " << matches.size() << " times (eventueel met overlapping)" << endl << endl;
 
 

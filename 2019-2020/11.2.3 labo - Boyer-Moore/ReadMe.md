@@ -1,5 +1,7 @@
 # Boyer-Moore
 
+--> bevat fouten!
+
 ## status
 - [x] Heurirstiek van het verkeerde karakter.
 - [ ] Naïve methode.

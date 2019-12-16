@@ -69,16 +69,13 @@ std::queue<int> BoyerMoore::zoek(const string &hooiberg, int teller) {
             hooibergIndex = hooibergIndex_startpoint;
         } else {
             int verschuiven_H1 = naald.length()-1 - MRP[hooiberg[hooibergIndex] + 128];
-            int verschuiven_H2 = shift[hooiberg[hooibergIndex]];
-            int aantalOpschuiven = max(verschuiven_H1,verschuiven_H2);
+            int verschuiven_H2 = naald.length()-1 - shift[hooiberg[hooibergIndex]];
+            int aantalOpschuiven = max(max(verschuiven_H1,verschuiven_H2),1);
 
+            //std::cout << "shifting over " << aantalOpschuiven << std::endl;
             //if (aantalOpschuiven <= 0) <-- dankzij de introductie van H2 zal de vershuiving altijd possitief zijn
-            if (aantalOpschuiven <= 0) {
 
-                hooibergIndex_startpoint++;
-            } else {
-                hooibergIndex_startpoint += aantalOpschuiven;
-            }
+            hooibergIndex_startpoint += aantalOpschuiven;
             hooibergIndex = hooibergIndex_startpoint;
         }
         naaldIndex = naald.length() - 1;
