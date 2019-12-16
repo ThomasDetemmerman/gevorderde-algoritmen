@@ -31,8 +31,8 @@ queue<int> KnuthMorrisPratt::zoek(const string &tekst) {
         }
         if(Pc == prefixTabel.data.size()){
             resultaten.push(Tc-Pc);
-            Pc=0;
-            Tc++;
+            //Pc=0; Tc++; //fout
+            Pc = prefixTabel[Pc-1]; 
         } else if (Tc < tekst.size() && tekst[Tc] != prefixTabel.data[Pc] ){
             if(Pc == 0){
                 Tc++;
