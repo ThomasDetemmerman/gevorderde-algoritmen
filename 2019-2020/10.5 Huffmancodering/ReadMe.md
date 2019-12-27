@@ -9,6 +9,7 @@
 ## Werking
 
 - sorteer bos op frequentie  (Kan ook met een prioriteitsqueue)
+    - Volgens de theorie moeten de knopen van groot naar klein gesorteerd worden. In mijn oplossing is dit van klein naar groot.
 - merge twee eerste knopen tot 1 boom
 - herhaal
 
