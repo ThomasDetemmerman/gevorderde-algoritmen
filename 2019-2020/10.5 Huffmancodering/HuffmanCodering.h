@@ -54,7 +54,7 @@ HuffmanCodering::HuffmanCodering(const string &sampledata) {
     }
 
     while(patriciaBos.size() > 1){
-        selectionSort(freqTable, patriciaBos);
+        selectionSort(freqTable, patriciaBos); //je kan eventueel ook alle wortels van de deelbomen in een priority queue steken
         Knoopptr nieuwBos = make_unique<NietBlad>();
         static_cast<NietBlad*>(nieuwBos.get())->l = move(patriciaBos[0]);
         static_cast<NietBlad*>(nieuwBos.get())->r = move(patriciaBos[1]);
