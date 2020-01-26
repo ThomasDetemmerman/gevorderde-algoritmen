@@ -17,28 +17,14 @@ public:
     Handelsreizigersprobleem() {
     };
 
-
-
     void calculateePostOrder();
-
-
     void DEZrec(int startpunt, std::stack<int> &postordernummering, std::set<int> *visited, Graaf<GERICHT> &graaf);
-
-
-
-
     int vindVerantwoordelijkeVan(int lid, std::vector<component> &vector);
 
-
-
     std::set<int> convertStackToSet(std::stack<int> &stack);
-
     std::stack<int> calculateePostOrder(Graaf<GERICHT> &g, int size);
-
     std::vector<component> calculateComponents(Graaf<GERICHT> &graaf, std::stack<int> &stack);
-
     GraafMetKnoopdata<GERICHT, int> convertToComponentGrapth(Graaf<GERICHT> &graaf, std::vector<component> &vector );
-
     std::stack<int>  run(Graaf<GERICHT> &graaf, Graaf<GERICHT> &omgekeerdeGraaf);
 };
 
@@ -52,10 +38,8 @@ std::stack<int>  Handelsreizigersprobleem::run(Graaf<GERICHT> &graaf, Graaf<GERI
     // stap 3: stel componentengraaf op
     GraafMetKnoopdata<GERICHT, int> componentengraaf =  convertToComponentGrapth(graaf, bos);
 
-
     //stap 4: topologisch sorteren
     //todo: mooier geprogrammeerd met een graaf.size() functie.
-
 
     std::stack<int> verkoopvolgordeknoopID = calculateePostOrder(componentengraaf, bos.size());
     std::stack<int> verkoopvolgorde;
@@ -68,8 +52,6 @@ std::stack<int>  Handelsreizigersprobleem::run(Graaf<GERICHT> &graaf, Graaf<GERI
 
     }
     return verkoopvolgorde;
-
-
 }
 
 std::stack<int> Handelsreizigersprobleem::calculateePostOrder(Graaf<GERICHT> &g,int size) {
